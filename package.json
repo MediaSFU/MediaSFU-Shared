@@ -1,0 +1,78 @@
+{
+  "name": "mediasfu-shared",
+  "version": "1.0.1",
+  "description": "Framework-agnostic shared logic for MediaSFU - works with React, Vue, Angular, Svelte, and any JavaScript framework",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./consumers": {
+      "types": "./dist/consumers/index.d.ts",
+      "import": "./dist/consumers/index.js",
+      "require": "./dist/consumers/index.cjs"
+    },
+    "./methods": {
+      "types": "./dist/methods/index.d.ts",
+      "import": "./dist/methods/index.js",
+      "require": "./dist/methods/index.cjs"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/types/index.js",
+      "require": "./dist/types/index.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc && vite build",
+    "dev": "vite build --watch",
+    "type-check": "tsc --noEmit"
+  },
+  "keywords": [
+    "mediasfu",
+    "shared",
+    "webrtc",
+    "video-conferencing",
+    "breakout-rooms",
+    "screen-sharing",
+    "recording",
+    "framework-agnostic",
+    "typescript"
+  ],
+  "author": "MediaSFU",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MediaSFU/MediaSFU-Shared"
+  },
+  "homepage": "https://github.com/MediaSFU/MediaSFU-Shared",
+  "bugs": {
+    "url": "https://github.com/MediaSFU/MediaSFU-Shared/issues",
+    "email": "info@mediasfu.com"
+  },
+  "peerDependencies": {
+    "mediasoup-client": "^3.16.0",
+    "socket.io-client": "^4.8.0"
+  },
+  "dependencies": {
+    "universal-cookie": "^7.2.2"
+  },
+  "devDependencies": {
+    "mediasoup-client": "^3.16.0",
+    "socket.io-client": "^4.8.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.9",
+    "vite-plugin-dts": "^4.3.0"
+  }
+}
