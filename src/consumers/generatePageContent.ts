@@ -1,27 +1,39 @@
-import { Participant, Stream, DispStreamsType, DispStreamsParameters } from '../types/types';
+import { Participant, Stream, DispStreamsParameters } from '../types/types';
 
-export interface GeneratePageContentParameters extends DispStreamsParameters {
-  paginatedStreams: (Participant | Stream)[][];
+type OpaqueDispStreamsInvoker = {
+  bivarianceHack: (options: any) => Promise<void>;
+}['bivarianceHack'];
+
+export interface GeneratePageContentParameters<
+  TStream extends Stream = Stream,
+  TParticipant extends Participant = Participant,
+  TDispParameters extends DispStreamsParameters<any, any, any, any> = DispStreamsParameters<TStream, TParticipant>,
+> extends DispStreamsParameters<TStream, TParticipant> {
+  paginatedStreams: (TParticipant | TStream)[][];
   currentUserPage: number;
   updateMainWindow: boolean;
   updateCurrentUserPage: (page: number) => void;
   updateUpdateMainWindow: (flag: boolean) => void;
 
   // mediasfu functions
-  dispStreams: DispStreamsType;
-  getUpdatedAllParams: () => GeneratePageContentParameters;
+  dispStreams: OpaqueDispStreamsInvoker;
+  getUpdatedAllParams: () => GeneratePageContentParameters<TStream, TParticipant, TDispParameters>;
   [key: string]: any;
 }
 
-export interface GeneratePageContentOptions {
+export interface GeneratePageContentOptions<
+  TParameters extends GeneratePageContentParameters<any, any, any> = GeneratePageContentParameters,
+> {
   page: number | string;
-  parameters: GeneratePageContentParameters;
+  parameters: TParameters;
   breakRoom?: number;
   inBreakRoom?: boolean;
 }
 
 // Export the type definition for the function
-export type GeneratePageContentType = (options: GeneratePageContentOptions) => Promise<void>;
+export type GeneratePageContentType = <
+  TParameters extends GeneratePageContentParameters<any, any, any> = GeneratePageContentParameters,
+>(options: GeneratePageContentOptions<TParameters>) => Promise<void>;
 
 /**
  * Generates the content for a specific page.
@@ -68,12 +80,14 @@ export type GeneratePageContentType = (options: GeneratePageContentOptions) => P
  *   });
  */
 
-export async function generatePageContent({
+export async function generatePageContent<
+  TParameters extends GeneratePageContentParameters<any, any, any> = GeneratePageContentParameters,
+>({
   page,
   parameters,
   breakRoom = -1,
   inBreakRoom = false,
-}: GeneratePageContentOptions): Promise<void> {
+}: GeneratePageContentOptions<TParameters>): Promise<void> {
   try {
     // Destructure parameters
     let {

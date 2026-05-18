@@ -1,10 +1,19 @@
-import { Socket } from 'socket.io-client';
+import type { Socket } from 'socket.io-client';
 import Cookies from 'universal-cookie';
 import type { PreJoinPageParameters } from '../../types/types';
 
 const cookies = new Cookies();
 const MAX_ATTEMPTS = 10;
 const RATE_LIMIT_DURATION = 3 * 60 * 60 * 1000; // 3 hours
+
+const hasConnectedSocketId = (socket: unknown): socket is Socket & { id: string } => {
+  if (!socket || typeof socket !== 'object') {
+    return false;
+  }
+
+  const candidate = socket as { id?: unknown };
+  return typeof candidate.id === 'string' && candidate.id.length > 0;
+};
 
 /**
  * Options for handleWelcomeRequest function
@@ -143,7 +152,7 @@ export async function handleWelcomeRequest({
 
     const socket = await Promise.race([socketPromise, timeoutPromise]);
 
-    if (socket && socket instanceof Socket && socket.id) {
+    if (hasConnectedSocketId(socket)) {
       unsuccessfulAttempts = 0;
       cookies.set('unsuccessfulAttempts', unsuccessfulAttempts.toString());
       cookies.set('lastRequestTimestamp', Date.now().toString());

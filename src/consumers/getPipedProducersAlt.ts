@@ -1,11 +1,37 @@
 import { Socket } from "socket.io-client";
 import { SignalNewConsumerTransportParameters, SignalNewConsumerTransportType } from '../types/types';
 
-export interface GetPipedProducersAltParameters extends SignalNewConsumerTransportParameters {
+interface TranslationMeta {
+  speakerId: string;
+  speakerName: string;
+  language: string;
+  originalProducerId?: string;
+  isSpeakerControlled?: boolean;
+}
+
+interface ProducerInfo {
+  id: string;
+  translationMeta?: TranslationMeta | null;
+}
+
+export interface GetPipedProducersAltParameters extends Omit<SignalNewConsumerTransportParameters, 'getUpdatedAllParams'> {
   member: string;
+
+  listenerTranslationPreferences?: {
+    perSpeaker: Map<string, { speakerId: string; language: string | null; wantOriginal: boolean }>;
+    globalLanguage: string | null;
+  };
 
   // mediasfu functions
   signalNewConsumerTransport: SignalNewConsumerTransportType;
+  startConsumingTranslation?: (
+    producerId: string,
+    speakerId: string,
+    language: string,
+    originalProducerId?: string,
+    nsock?: Socket
+  ) => Promise<void>;
+  getUpdatedAllParams?: () => GetPipedProducersAltParameters;
   [key: string]: any;
 }
 
@@ -18,6 +44,41 @@ export interface GetPipedProducersAltOptions {
 
 // Export the type definition for the function
 export type GetPipedProducersAltType = (options: GetPipedProducersAltOptions) => Promise<void>;
+
+const shouldConsumeTranslationProducer = (
+  translationMeta: TranslationMeta,
+  listenerTranslationPreferences?: {
+    perSpeaker: Map<string, { speakerId: string; language: string | null; wantOriginal: boolean }>;
+    globalLanguage: string | null;
+  }
+): boolean => {
+  const normalizedLang = translationMeta.language?.toLowerCase();
+  const speakerId = translationMeta.speakerId;
+  const isSpeakerControlled = translationMeta.isSpeakerControlled === true;
+
+  if (listenerTranslationPreferences) {
+    const perSpeakerPref = listenerTranslationPreferences.perSpeaker?.get(speakerId);
+    if (perSpeakerPref) {
+      if (perSpeakerPref.wantOriginal) {
+        return false;
+      }
+      if (perSpeakerPref.language) {
+        return perSpeakerPref.language.toLowerCase() === normalizedLang;
+      }
+    }
+
+    const globalPref = listenerTranslationPreferences.globalLanguage;
+    if (globalPref) {
+      return globalPref.toLowerCase() === normalizedLang;
+    }
+  }
+
+  if (isSpeakerControlled) {
+    return true;
+  }
+
+  return false;
+};
 
 /**
  * Retrieves piped producers and signals new consumer transport for each retrieved producer.
@@ -63,8 +124,14 @@ export const getPipedProducersAlt = async ({
   parameters,
 }: GetPipedProducersAltOptions): Promise<void> => {
   try {
-    // Destructure parameters
-    const { member, signalNewConsumerTransport } = parameters;
+    const freshParams = parameters.getUpdatedAllParams ? parameters.getUpdatedAllParams() : parameters;
+
+    const {
+      member,
+      signalNewConsumerTransport,
+      startConsumingTranslation,
+      listenerTranslationPreferences,
+    } = freshParams;
 
     const emitName = community ? "getProducersAlt" : "getProducersPipedAlt";
 
@@ -72,20 +139,49 @@ export const getPipedProducersAlt = async ({
     await nsock.emit(
       emitName,
       { islevel, member },
-      async (producerIds: string[]) => {
+      async (producers: (string | ProducerInfo)[]) => {
         // Check if producers are retrieved
-        if (producerIds.length > 0) {
-          // Signal new consumer transport for each retrieved producer
-          await Promise.all(
-            producerIds.map((id) =>
-              signalNewConsumerTransport({
-                nsock,
-                remoteProducerId: id,
-                islevel,
-                parameters,
-              })
-            )
-          );
+        if (producers.length > 0) {
+          for (const producer of producers) {
+            let producerId: string;
+            let translationMeta: TranslationMeta | null = null;
+
+            if (typeof producer === 'string') {
+              producerId = producer;
+            } else {
+              producerId = producer.id;
+              translationMeta = producer.translationMeta || null;
+            }
+
+            if (translationMeta) {
+              const shouldConsume = shouldConsumeTranslationProducer(
+                translationMeta,
+                listenerTranslationPreferences,
+              );
+
+              if (!shouldConsume) {
+                continue;
+              }
+
+              if (startConsumingTranslation) {
+                await startConsumingTranslation(
+                  producerId,
+                  translationMeta.speakerId,
+                  translationMeta.language,
+                  translationMeta.originalProducerId,
+                  nsock,
+                );
+                continue;
+              }
+            }
+
+            await signalNewConsumerTransport({
+              nsock,
+              remoteProducerId: producerId,
+              islevel,
+              parameters: freshParams as unknown as SignalNewConsumerTransportParameters,
+            });
+          }
         }
       }
     );

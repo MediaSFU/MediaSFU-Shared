@@ -1,6 +1,11 @@
 
  
-import { PrepopulateUserMediaType, PrepopulateUserMediaParameters, EventType } from '../types/types';
+import { PrepopulateUserMediaParameters, PrepopulateUserMediaOptions, EventType } from '../types/types';
+
+type PrepopulateUserMediaInvoker = {
+  bivarianceHack: (options: PrepopulateUserMediaOptions) => Promise<unknown>;
+}['bivarianceHack'];
+
 export interface ReadjustParameters extends PrepopulateUserMediaParameters {
   eventType: EventType;
   shareScreenStarted: boolean;
@@ -13,19 +18,21 @@ export interface ReadjustParameters extends PrepopulateUserMediaParameters {
   updateMainHeightWidth: (value: number) => void;
 
   // mediasfu functions
-  prepopulateUserMedia: PrepopulateUserMediaType;
+  prepopulateUserMedia: PrepopulateUserMediaInvoker;
   getUpdatedAllParams: () => ReadjustParameters;
   [key: string]: any;
 }
 
-export interface ReadjustOptions {
+export interface ReadjustOptions<TParameters extends ReadjustParameters = ReadjustParameters> {
   n: number;
   state: number;
-  parameters: ReadjustParameters;
+  parameters: TParameters;
 }
 
 // Export the type definition for the function
-export type ReadjustType = (options: ReadjustOptions) => Promise<void>;
+export type ReadjustType = <TParameters extends ReadjustParameters = ReadjustParameters>(
+  options: ReadjustOptions<TParameters>
+) => Promise<void>;
 
 /**
  * Adjusts the layout parameters based on the provided options.
@@ -69,9 +76,13 @@ export type ReadjustType = (options: ReadjustOptions) => Promise<void>;
  * ```
  */
 
-export async function readjust({ n, state, parameters }: ReadjustOptions): Promise<void> {
-  let { getUpdatedAllParams } = parameters;
-  parameters = getUpdatedAllParams();
+export async function readjust<TParameters extends ReadjustParameters = ReadjustParameters>({
+  n,
+  state,
+  parameters,
+}: ReadjustOptions<TParameters>): Promise<void> {
+  const { getUpdatedAllParams } = parameters;
+  const updatedParameters = getUpdatedAllParams() as TParameters;
 
   try {
     // Destructure parameters
@@ -79,6 +90,8 @@ export async function readjust({ n, state, parameters }: ReadjustOptions): Promi
       eventType,
       shareScreenStarted,
       shared,
+      whiteboardStarted,
+      whiteboardEnded,
       mainHeightWidth,
       prevMainHeightWidth,
       hostLabel,
@@ -86,7 +99,8 @@ export async function readjust({ n, state, parameters }: ReadjustOptions): Promi
       lock_screen,
       updateMainHeightWidth,
       prepopulateUserMedia,
-    } = parameters;
+    } = updatedParameters;
+    const screenFlowActive = shareScreenStarted || shared || (whiteboardStarted && !whiteboardEnded);
 
     if (state === 0) {
       prevMainHeightWidth = mainHeightWidth;
@@ -107,12 +121,12 @@ export async function readjust({ n, state, parameters }: ReadjustOptions): Promi
       }
     } else if (
       eventType === "chat" ||
-      (eventType === "conference" && !(shareScreenStarted || shared))
+      (eventType === "conference" && !screenFlowActive)
     ) {
       val1 = 12;
       val2 = 12 - val1;
     } else {
-      if (shareScreenStarted || shared) {
+      if (screenFlowActive) {
         val2 = 10;
         val1 = 12 - val2;
       } else {
@@ -151,13 +165,15 @@ export async function readjust({ n, state, parameters }: ReadjustOptions): Promi
     cal1 = Math.floor((val1 / 12) * 100);
     cal2 = 100 - cal1;
 
-    updateMainHeightWidth(cal2);
+    if (mainHeightWidth !== cal2) {
+      updateMainHeightWidth(cal2);
+    }
 
     if (prevMainHeightWidth !== mainHeightWidth) {
       if (!lock_screen && !shared) {
-        await prepopulateUserMedia({ name: hostLabel, parameters });
+        await prepopulateUserMedia({ name: hostLabel, parameters: updatedParameters });
       } else if (!first_round) {
-        await prepopulateUserMedia({ name: hostLabel, parameters });
+        await prepopulateUserMedia({ name: hostLabel, parameters: updatedParameters });
       }
     }
   } catch (error) {

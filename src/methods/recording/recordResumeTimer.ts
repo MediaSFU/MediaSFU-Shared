@@ -6,13 +6,13 @@ export interface RecordResumeTimerParameters {
   canPauseResume: boolean
   recordElapsedTime: number
   recordStartTime: number
-  recordTimerInterval?: NodeJS.Timeout | null
+  recordTimerInterval?: ReturnType<typeof setInterval> | null
   showAlert?: ShowAlert
   recordPaused: boolean
   recordStopped: boolean
   roomName: string | null
   updateRecordStartTime: (time: number) => void
-  updateRecordTimerInterval: (interval: NodeJS.Timeout | null) => void
+  updateRecordTimerInterval: (interval: ReturnType<typeof setInterval> | null) => void
   updateIsTimerRunning: (isRunning: boolean) => void
   updateCanPauseResume: (canPause: boolean) => void
   updateRecordElapsedTime: (elapsed: number) => void

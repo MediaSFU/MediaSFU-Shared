@@ -6,6 +6,7 @@ export interface ModifyDisplaySettingsParameters extends OnScreenChangesParamete
   meetingDisplayType: string
   autoWave: boolean
   forceFullDisplay: boolean
+  showSubtitlesOnCards?: boolean
   meetingVideoOptimized: boolean
   islevel: string
   recordStarted: boolean
@@ -19,6 +20,7 @@ export interface ModifyDisplaySettingsParameters extends OnScreenChangesParamete
   updateMeetingDisplayType: (displayType: string) => void
   updateAutoWave: (autoWave: boolean) => void
   updateForceFullDisplay: (forceFullDisplay: boolean) => void
+  updateShowSubtitlesOnCards?: (showSubtitlesOnCards: boolean) => void
   updateMeetingVideoOptimized: (optimized: boolean) => void
   updatePrevForceFullDisplay: (forceFullDisplay: boolean) => void
   updatePrevMeetingDisplayType: (displayType: string) => void
@@ -121,6 +123,7 @@ export const modifyDisplaySettings = async ({
     meetingDisplayType,
     autoWave,
     forceFullDisplay,
+    showSubtitlesOnCards = true,
     meetingVideoOptimized,
     islevel,
     recordStarted,
@@ -134,6 +137,7 @@ export const modifyDisplaySettings = async ({
     updateMeetingDisplayType,
     updateAutoWave,
     updateForceFullDisplay,
+    updateShowSubtitlesOnCards,
     updateMeetingVideoOptimized,
     updatePrevForceFullDisplay,
     updatePrevMeetingDisplayType,
@@ -148,6 +152,7 @@ export const modifyDisplaySettings = async ({
   // Update previous states
   updateAutoWave(autoWave)
   updateForceFullDisplay(forceFullDisplay)
+  updateShowSubtitlesOnCards?.(showSubtitlesOnCards)
 
   if (
     islevel === '2' &&

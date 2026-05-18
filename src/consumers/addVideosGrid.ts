@@ -1,6 +1,8 @@
 // Stub export for addVideosGrid
 // This is a React component in the original and not needed for the shared package
 
+import { createFrameworkConsumerContractError } from './frameworkConsumerContract';
+
 export interface AddVideosGridParameters {
   [key: string]: any;
 }
@@ -13,6 +15,5 @@ export interface AddVideosGridOptions {
 export type AddVideosGridType = (options: AddVideosGridOptions) => Promise<void>;
 
 export const addVideosGrid: AddVideosGridType = async () => {
-  // Stub implementation - actual logic handled in framework-specific packages
-  console.warn('addVideosGrid called on shared package - should be implemented in framework package');
+  throw createFrameworkConsumerContractError('addVideosGrid');
 };

@@ -77,7 +77,6 @@ export const sendMessage = async ({
   member,
   sender,
   islevel,
-  eventType,
   showAlert,
   coHostResponsibility,
   coHost,
@@ -87,34 +86,18 @@ export const sendMessage = async ({
 }: SendMessageOptions): Promise<void> => {
   let chatValue = false;
 
-  // Check if messages count exceeds the limit
-  if (eventType === "broadcast") {
-    if (messagesLength >= 100) {
-      showAlert?.({
-        message: "You have reached the maximum number of messages",
-        type: "danger",
-        duration: 3000,
-      });
-      return;
-    }
-  } else if (eventType === "chat") {
-    if (messagesLength >= 500) {
-      showAlert?.({
-        message: "You have reached the maximum number of messages",
-        type: "danger",
-        duration: 3000,
-      });
-      return;
-    }
-  } else {
-    if (messagesLength >= 100000) {
-      showAlert?.({
-        message: "You have reached the maximum number of messages",
-        type: "danger",
-        duration: 3000,
-      });
-      return;
-    }
+  // Check message count limit based on room type prefix
+  if (
+    (messagesLength > 100 && roomName.startsWith("d")) ||
+    (messagesLength > 500 && roomName.startsWith("s")) ||
+    (messagesLength > 100000 && roomName.startsWith("p"))
+  ) {
+    showAlert?.({
+      message: "You have reached the maximum number of messages allowed.",
+      type: "danger",
+      duration: 3000,
+    });
+    return;
   }
 
   // Check if message is valid

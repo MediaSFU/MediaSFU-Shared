@@ -1,78 +1,146 @@
 
  
-import { Stream, Participant, DispStreamsType, DispStreamsParameters, AudioDecibels, MixStreamsType, BreakoutParticipant, EventType } from "../types/types";
+import { Stream, Participant, AudioDecibels, EventType } from "../types/types";
 
-export interface ChangeVidsParameters extends DispStreamsParameters {
+interface ChangeVidsStreamLike {
+  producerId?: string | null;
+  audioID?: string | null;
+  name?: string;
+  muted?: boolean | null;
+  stream?: unknown;
+}
 
-  allVideoStreams: (Stream | Participant)[];
+interface ChangeVidsParticipantLike {
+  name: string;
+  islevel?: string | null;
+  videoID?: string | null;
+  audioID?: string | null;
+  muted?: boolean | null;
+  breakRoom?: number | null;
+  stream?: unknown;
+}
+
+interface BreakoutParticipantLike {
+  name: string;
+  breakRoom?: number | null;
+}
+
+interface AudioDecibelLike {
+  name: string;
+  averageLoudness?: number | null;
+}
+
+type BooleanUpdater = (value: boolean) => void;
+type NumberUpdater = (value: number) => void;
+type StringListUpdater = (names: string[]) => void;
+
+type EntryArrayUpdater<TEntry> = {
+  bivarianceHack: (entries: TEntry[]) => void;
+}["bivarianceHack"];
+
+type EntryMatrixUpdater<TEntry> = {
+  bivarianceHack: (entries: TEntry[][]) => void;
+}["bivarianceHack"];
+
+type MixStreamsInvoker<TEntry, TParticipant> = (options: {
+  alVideoStreams: TEntry[];
+  non_alVideoStreams: TParticipant[];
+  ref_participants: TEntry[];
+}) => Promise<TEntry[]>;
+
+type DispStreamsInvoker = (options: {
+  lStreams: any[];
+  ind: number;
+  auto?: boolean;
+  parameters: any;
+  breakRoom?: number;
+  inBreakRoom?: boolean;
+  ChatSkip?: boolean;
+  forChatCard?: any;
+  forChatID?: any;
+}) => Promise<void>;
+
+export interface ChangeVidsParameters<
+  TStream extends ChangeVidsStreamLike = Stream,
+  TParticipant extends ChangeVidsParticipantLike = Participant,
+  TBreakoutParticipant extends BreakoutParticipantLike = BreakoutParticipantLike,
+  TAudioDecibel extends AudioDecibelLike = AudioDecibels,
+  TMediaHandle = unknown,
+> {
+
+  allVideoStreams: (TStream | TParticipant)[];
   p_activeNames: string[];
   activeNames: string[];
   dispActiveNames: string[];
   shareScreenStarted: boolean;
   shared: boolean;
-  newLimitedStreams: (Stream | Participant)[];
-  non_alVideoStreams: Participant[];
-  ref_participants: Participant[];
-  participants: Participant[];
+  newLimitedStreams: (TStream | TParticipant)[];
+  non_alVideoStreams: TParticipant[];
+  ref_participants: TParticipant[];
+  participants: TParticipant[];
   eventType: EventType;
   islevel: string;
   member: string;
   sortAudioLoudness: boolean;
-  audioDecibels: AudioDecibels[];
-  mixed_alVideoStreams: (Stream | Participant)[];
-  non_alVideoStreams_muted: Participant[];
+  audioDecibels: TAudioDecibel[];
+  mixed_alVideoStreams: (TStream | TParticipant)[];
+  non_alVideoStreams_muted: TParticipant[];
   remoteProducerId?: string;
-  localStreamVideo: MediaStream | null;
-  oldAllStreams: (Stream | Participant)[];
+  localStreamVideo: TMediaHandle | null;
+  oldAllStreams: (TStream | TParticipant)[];
   screenPageLimit: number;
   meetingDisplayType: string;
   meetingVideoOptimized: boolean;
   recordingVideoOptimized: boolean;
   recordingDisplayType: "video" | "media" | "all";
-  paginatedStreams: (Stream | Participant)[][];
+  paginatedStreams: (TStream | TParticipant)[][];
   itemPageLimit: number;
   doPaginate: boolean;
   prevDoPaginate: boolean;
   currentUserPage: number;
-  breakoutRooms: BreakoutParticipant[][];
+  breakoutRooms: TBreakoutParticipant[][];
   hostNewRoom: number;
   breakOutRoomStarted: boolean;
   breakOutRoomEnded: boolean;
-  virtualStream: MediaStream | null;
+  virtualStream: TMediaHandle | null;
   mainRoomsLength: number;
   memberRoom: number;
-  updateP_activeNames: (names: string[]) => void;
-  updateActiveNames: (names: string[]) => void;
-  updateDispActiveNames: (names: string[]) => void;
-  updateNewLimitedStreams: (streams: (Stream | Participant)[]) => void;
-  updateNon_alVideoStreams: (participants: Participant[]) => void;
-  updateRef_participants: (participants: Participant[]) => void;
-  updateSortAudioLoudness: (sort: boolean) => void;
-  updateMixed_alVideoStreams: (streams: (Stream | Participant)[]) => void;
-  updateNon_alVideoStreams_muted: (participants: Participant[]) => void;
-  updatePaginatedStreams: (streams: (Stream | Participant)[][]) => void;
-  updateDoPaginate: (paginate: boolean) => void;
-  updatePrevDoPaginate: (paginate: boolean) => void;
-  updateCurrentUserPage: (page: number) => void;
-  updateNumberPages: (pages: number) => void;
-  updateMainRoomsLength: (length: number) => void;
-  updateMemberRoom: (room: number) => void;
+  updateP_activeNames: StringListUpdater;
+  updateActiveNames: StringListUpdater;
+  updateDispActiveNames: StringListUpdater;
+  updateNewLimitedStreams: EntryArrayUpdater<TStream | TParticipant>;
+  updateNon_alVideoStreams: EntryArrayUpdater<TParticipant>;
+  updateRef_participants: EntryArrayUpdater<TParticipant>;
+  updateSortAudioLoudness: BooleanUpdater;
+  updateMixed_alVideoStreams: EntryArrayUpdater<TStream | TParticipant>;
+  updateNon_alVideoStreams_muted: EntryArrayUpdater<TParticipant>;
+  updatePaginatedStreams: EntryMatrixUpdater<TStream | TParticipant>;
+  updateDoPaginate: BooleanUpdater;
+  updatePrevDoPaginate: BooleanUpdater;
+  updateCurrentUserPage: NumberUpdater;
+  updateNumberPages: NumberUpdater;
+  updateMainRoomsLength: NumberUpdater;
+  updateMemberRoom: NumberUpdater;
 
   // mediasfu functions
-  mixStreams: MixStreamsType;
-  dispStreams: DispStreamsType;
-  getUpdatedAllParams: () => ChangeVidsParameters;
+  mixStreams: MixStreamsInvoker<TStream | TParticipant, TParticipant>;
+  dispStreams: DispStreamsInvoker;
+  getUpdatedAllParams: () => ChangeVidsParameters<TStream, TParticipant, TBreakoutParticipant, TAudioDecibel, TMediaHandle>;
   [key: string]: any;
 
 }
 
-export interface ChangeVidsOptions {
+export interface ChangeVidsOptions<
+  TParameters extends ChangeVidsParameters<any, any, any, any, any> = ChangeVidsParameters,
+> {
   screenChanged?: boolean;
-  parameters: ChangeVidsParameters;
+  parameters: TParameters;
 }
 
 // Export the type definition for the function
-export type ChangeVidsType = (options: ChangeVidsOptions) => Promise<void>;
+export type ChangeVidsType = <
+  TParameters extends ChangeVidsParameters<any, any, any, any, any> = ChangeVidsParameters,
+>(options: ChangeVidsOptions<TParameters>) => Promise<void>;
 
 /**
  * Asynchronously changes the video streams based on the provided options.
@@ -210,9 +278,11 @@ export type ChangeVidsType = (options: ChangeVidsOptions) => Promise<void>;
  *   });
  */
 
-export const changeVids = async ({ screenChanged = false, parameters }: ChangeVidsOptions): Promise<void> => {
-  let { getUpdatedAllParams } = parameters;
-  parameters = getUpdatedAllParams();
+export const changeVids = async <
+  TParameters extends ChangeVidsParameters<any, any, any, any, any> = ChangeVidsParameters,
+>({ screenChanged = false, parameters }: ChangeVidsOptions<TParameters>): Promise<void> => {
+  const { getUpdatedAllParams } = parameters;
+  const updatedParameters = getUpdatedAllParams() as TParameters;
 
   let {
     allVideoStreams,
@@ -270,7 +340,7 @@ export const changeVids = async ({ screenChanged = false, parameters }: ChangeVi
     updateMemberRoom,
     mixStreams,
     dispStreams,
-  } = parameters;
+  } = updatedParameters;
 
   try {
     let alVideoStreams = [...allVideoStreams];

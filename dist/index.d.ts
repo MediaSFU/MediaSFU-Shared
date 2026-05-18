@@ -11,6 +11,34 @@ import { RtpEncodingParameters } from 'mediasoup-client/lib/types';
 import { Socket } from 'socket.io-client';
 import { Transport as Transport_2 } from 'mediasoup-client/lib/types';
 
+export declare const addedAsPanelist: AddedAsPanelistType;
+
+export declare interface AddedAsPanelistData {
+    message: string;
+}
+
+export declare interface AddedAsPanelistOptions {
+    data: AddedAsPanelistData;
+    showAlert?: ShowAlert;
+}
+
+export declare type AddedAsPanelistType = (options: AddedAsPanelistOptions) => Promise<void>;
+
+export declare const addPanelist: ({ socket, participant, currentPanelists, maxPanelists, roomName, member: _member, islevel, showAlert, }: AddPanelistOptions) => Promise<boolean>;
+
+export declare interface AddPanelistOptions {
+    socket: Socket;
+    participant: Participant;
+    currentPanelists: Participant[];
+    maxPanelists: number;
+    roomName: string;
+    member: string;
+    islevel: string;
+    showAlert?: ShowAlert;
+}
+
+export declare type AddPanelistType = (options: AddPanelistOptions) => Promise<boolean>;
+
 export declare const addVideosGrid: AddVideosGridType;
 
 export declare interface AddVideosGridOptions {
@@ -22,7 +50,53 @@ export declare interface AddVideosGridParameters {
     [key: string]: any;
 }
 
+export declare interface AddVideosGridPlan<T> {
+    mainEntries: GridPlanEntry<T>[];
+    altEntries: GridPlanEntry<T>[];
+}
+
 export declare type AddVideosGridType = (options: AddVideosGridOptions) => Promise<void>;
+
+/**
+ * Reconciles the authoritative member list with local UI state and receiver-domain setup.
+ *
+ * @param {AllMembersOptions} options - Member payload, host metadata, and receiver connection helpers.
+ * @returns {Promise<void>} Resolves once participant state, requests, and receiver sockets are synchronized.
+ *
+ * @example
+ * ```typescript
+ * await allMembers({
+ *   members,
+ *   requestss,
+ *   coHoste: 'host-2',
+ *   coHostRes,
+ *   parameters,
+ *   consume_sockets,
+ *   apiUserName: 'api-user',
+ *   apiKey: 'api-key',
+ *   apiToken: 'api-token',
+ * });
+ * ```
+ */
+export declare const allMembers: <TParticipantSummary extends AllMembersParticipantLike = AllMembersParticipantLike, TParticipant extends AllMembersParticipantLike = AllMembersParticipantLike, TRequest extends AllMembersRequestLike = AllMembersRequestLike, TCoHostResponsibility = unknown, TWaitingRoomParticipant = unknown, TConsumeSocket = unknown, TSocket = Socket, TOnScreenChangesParameters = OnScreenChangesParameters, TConnectIpsParameters = ConnectIpsParameters, TConnectLocalIpsParameters = ConnectLocalIpsParameters, TReorderStreamsParameters = ReorderStreamsParameters, TAllParameters extends TOnScreenChangesParameters & TConnectIpsParameters & TConnectLocalIpsParameters & TReorderStreamsParameters = TOnScreenChangesParameters & TConnectIpsParameters & TConnectLocalIpsParameters & TReorderStreamsParameters>({ members, requestss, coHoste, coHostRes, parameters, consume_sockets, apiUserName, apiKey, apiToken, }: AllMembersOptions<TParticipantSummary, TParticipant, TRequest, TCoHostResponsibility, TWaitingRoomParticipant, TConsumeSocket, TSocket, TOnScreenChangesParameters, TConnectIpsParameters, TConnectLocalIpsParameters, TReorderStreamsParameters, TAllParameters>) => Promise<void>;
+
+export declare interface AllMembersConnectIpsOptions<TParameters = unknown, TConsumeSocket = unknown> {
+    consume_sockets: TConsumeSocket[];
+    remIP: string[];
+    parameters: TParameters;
+    apiUserName: string;
+    apiKey: string;
+    apiToken: string;
+}
+
+export declare type AllMembersConnectIpsType<TParameters = unknown, TConsumeSocket = unknown> = (options: AllMembersConnectIpsOptions<TParameters, TConsumeSocket>) => Promise<[TConsumeSocket[], string[]]>;
+
+export declare interface AllMembersConnectLocalIpsOptions<TParameters = unknown, TSocket = Socket> {
+    socket: TSocket;
+    parameters: TParameters;
+}
+
+export declare type AllMembersConnectLocalIpsType<TParameters = unknown, TSocket = Socket> = (options: AllMembersConnectLocalIpsOptions<TParameters, TSocket>) => Promise<unknown>;
 
 export declare interface AllMembersData {
     members: Participant[];
@@ -31,6 +105,128 @@ export declare interface AllMembersData {
     coHostResponsibilities: CoHostResponsibility[];
 }
 
+export declare interface AllMembersOnScreenChangesOptions<TParameters = unknown> {
+    parameters: TParameters;
+}
+
+export declare type AllMembersOnScreenChangesType<TParameters = unknown> = (options: AllMembersOnScreenChangesOptions<TParameters>) => Promise<unknown>;
+
+export declare interface AllMembersOptions<TParticipantSummary extends AllMembersParticipantLike = AllMembersParticipantLike, TParticipant extends AllMembersParticipantLike = AllMembersParticipantLike, TRequest extends AllMembersRequestLike = AllMembersRequestLike, TCoHostResponsibility = unknown, TWaitingRoomParticipant = unknown, TConsumeSocket = unknown, TSocket = Socket, TOnScreenChangesParameters = OnScreenChangesParameters, TConnectIpsParameters = ConnectIpsParameters, TConnectLocalIpsParameters = ConnectLocalIpsParameters, TReorderStreamsParameters = ReorderStreamsParameters, TAllParameters extends TOnScreenChangesParameters & TConnectIpsParameters & TConnectLocalIpsParameters & TReorderStreamsParameters = TOnScreenChangesParameters & TConnectIpsParameters & TConnectLocalIpsParameters & TReorderStreamsParameters> {
+    members: TParticipant[];
+    requestss: TRequest[];
+    coHoste: string;
+    coHostRes: TCoHostResponsibility[];
+    parameters: AllMembersParameters<TParticipantSummary, TParticipant, TRequest, TCoHostResponsibility, TWaitingRoomParticipant, TConsumeSocket, TSocket, TOnScreenChangesParameters, TConnectIpsParameters, TConnectLocalIpsParameters, TReorderStreamsParameters, TAllParameters> & TAllParameters;
+    consume_sockets: TConsumeSocket[];
+    apiUserName: string;
+    apiKey: string;
+    apiToken: string;
+}
+
+export declare interface AllMembersParameters<TParticipantSummary extends AllMembersParticipantLike = AllMembersParticipantLike, TParticipant extends AllMembersParticipantLike = AllMembersParticipantLike, TRequest extends AllMembersRequestLike = AllMembersRequestLike, TCoHostResponsibility = unknown, TWaitingRoomParticipant = unknown, TConsumeSocket = unknown, TSocket = Socket, TOnScreenChangesParameters = OnScreenChangesParameters, TConnectIpsParameters = ConnectIpsParameters, TConnectLocalIpsParameters = ConnectLocalIpsParameters, TReorderStreamsParameters = ReorderStreamsParameters, TAllParameters extends TOnScreenChangesParameters & TConnectIpsParameters & TConnectLocalIpsParameters & TReorderStreamsParameters = TOnScreenChangesParameters & TConnectIpsParameters & TConnectLocalIpsParameters & TReorderStreamsParameters> {
+    participantsAll: TParticipantSummary[];
+    participants: TParticipant[];
+    dispActiveNames: string[];
+    requestList: TRequest[];
+    coHost: string;
+    coHostResponsibility: TCoHostResponsibility[];
+    lock_screen: boolean;
+    firstAll: boolean;
+    membersReceived: boolean;
+    roomRecvIPs: string[];
+    deferScreenReceived: boolean;
+    screenId?: string;
+    shareScreenStarted: boolean;
+    meetingDisplayType: string;
+    hostFirstSwitch: boolean;
+    waitingRoomList: TWaitingRoomParticipant[];
+    islevel: string;
+    socket: TSocket;
+    updateParticipantsAll: (participantsAll: TParticipantSummary[]) => void;
+    updateParticipants: (participants: TParticipant[]) => void;
+    updateRequestList: (requestList: TRequest[]) => void;
+    updateCoHost: (coHost: string) => void;
+    updateCoHostResponsibility: (coHostRes: TCoHostResponsibility[]) => void;
+    updateFirstAll: (firstAll: boolean) => void;
+    updateMembersReceived: (membersReceived: boolean) => void;
+    updateDeferScreenReceived: (deferScreenReceived: boolean) => void;
+    updateShareScreenStarted: (shareScreenStarted: boolean) => void;
+    updateHostFirstSwitch: (hostFirstSwitch: boolean) => void;
+    updateConsume_sockets: (sockets: TConsumeSocket[]) => void;
+    updateRoomRecvIPs: (ips: string[]) => void;
+    updateIsLoadingModalVisible: (visible: boolean) => void;
+    updateTotalReqWait: (total: number) => void;
+    onScreenChanges: AllMembersOnScreenChangesType<TOnScreenChangesParameters>;
+    connectIps: AllMembersConnectIpsType<TConnectIpsParameters, TConsumeSocket>;
+    connectLocalIps?: AllMembersConnectLocalIpsType<TConnectLocalIpsParameters, TSocket>;
+    sleep: AllMembersSleepType;
+    reorderStreams: AllMembersReorderStreamsType<TReorderStreamsParameters>;
+    getUpdatedAllParams: () => AllMembersParameters<TParticipantSummary, TParticipant, TRequest, TCoHostResponsibility, TWaitingRoomParticipant, TConsumeSocket, TSocket, TOnScreenChangesParameters, TConnectIpsParameters, TConnectLocalIpsParameters, TReorderStreamsParameters, TAllParameters> & TAllParameters;
+    [key: string]: any;
+}
+
+export declare interface AllMembersParticipantLike {
+    id?: string | number;
+    isBanned?: boolean;
+    isSuspended?: boolean;
+    name?: string | null;
+    audioID?: string | null;
+    videoID?: string | null;
+}
+
+export declare interface AllMembersReorderStreamsOptions<TParameters = unknown> {
+    add: boolean;
+    screenChanged?: boolean;
+    parameters: TParameters;
+}
+
+export declare type AllMembersReorderStreamsType<TParameters = unknown> = (options: AllMembersReorderStreamsOptions<TParameters>) => Promise<unknown>;
+
+export declare interface AllMembersRequestLike {
+    id?: string | number;
+}
+
+/**
+ * Reconciles incremental member updates, consume-domain setup, and room media settings.
+ *
+ * @param {AllMembersRestOptions} options - Member payload, room settings, and receiver connection helpers.
+ * @returns {Promise<void>} Resolves once participant state, co-host state, and settings are synchronized.
+ *
+ * @example
+ * ```typescript
+ * await allMembersRest({
+ *   members,
+ *   settings,
+ *   coHoste,
+ *   coHostRes,
+ *   parameters,
+ *   consume_sockets,
+ *   apiUserName: 'api-user',
+ *   apiKey: 'api-key',
+ *   apiToken: 'api-token',
+ * });
+ * ```
+ */
+export declare const allMembersRest: <TParticipantSummary extends AllMembersRestParticipantLike = AllMembersRestParticipantLike, TParticipant extends AllMembersRestParticipantLike = AllMembersRestParticipantLike, TRequest extends AllMembersRestRequestLike = AllMembersRestRequestLike, TCoHostResponsibility = unknown, TConsumeSocket = unknown, TSocket = Socket, TOnScreenChangesParameters = OnScreenChangesParameters, TConnectIpsParameters = ConnectIpsParameters, TReorderStreamsParameters = ReorderStreamsParameters, TConnectLocalIpsParameters = ConnectLocalIpsParameters, TAllParameters extends TOnScreenChangesParameters & TConnectIpsParameters & TReorderStreamsParameters & TConnectLocalIpsParameters = TOnScreenChangesParameters & TConnectIpsParameters & TReorderStreamsParameters & TConnectLocalIpsParameters>({ members, settings, coHoste, coHostRes, parameters, consume_sockets, apiUserName, apiKey, apiToken, }: AllMembersRestOptions<TParticipantSummary, TParticipant, TRequest, TCoHostResponsibility, TConsumeSocket, TSocket, TOnScreenChangesParameters, TConnectIpsParameters, TReorderStreamsParameters, TConnectLocalIpsParameters, TAllParameters>) => Promise<void>;
+
+export declare interface AllMembersRestConnectIpsOptions<TParameters = unknown, TConsumeSocket = unknown> {
+    consume_sockets: TConsumeSocket[];
+    remIP: string[];
+    parameters: TParameters;
+    apiUserName: string;
+    apiKey: string;
+    apiToken: string;
+}
+
+export declare type AllMembersRestConnectIpsType<TParameters = unknown, TConsumeSocket = unknown> = (options: AllMembersRestConnectIpsOptions<TParameters, TConsumeSocket>) => Promise<[TConsumeSocket[], string[]]>;
+
+export declare interface AllMembersRestConnectLocalIpsOptions<TParameters = unknown, TSocket = Socket> {
+    socket: TSocket;
+    parameters: TParameters;
+}
+
+export declare type AllMembersRestConnectLocalIpsType<TParameters = unknown, TSocket = Socket> = (options: AllMembersRestConnectLocalIpsOptions<TParameters, TSocket>) => Promise<unknown>;
+
 export declare interface AllMembersRestData {
     members: Participant[];
     settings: Settings;
@@ -38,14 +234,143 @@ export declare interface AllMembersRestData {
     coHostResponsibilities: CoHostResponsibility[];
 }
 
+export declare interface AllMembersRestOnScreenChangesOptions<TParameters = unknown> {
+    parameters: TParameters;
+}
+
+export declare type AllMembersRestOnScreenChangesType<TParameters = unknown> = (options: AllMembersRestOnScreenChangesOptions<TParameters>) => Promise<unknown>;
+
+export declare interface AllMembersRestOptions<TParticipantSummary extends AllMembersRestParticipantLike = AllMembersRestParticipantLike, TParticipant extends AllMembersRestParticipantLike = AllMembersRestParticipantLike, TRequest extends AllMembersRestRequestLike = AllMembersRestRequestLike, TCoHostResponsibility = unknown, TConsumeSocket = unknown, TSocket = Socket, TOnScreenChangesParameters = OnScreenChangesParameters, TConnectIpsParameters = ConnectIpsParameters, TReorderStreamsParameters = ReorderStreamsParameters, TConnectLocalIpsParameters = ConnectLocalIpsParameters, TAllParameters extends TOnScreenChangesParameters & TConnectIpsParameters & TReorderStreamsParameters & TConnectLocalIpsParameters = TOnScreenChangesParameters & TConnectIpsParameters & TReorderStreamsParameters & TConnectLocalIpsParameters> {
+    members: TParticipant[];
+    settings: Settings;
+    coHoste?: string;
+    coHostRes?: TCoHostResponsibility[];
+    parameters: AllMembersRestParameters<TParticipantSummary, TParticipant, TRequest, TCoHostResponsibility, TConsumeSocket, TSocket, TOnScreenChangesParameters, TConnectIpsParameters, TReorderStreamsParameters, TConnectLocalIpsParameters, TAllParameters> & TAllParameters;
+    consume_sockets: TConsumeSocket[];
+    apiUserName: string;
+    apiKey: string;
+    apiToken: string;
+}
+
+export declare interface AllMembersRestParameters<TParticipantSummary extends AllMembersRestParticipantLike = AllMembersRestParticipantLike, TParticipant extends AllMembersRestParticipantLike = AllMembersRestParticipantLike, TRequest extends AllMembersRestRequestLike = AllMembersRestRequestLike, TCoHostResponsibility = unknown, TConsumeSocket = unknown, TSocket = Socket, TOnScreenChangesParameters = OnScreenChangesParameters, TConnectIpsParameters = ConnectIpsParameters, TReorderStreamsParameters = ReorderStreamsParameters, TConnectLocalIpsParameters = ConnectLocalIpsParameters, TAllParameters extends TOnScreenChangesParameters & TConnectIpsParameters & TReorderStreamsParameters & TConnectLocalIpsParameters = TOnScreenChangesParameters & TConnectIpsParameters & TReorderStreamsParameters & TConnectLocalIpsParameters> {
+    participantsAll: TParticipantSummary[];
+    participants: TParticipant[];
+    dispActiveNames: string[];
+    requestList: TRequest[];
+    coHost: string;
+    coHostResponsibility: TCoHostResponsibility[];
+    lock_screen: boolean;
+    firstAll: boolean;
+    membersReceived: boolean;
+    roomRecvIPs: string[];
+    deferScreenReceived: boolean;
+    screenId?: string;
+    shareScreenStarted: boolean;
+    meetingDisplayType: string;
+    audioSetting: string;
+    videoSetting: string;
+    screenshareSetting: string;
+    chatSetting: string;
+    socket: TSocket;
+    updateParticipantsAll: (participantsAll: TParticipantSummary[]) => void;
+    updateParticipants: (participants: TParticipant[]) => void;
+    updateRequestList: (requestList: TRequest[]) => void;
+    updateCoHost: (coHost: string) => void;
+    updateCoHostResponsibility: (coHostResponsibility: TCoHostResponsibility[]) => void;
+    updateFirstAll: (firstAll: boolean) => void;
+    updateMembersReceived: (membersReceived: boolean) => void;
+    updateDeferScreenReceived: (deferScreenReceived: boolean) => void;
+    updateShareScreenStarted: (shareScreenStarted: boolean) => void;
+    updateAudioSetting: (audioSetting: string) => void;
+    updateVideoSetting: (videoSetting: string) => void;
+    updateScreenshareSetting: (screenshareSetting: string) => void;
+    updateChatSetting: (chatSetting: string) => void;
+    updateConsume_sockets: (consume_sockets: TConsumeSocket[]) => void;
+    updateRoomRecvIPs: (ips: string[]) => void;
+    updateIsLoadingModalVisible: (visible: boolean) => void;
+    onScreenChanges: AllMembersRestOnScreenChangesType<TOnScreenChangesParameters>;
+    connectIps: AllMembersRestConnectIpsType<TConnectIpsParameters, TConsumeSocket>;
+    connectLocalIps?: AllMembersRestConnectLocalIpsType<TConnectLocalIpsParameters, TSocket>;
+    sleep: AllMembersRestSleepType;
+    reorderStreams: AllMembersRestReorderStreamsType<TReorderStreamsParameters>;
+    getUpdatedAllParams: () => AllMembersRestParameters<TParticipantSummary, TParticipant, TRequest, TCoHostResponsibility, TConsumeSocket, TSocket, TOnScreenChangesParameters, TConnectIpsParameters, TReorderStreamsParameters, TConnectLocalIpsParameters, TAllParameters> & TAllParameters;
+    [key: string]: any;
+}
+
+export declare interface AllMembersRestParticipantLike {
+    id?: string | number;
+    isBanned?: boolean;
+    isSuspended?: boolean;
+    name?: string | null;
+    audioID?: string | null;
+    videoID?: string | null;
+    ScreenID?: string | null;
+    ScreenOn?: boolean;
+}
+
+export declare interface AllMembersRestReorderStreamsOptions<TParameters = unknown> {
+    add: boolean;
+    screenChanged?: boolean;
+    parameters: TParameters;
+}
+
+export declare type AllMembersRestReorderStreamsType<TParameters = unknown> = (options: AllMembersRestReorderStreamsOptions<TParameters>) => Promise<unknown>;
+
+export declare interface AllMembersRestRequestLike {
+    id?: string | number;
+}
+
+export declare interface AllMembersRestSleepOptions {
+    ms: number;
+}
+
+export declare type AllMembersRestSleepType = (options: AllMembersRestSleepOptions) => Promise<unknown>;
+
+export declare type AllMembersRestType<TParticipantSummary extends AllMembersRestParticipantLike = AllMembersRestParticipantLike, TParticipant extends AllMembersRestParticipantLike = AllMembersRestParticipantLike, TRequest extends AllMembersRestRequestLike = AllMembersRestRequestLike, TCoHostResponsibility = unknown, TConsumeSocket = unknown, TSocket = Socket, TOnScreenChangesParameters = OnScreenChangesParameters, TConnectIpsParameters = ConnectIpsParameters, TReorderStreamsParameters = ReorderStreamsParameters, TConnectLocalIpsParameters = ConnectLocalIpsParameters, TAllParameters extends TOnScreenChangesParameters & TConnectIpsParameters & TReorderStreamsParameters & TConnectLocalIpsParameters = TOnScreenChangesParameters & TConnectIpsParameters & TReorderStreamsParameters & TConnectLocalIpsParameters> = (options: AllMembersRestOptions<TParticipantSummary, TParticipant, TRequest, TCoHostResponsibility, TConsumeSocket, TSocket, TOnScreenChangesParameters, TConnectIpsParameters, TReorderStreamsParameters, TConnectLocalIpsParameters, TAllParameters>) => Promise<void>;
+
+export declare interface AllMembersSleepOptions {
+    ms: number;
+}
+
+export declare type AllMembersSleepType = (options: AllMembersSleepOptions) => Promise<unknown>;
+
+export declare type AllMembersType<TParticipantSummary extends AllMembersParticipantLike = AllMembersParticipantLike, TParticipant extends AllMembersParticipantLike = AllMembersParticipantLike, TRequest extends AllMembersRequestLike = AllMembersRequestLike, TCoHostResponsibility = unknown, TWaitingRoomParticipant = unknown, TConsumeSocket = unknown, TSocket = Socket, TOnScreenChangesParameters = OnScreenChangesParameters, TConnectIpsParameters = ConnectIpsParameters, TConnectLocalIpsParameters = ConnectLocalIpsParameters, TReorderStreamsParameters = ReorderStreamsParameters, TAllParameters extends TOnScreenChangesParameters & TConnectIpsParameters & TConnectLocalIpsParameters & TReorderStreamsParameters = TOnScreenChangesParameters & TConnectIpsParameters & TConnectLocalIpsParameters & TReorderStreamsParameters> = (options: AllMembersOptions<TParticipantSummary, TParticipant, TRequest, TCoHostResponsibility, TWaitingRoomParticipant, TConsumeSocket, TSocket, TOnScreenChangesParameters, TConnectIpsParameters, TConnectLocalIpsParameters, TReorderStreamsParameters, TAllParameters>) => Promise<void>;
+
+/**
+ * Replaces the waiting-room list and recalculates the combined waiting count.
+ *
+ * @param {AllWaitingRoomMembersOptions} options - Waiting-room state setters.
+ * @returns {Promise<void>} Resolves after the state updates run.
+ *
+ * @example
+ * ```typescript
+ * await allWaitingRoomMembers({
+ *   waitingParticipants,
+ *   updateWaitingRoomList: setWaitingRoomList,
+ *   updateTotalReqWait: setTotalReqWait,
+ * });
+ * ```
+ */
+export declare const allWaitingRoomMembers: ({ waitingParticipants, updateWaitingRoomList, updateTotalReqWait, }: AllWaitingRoomMembersOptions) => Promise<void>;
+
 export declare interface AllWaitingRoomMembersData {
     waitingParticipants?: WaitingRoomParticipant[];
     waitingParticipantss?: WaitingRoomParticipant[];
 }
 
+export declare interface AllWaitingRoomMembersOptions {
+    waitingParticipants: WaitingRoomParticipant[];
+    updateWaitingRoomList: (participants: WaitingRoomParticipant[]) => void;
+    updateTotalReqWait: (totalReqs: number) => void;
+}
+
+export declare type AllWaitingRoomMembersType = (options: AllWaitingRoomMembersOptions) => Promise<void>;
+
 export declare type AltDomains = {
     [key: string]: string;
 };
+
+export declare const aParams: AParamsType;
 
 export declare type AParamsType = {
     encodings: RtpEncodingParameters[];
@@ -57,9 +382,32 @@ declare interface AudioData_2 {
 }
 export { AudioData_2 as AudioData }
 
+declare interface AudioDecibelLike {
+    name: string;
+    averageLoudness?: number | null;
+}
+
 export declare interface AudioDecibels {
     name: string;
     averageLoudness: number;
+}
+
+declare interface AudioTransportLike {
+    producerId?: string | null;
+    consumer?: {
+        paused?: boolean;
+        kind?: string;
+        pause: () => unknown;
+        resume: () => unknown;
+    };
+    socket_: {
+        emit: (event: string, payload: {
+            serverConsumerId: string;
+        }, callback?: ((payload?: {
+            resumed: boolean;
+        }) => void | Promise<unknown>)) => void;
+    };
+    serverConsumerTransportId: string;
 }
 
 /**
@@ -108,7 +456,69 @@ export declare interface BanData {
     name: string;
 }
 
+/**
+ * Removes a banned participant from the rendered participant list and reorders streams if needed.
+ *
+ * @param {BanParticipantOptions} options - Participant name and stream reordering helpers.
+ * @returns {Promise<void>} Resolves when participant state is updated.
+ *
+ * @example
+ * ```typescript
+ * await banParticipant({
+ *   name: 'John Doe',
+ *   parameters,
+ * });
+ * ```
+ */
+export declare const banParticipant: <TParameters = unknown, TParticipant extends {
+    name?: string | null;
+} = Participant>({ name, parameters, }: BanParticipantOptions<TParameters, TParticipant>) => Promise<void>;
+
+export declare interface BanParticipantOptions<TParameters = unknown, TParticipant extends {
+    name?: string | null;
+} = Participant> {
+    name: string;
+    parameters: BanParticipantParameters<TParameters, TParticipant> & TParameters;
+}
+
+export declare interface BanParticipantParameters<TParameters = unknown, TParticipant extends {
+    name?: string | null;
+} = Participant> {
+    activeNames: string[];
+    dispActiveNames: string[];
+    participants: TParticipant[];
+    updateParticipants: (participants: TParticipant[]) => void;
+    reorderStreams: BanParticipantReorderType<TParameters>;
+    [key: string]: any;
+}
+
+export declare interface BanParticipantReorderOptions<TParameters = unknown> {
+    add?: boolean;
+    screenChanged?: boolean;
+    parameters: TParameters;
+}
+
+export declare type BanParticipantReorderType<TParameters = unknown> = (options: BanParticipantReorderOptions<TParameters>) => Promise<void>;
+
+export declare type BanParticipantType<TParameters = unknown, TParticipant extends {
+    name?: string | null;
+} = Participant> = (options: BanParticipantOptions<TParameters, TParticipant>) => Promise<void>;
+
+declare type BooleanUpdater = (value: boolean) => void;
+
+declare type BooleanUpdater_2 = (value: boolean) => void;
+
 export declare interface BreakoutParticipant {
+    name: string;
+    breakRoom?: number | null;
+}
+
+declare interface BreakoutParticipantLike {
+    name: string;
+    breakRoom?: number | null;
+}
+
+declare interface BreakoutParticipantLike_2 {
     name: string;
     breakRoom?: number | null;
 }
@@ -190,6 +600,105 @@ export declare interface BreakoutRoomUpdatedParameters extends OnScreenChangesPa
 
 export declare type BreakoutRoomUpdatedType = (options: BreakoutRoomUpdatedOptions) => Promise<void>;
 
+/**
+ * Pure planning engine for addVideosGrid.
+ * Produces deterministic main/alt stream iteration plans without rendering concerns.
+ */
+export declare function buildAddVideosGridPlan<T>({ mainGridStreams, altGridStreams, numToAdd, }: BuildAddVideosGridPlanOptions<T>): AddVideosGridPlan<T>;
+
+export declare interface BuildAddVideosGridPlanOptions<T> {
+    mainGridStreams: T[];
+    altGridStreams: T[];
+    numToAdd?: number;
+}
+
+/**
+ * Pure helper for resolving the non-screen-share host card to render on the main screen.
+ */
+export declare function buildMainHostCardPlan<TStreamLike extends PrepopulateStreamLike = PrepopulateStreamLike>({ islevel, localUIMode, videoAlreadyOn, audioAlreadyOn, hostVideoOn, hostMuted, hostIsAdmin, hostName, hostVideoID, fallbackName, member, keepBackground, virtualStream, localStreamVideo, oldAllStreams, }: BuildMainHostCardPlanOptions<TStreamLike>): MainHostCardPlan;
+
+export declare interface BuildMainHostCardPlanOptions<TStreamLike = PrepopulateStreamLike> {
+    islevel: string;
+    localUIMode: boolean;
+    videoAlreadyOn: boolean;
+    audioAlreadyOn: boolean;
+    hostVideoOn: boolean;
+    hostMuted?: boolean;
+    hostIsAdmin: boolean;
+    hostName: string;
+    hostVideoID?: string;
+    fallbackName: string;
+    member: string;
+    keepBackground: boolean;
+    virtualStream: any;
+    localStreamVideo: any;
+    oldAllStreams: TStreamLike[];
+}
+
+/**
+ * Pure helper for normalizing main-screen state updates.
+ */
+export declare function buildMainScreenState({ filled, adminOnMainScreen, mainScreenPerson, }: BuildMainScreenStateOptions): MainScreenState;
+
+export declare interface BuildMainScreenStateOptions {
+    filled: boolean;
+    adminOnMainScreen: boolean;
+    mainScreenPerson: string;
+}
+
+/**
+ * Pure planning engine for prepopulateUserMedia host/screen-flow resolution.
+ * Returns deterministic state decisions without rendering concerns.
+ */
+export declare function buildPrepopulateUserMediaPlan<P extends PrepopulateParticipantLike, S extends PrepopulateStreamLike>({ participants, allVideoStreams, member, shared, shareScreenStarted, eventType, screenId, whiteboardStarted, whiteboardEnded, remoteScreenStream, localStreamScreen, checkOrientation, isWideScreen, forceFullDisplay, includeWhiteboardAsScreenFlow, }: BuildPrepopulateUserMediaPlanOptions<P, S>): PrepopulateUserMediaPlan<P>;
+
+export declare interface BuildPrepopulateUserMediaPlanOptions<P extends PrepopulateParticipantLike, S extends PrepopulateStreamLike> {
+    participants: P[];
+    allVideoStreams: S[];
+    member: string;
+    islevel: string;
+    shared: boolean;
+    shareScreenStarted: boolean;
+    eventType: string;
+    screenId?: string;
+    whiteboardStarted: boolean;
+    whiteboardEnded: boolean;
+    remoteScreenStream: S[];
+    localStreamScreen: any;
+    checkOrientation: () => string;
+    isWideScreen: boolean;
+    forceFullDisplay: boolean;
+    includeWhiteboardAsScreenFlow?: boolean;
+}
+
+/**
+ * Pure helper for resolving the screen-share host card to render on the main screen.
+ */
+export declare function buildScreenShareHostCardPlan({ hostName, hostScreenID, hostIsAdmin, shared, hostStream, screenForceFullDisplay, annotateScreenStream, }: BuildScreenShareHostCardPlanOptions): ScreenShareHostCardPlan;
+
+export declare interface BuildScreenShareHostCardPlanOptions {
+    hostName: string;
+    hostScreenID?: string;
+    hostIsAdmin: boolean;
+    shared: boolean;
+    hostStream: any;
+    screenForceFullDisplay: boolean;
+    annotateScreenStream: boolean;
+}
+
+export declare const bulkUpdateParticipantPermissions: ({ socket, participants, newLevel, member: _member, islevel, roomName, showAlert, maxBatchSize, }: BulkUpdateParticipantPermissionsOptions) => Promise<void>;
+
+export declare interface BulkUpdateParticipantPermissionsOptions {
+    socket: Socket;
+    participants: Participant[];
+    newLevel: PermissionLevel;
+    member: string;
+    islevel: string;
+    roomName: string;
+    showAlert?: ShowAlert;
+    maxBatchSize?: number;
+}
+
 export declare interface ButtonTouch<TIcon = unknown, TElement = unknown> {
     name?: string;
     icon?: TIcon;
@@ -234,6 +743,44 @@ export declare interface CalculateRowsAndColumnsOptions {
 }
 
 export declare type CalculateRowsAndColumnsType = (options: CalculateRowsAndColumnsOptions) => [number, number];
+
+/**
+ * Captures or tears down a whiteboard canvas stream used for screen-style sharing.
+ *
+ * When starting, this helper captures the canvas at 30 FPS and ensures the
+ * correct screen transport is created or reconnected. When stopping, it ends all
+ * canvas tracks and disconnects the corresponding transport.
+ *
+ * @param options Function options for starting or stopping the captured canvas stream.
+ * @returns A promise that resolves after the whiteboard stream lifecycle step completes.
+ */
+export declare const captureCanvasStream: ({ parameters, start, }: CaptureCanvasStreamOptions) => Promise<void>;
+
+export declare interface CaptureCanvasStreamOptions {
+    parameters: CaptureCanvasStreamParameters;
+    start?: boolean;
+}
+
+export declare interface CaptureCanvasStreamParameters extends CreateSendTransportParameters, DisconnectSendTransportScreenParameters, ConnectSendTransportScreenParameters {
+    canvasWhiteboard: HTMLCanvasElement | null;
+    canvasStream: MediaStream | null;
+    updateCanvasStream: (stream: MediaStream | null) => void;
+    screenProducer: Producer | null;
+    localScreenProducer?: Producer | null;
+    transportCreated: boolean;
+    localTransportCreated?: boolean;
+    localSocket?: Socket;
+    updateScreenProducer: (producer: Producer | null) => void;
+    updateLocalScreenProducer?: (localProducer: Producer | null) => void;
+    sleep: SleepType;
+    createSendTransport: CreateSendTransportType;
+    connectSendTransportScreen: ConnectSendTransportScreenType;
+    disconnectSendTransportScreen: DisconnectSendTransportScreenType;
+    getUpdatedAllParams: () => CaptureCanvasStreamParameters;
+    [key: string]: any;
+}
+
+export declare type CaptureCanvasStreamType = (options: CaptureCanvasStreamOptions) => Promise<void>;
 
 /**
  * Asynchronously changes the video streams based on the provided options.
@@ -370,74 +917,102 @@ export declare type CalculateRowsAndColumnsType = (options: CalculateRowsAndColu
  *     console.log('Video streams changed successfully');
  *   });
  */
-export declare const changeVids: ({ screenChanged, parameters }: ChangeVidsOptions) => Promise<void>;
+export declare const changeVids: <TParameters extends ChangeVidsParameters<any, any, any, any, any> = ChangeVidsParameters>({ screenChanged, parameters }: ChangeVidsOptions<TParameters>) => Promise<void>;
 
-export declare interface ChangeVidsOptions {
+declare type ChangeVidsInvoker = (options: {
     screenChanged?: boolean;
-    parameters: ChangeVidsParameters;
+    parameters: any;
+}) => Promise<void>;
+
+declare type ChangeVidsInvoker_2 = (options: {
+    screenChanged?: boolean;
+    parameters: any;
+}) => Promise<void>;
+
+export declare interface ChangeVidsOptions<TParameters extends ChangeVidsParameters<any, any, any, any, any> = ChangeVidsParameters> {
+    screenChanged?: boolean;
+    parameters: TParameters;
 }
 
-export declare interface ChangeVidsParameters extends DispStreamsParameters {
-    allVideoStreams: (Stream | Participant)[];
+export declare interface ChangeVidsParameters<TStream extends ChangeVidsStreamLike = Stream, TParticipant extends ChangeVidsParticipantLike = Participant, TBreakoutParticipant extends BreakoutParticipantLike = BreakoutParticipantLike, TAudioDecibel extends AudioDecibelLike = AudioDecibels, TMediaHandle = unknown> {
+    allVideoStreams: (TStream | TParticipant)[];
     p_activeNames: string[];
     activeNames: string[];
     dispActiveNames: string[];
     shareScreenStarted: boolean;
     shared: boolean;
-    newLimitedStreams: (Stream | Participant)[];
-    non_alVideoStreams: Participant[];
-    ref_participants: Participant[];
-    participants: Participant[];
+    newLimitedStreams: (TStream | TParticipant)[];
+    non_alVideoStreams: TParticipant[];
+    ref_participants: TParticipant[];
+    participants: TParticipant[];
     eventType: EventType;
     islevel: string;
     member: string;
     sortAudioLoudness: boolean;
-    audioDecibels: AudioDecibels[];
-    mixed_alVideoStreams: (Stream | Participant)[];
-    non_alVideoStreams_muted: Participant[];
+    audioDecibels: TAudioDecibel[];
+    mixed_alVideoStreams: (TStream | TParticipant)[];
+    non_alVideoStreams_muted: TParticipant[];
     remoteProducerId?: string;
-    localStreamVideo: MediaStream | null;
-    oldAllStreams: (Stream | Participant)[];
+    localStreamVideo: TMediaHandle | null;
+    oldAllStreams: (TStream | TParticipant)[];
     screenPageLimit: number;
     meetingDisplayType: string;
     meetingVideoOptimized: boolean;
     recordingVideoOptimized: boolean;
     recordingDisplayType: "video" | "media" | "all";
-    paginatedStreams: (Stream | Participant)[][];
+    paginatedStreams: (TStream | TParticipant)[][];
     itemPageLimit: number;
     doPaginate: boolean;
     prevDoPaginate: boolean;
     currentUserPage: number;
-    breakoutRooms: BreakoutParticipant[][];
+    breakoutRooms: TBreakoutParticipant[][];
     hostNewRoom: number;
     breakOutRoomStarted: boolean;
     breakOutRoomEnded: boolean;
-    virtualStream: MediaStream | null;
+    virtualStream: TMediaHandle | null;
     mainRoomsLength: number;
     memberRoom: number;
-    updateP_activeNames: (names: string[]) => void;
-    updateActiveNames: (names: string[]) => void;
-    updateDispActiveNames: (names: string[]) => void;
-    updateNewLimitedStreams: (streams: (Stream | Participant)[]) => void;
-    updateNon_alVideoStreams: (participants: Participant[]) => void;
-    updateRef_participants: (participants: Participant[]) => void;
-    updateSortAudioLoudness: (sort: boolean) => void;
-    updateMixed_alVideoStreams: (streams: (Stream | Participant)[]) => void;
-    updateNon_alVideoStreams_muted: (participants: Participant[]) => void;
-    updatePaginatedStreams: (streams: (Stream | Participant)[][]) => void;
-    updateDoPaginate: (paginate: boolean) => void;
-    updatePrevDoPaginate: (paginate: boolean) => void;
-    updateCurrentUserPage: (page: number) => void;
-    updateNumberPages: (pages: number) => void;
-    updateMainRoomsLength: (length: number) => void;
-    updateMemberRoom: (room: number) => void;
-    mixStreams: MixStreamsType;
-    dispStreams: DispStreamsType;
-    getUpdatedAllParams: () => ChangeVidsParameters;
+    updateP_activeNames: StringListUpdater_2;
+    updateActiveNames: StringListUpdater_2;
+    updateDispActiveNames: StringListUpdater_2;
+    updateNewLimitedStreams: EntryArrayUpdater<TStream | TParticipant>;
+    updateNon_alVideoStreams: EntryArrayUpdater<TParticipant>;
+    updateRef_participants: EntryArrayUpdater<TParticipant>;
+    updateSortAudioLoudness: BooleanUpdater_2;
+    updateMixed_alVideoStreams: EntryArrayUpdater<TStream | TParticipant>;
+    updateNon_alVideoStreams_muted: EntryArrayUpdater<TParticipant>;
+    updatePaginatedStreams: EntryMatrixUpdater<TStream | TParticipant>;
+    updateDoPaginate: BooleanUpdater_2;
+    updatePrevDoPaginate: BooleanUpdater_2;
+    updateCurrentUserPage: NumberUpdater_2;
+    updateNumberPages: NumberUpdater_2;
+    updateMainRoomsLength: NumberUpdater_2;
+    updateMemberRoom: NumberUpdater_2;
+    mixStreams: MixStreamsInvoker<TStream | TParticipant, TParticipant>;
+    dispStreams: DispStreamsInvoker;
+    getUpdatedAllParams: () => ChangeVidsParameters<TStream, TParticipant, TBreakoutParticipant, TAudioDecibel, TMediaHandle>;
     [key: string]: any;
 }
 
-export declare type ChangeVidsType = (options: ChangeVidsOptions) => Promise<void>;
+declare interface ChangeVidsParticipantLike {
+    name: string;
+    islevel?: string | null;
+    videoID?: string | null;
+    audioID?: string | null;
+    muted?: boolean | null;
+    breakRoom?: number | null;
+    stream?: unknown;
+}
+
+declare interface ChangeVidsStreamLike {
+    producerId?: string | null;
+    audioID?: string | null;
+    name?: string;
+    muted?: boolean | null;
+    stream?: unknown;
+}
+
+export declare type ChangeVidsType = <TParameters extends ChangeVidsParameters<any, any, any, any, any> = ChangeVidsParameters>(options: ChangeVidsOptions<TParameters>) => Promise<void>;
 
 /**
  * Checks the grid configuration and calculates various parameters based on the number of rows, columns, and active elements.
@@ -492,6 +1067,44 @@ export declare const checkLimitsAndMakeRequest: ({ apiUserName, apiToken, link, 
     parameters: PreJoinPageParameters;
     validate?: boolean;
 }) => Promise<void>;
+
+/**
+ * Mobile/storage-adapter variant used by RN/Expo wrappers to share one canonical implementation.
+ */
+export declare const checkLimitsAndMakeRequestWithStorage: CheckLimitsAndMakeRequestWithStorageType;
+
+export declare interface CheckLimitsAndMakeRequestWithStorageOptions {
+    apiUserName: string;
+    apiToken: string;
+    link: string;
+    apiKey?: string;
+    userName: string;
+    parameters: PreJoinPageParameters;
+    validate?: boolean;
+    storageAdapter: CheckLimitsStorageAdapter;
+}
+
+export declare type CheckLimitsAndMakeRequestWithStorageType = (options: CheckLimitsAndMakeRequestWithStorageOptions) => Promise<void>;
+
+export declare interface CheckLimitsStorageAdapter {
+    getItem: (key: string) => Promise<string | null | undefined> | string | null | undefined;
+    setItem: (key: string, value: string) => Promise<void> | void;
+}
+
+export declare function checkMediasfuURL({ data, member, roomName, islevel, socket, parameters, joinMediaSFURoom, localLink, }: CheckMediasfuURLOptions): Promise<void>;
+
+export declare interface CheckMediasfuURLOptions {
+    data: ResponseJoinLocalRoom;
+    member: string;
+    roomName: string;
+    islevel: string;
+    socket: Socket;
+    parameters: PreJoinPageParameters;
+    joinMediaSFURoom?: JoinRoomOnMediaSFUType;
+    localLink?: string;
+}
+
+export declare type CheckMediasfuURLType = (options: CheckMediasfuURLOptions) => Promise<void>;
 
 /**
  * Checks if the recording can be paused based on the current pause count and the allowed pause limits.
@@ -557,7 +1170,7 @@ export declare type CheckPauseStateType = (options: CheckPauseStateOptions) => P
  *     console.error('Error checking permission:', error);
  *   });
  */
-export declare function checkPermission({ permissionType, audioSetting, videoSetting, screenshareSetting, chatSetting }: CheckPermissionOptions): Promise<1 | 0 | 2>;
+export declare function checkPermission({ permissionType, audioSetting, videoSetting, screenshareSetting, chatSetting, permissionConfig, participantLevel, }: CheckPermissionOptions): Promise<1 | 0 | 2>;
 
 export declare interface CheckPermissionOptions {
     audioSetting: string;
@@ -565,6 +1178,8 @@ export declare interface CheckPermissionOptions {
     screenshareSetting: string;
     chatSetting: string;
     permissionType: 'audioSetting' | 'videoSetting' | 'screenshareSetting' | 'chatSetting';
+    permissionConfig?: PermissionConfig | null;
+    participantLevel?: string;
 }
 
 export declare type CheckPermissionType = (options: CheckPermissionOptions) => Promise<number>;
@@ -661,6 +1276,134 @@ export declare interface CheckScreenShareParameters extends StopShareScreenParam
 }
 
 export declare type CheckScreenShareType = (options: CheckScreenShareOptions) => Promise<void>;
+
+/**
+ * Handles microphone toggle flow for a participant.
+ *
+ * This helper enforces host permission rules, request cooldowns, recording
+ * constraints, and transport resume/disconnect behavior before updating the
+ * caller's local media state.
+ *
+ * @param options Function options containing the full runtime parameter bag.
+ * @returns A promise that resolves after the microphone action has been processed.
+ */
+export declare const clickAudio: ({ parameters }: ClickAudioOptions) => Promise<void>;
+
+export declare interface ClickAudioOptions {
+    parameters: ClickAudioParameters;
+}
+
+export declare interface ClickAudioParameters extends DisconnectSendTransportAudioParameters, ResumeSendTransportAudioParameters, StreamSuccessAudioParameters {
+    checkMediaPermission: boolean;
+    hasAudioPermission: boolean;
+    audioPaused: boolean;
+    audioAlreadyOn: boolean;
+    audioOnlyRoom: boolean;
+    recordStarted: boolean;
+    recordResumed: boolean;
+    recordPaused: boolean;
+    recordStopped: boolean;
+    recordingMediaOptions: string;
+    islevel: string;
+    youAreCoHost: boolean;
+    adminRestrictSetting: boolean;
+    audioRequestState: string | null;
+    audioRequestTime: number;
+    member: string;
+    socket: Socket;
+    localSocket?: Socket;
+    roomName: string;
+    userDefaultAudioInputDevice: string;
+    micAction: boolean;
+    localStream: MediaStream | null;
+    audioSetting: string;
+    videoSetting: string;
+    screenshareSetting: string;
+    chatSetting: string;
+    permissionConfig?: PermissionConfig | null;
+    updateRequestIntervalSeconds: number;
+    participants: Participant[];
+    mediaDevices: MediaDevices;
+    transportCreated: boolean;
+    transportCreatedAudio: boolean;
+    supportFlexRoom?: boolean;
+    supportMaxRoom?: boolean;
+    updateAudioAlreadyOn: (status: boolean) => void;
+    updateAudioRequestState: (state: string | null) => void;
+    updateAudioPaused: (status: boolean) => void;
+    updateLocalStream: (stream: MediaStream | null) => void;
+    updateParticipants: (participants: Participant[]) => void;
+    updateTransportCreated: (status: boolean) => void;
+    updateTransportCreatedAudio: (status: boolean) => void;
+    updateMicAction: (action: boolean) => void;
+    showAlert?: ShowAlert;
+    checkPermission: CheckPermissionType;
+    streamSuccessAudio: StreamSuccessAudioType;
+    disconnectSendTransportAudio: DisconnectSendTransportAudioType;
+    requestPermissionAudio: RequestPermissionAudioType;
+    resumeSendTransportAudio: ResumeSendTransportAudioType;
+    getUpdatedAllParams: () => ClickAudioParameters;
+    [key: string]: any;
+}
+
+export declare type ClickAudioType = (options: ClickAudioOptions) => Promise<void>;
+
+export declare const clickChat: ({ isMessagesModalVisible, updateIsMessagesModalVisible, chatSetting, islevel, showAlert, }: ClickChatOptions) => Promise<void>;
+
+export declare interface ClickChatOptions {
+    isMessagesModalVisible: boolean;
+    updateIsMessagesModalVisible: (isVisible: boolean) => void;
+    chatSetting: string;
+    islevel: string;
+    showAlert?: ShowAlert;
+}
+
+export declare type ClickChatType = (options: ClickChatOptions) => Promise<void>;
+
+/**
+ * Handles screen-share toggle flow for a participant.
+ *
+ * This helper checks room restrictions, host permission policies, request
+ * cooldowns, and then delegates to the supplied start/stop share helpers.
+ *
+ * @param options Function options containing the full runtime parameter bag.
+ * @returns A promise that resolves after the screen-share action has been processed.
+ */
+export declare const clickScreenShare: ({ parameters }: ClickScreenShareOptions) => Promise<void>;
+
+export declare interface ClickScreenShareOptions {
+    parameters: ClickScreenShareParameters;
+}
+
+export declare interface ClickScreenShareParameters extends CheckScreenShareParameters, StopShareScreenParameters {
+    showAlert?: ShowAlert;
+    roomName: string;
+    member: string;
+    socket: Socket;
+    islevel: string;
+    youAreCoHost: boolean;
+    adminRestrictSetting: boolean;
+    audioSetting: string;
+    videoSetting: string;
+    screenshareSetting: string;
+    chatSetting: string;
+    permissionConfig?: PermissionConfig | null;
+    screenAction: boolean;
+    screenAlreadyOn: boolean;
+    screenRequestState: string | null;
+    screenRequestTime: number;
+    audioOnlyRoom: boolean;
+    updateRequestIntervalSeconds: number;
+    updateScreenRequestState: (state: string | null) => void;
+    updateScreenAlreadyOn: (status: boolean) => void;
+    checkPermission: CheckPermissionType;
+    checkScreenShare: CheckScreenShareType;
+    stopShareScreen: StopShareScreenType;
+    getUpdatedAllParams: () => ClickScreenShareParameters;
+    [key: string]: any;
+}
+
+export declare type ClickScreenShareType = (options: ClickScreenShareOptions) => Promise<void>;
 
 /**
  * Handles the click event to toggle the participant's video on/off and manages video permission requests.
@@ -1171,6 +1914,17 @@ export declare type ConfirmRecordingType = (options: ConfirmRecordingOptions) =>
  */
 export declare const connectIps: ({ consume_sockets, remIP, apiUserName, apiKey, apiToken, newProducerMethod, closedProducerMethod, joinConsumeRoomMethod, parameters, }: ConnectIpsOptions) => Promise<[Record<string, any>[], string[]]>;
 
+export declare interface ConnectIpsLikeOptions<TParameters = unknown, TConsumeSocket = ConsumeSocket> {
+    consume_sockets: TConsumeSocket[];
+    remIP: string[];
+    apiUserName: string;
+    apiKey?: string;
+    apiToken: string;
+    parameters: TParameters;
+}
+
+export declare type ConnectIpsLikeType<TParameters = unknown, TConsumeSocket = ConsumeSocket> = (options: ConnectIpsLikeOptions<TParameters, TConsumeSocket>) => Promise<[unknown[], string[]]>;
+
 export declare interface ConnectIpsOptions {
     consume_sockets: ConsumeSocket[];
     remIP: string[];
@@ -1325,6 +2079,7 @@ export declare interface ConnectRecvTransportParameters extends ConsumerResumePa
     device: Device | null;
     consumerTransports: Transport[];
     updateConsumerTransports: (transports: Transport[]) => void;
+    speakerTranslationStates?: Map<string, SpeakerTranslationState>;
     consumerResume: ConsumerResumeType;
     getUpdatedAllParams: () => ConnectRecvTransportParameters;
     [key: string]: any;
@@ -1659,6 +2414,25 @@ export declare interface ConnectSocketOptions {
 
 export declare type ConnectSocketType = (options: ConnectSocketOptions) => Promise<Socket>;
 
+declare interface ConsumerLike {
+    paused?: boolean;
+    kind?: string;
+    pause: () => unknown;
+    resume: () => unknown;
+}
+
+declare interface ConsumerLike_2 {
+    paused?: boolean;
+    kind?: string;
+    pause: () => unknown;
+    resume: () => unknown;
+}
+
+declare interface ConsumerLike_3 {
+    kind?: string;
+    resume: () => unknown;
+}
+
 export declare const consumerResume: ConsumerResumeType;
 
 export declare interface ConsumerResumeOptions {
@@ -1724,13 +2498,102 @@ export declare interface ConsumeSocket {
  *     console.error('Error controlling media:', error);
  *   });
  */
-export declare function controlMedia({ participantId, participantName, type, socket, coHostResponsibility, participants, member, islevel, showAlert, coHost, roomName, }: ControlMediaOptions): Promise<void>;
+export declare function controlMedia({ participantId, participantName, type, socket, coHostResponsibility, participants, member, islevel, showAlert, coHost, roomName, }: ControlMediaOptions_2): Promise<void>;
+
+export declare interface ControlMediaData {
+    type: 'audio' | 'video';
+    action: 'mute' | 'unmute';
+    reason?: string;
+}
+
+/**
+ * Applies host-enforced media restrictions across local audio, video, screenshare, and chat state.
+ *
+ * @param {ControlMediaHostOptions} options - Restriction type and shared transport/screen callbacks.
+ * @returns {Promise<void>} Resolves once the requested host restriction is applied.
+ *
+ * @example
+ * ```typescript
+ * await controlMediaHost({
+ *   type: 'video',
+ *   parameters,
+ * });
+ * ```
+ */
+export declare const controlMediaHost: <TOnScreenChangesParameters = unknown, TStopShareScreenParameters = unknown, TDisconnectSendTransportVideoParameters = unknown, TDisconnectSendTransportAudioParameters = unknown, TDisconnectSendTransportScreenParameters = unknown, TAllParameters extends TOnScreenChangesParameters & TStopShareScreenParameters & TDisconnectSendTransportVideoParameters & TDisconnectSendTransportAudioParameters & TDisconnectSendTransportScreenParameters = TOnScreenChangesParameters & TStopShareScreenParameters & TDisconnectSendTransportVideoParameters & TDisconnectSendTransportAudioParameters & TDisconnectSendTransportScreenParameters, TMediaStream extends ControlMediaHostMediaStreamLike = MediaStream>({ type, parameters, }: ControlMediaHostOptions<TOnScreenChangesParameters, TStopShareScreenParameters, TDisconnectSendTransportVideoParameters, TDisconnectSendTransportAudioParameters, TDisconnectSendTransportScreenParameters, TAllParameters, TMediaStream>) => Promise<void>;
 
 export declare interface ControlMediaHostData {
     type: 'all' | 'audio' | 'video' | 'screenshare';
 }
 
+export declare type ControlMediaHostDisconnectSendTransportAudioType<TParameters = unknown> = (options: ControlMediaHostNestedOptions<TParameters>) => Promise<void>;
+
+export declare type ControlMediaHostDisconnectSendTransportScreenType<TParameters = unknown> = (options: ControlMediaHostNestedOptions<TParameters>) => Promise<void>;
+
+export declare type ControlMediaHostDisconnectSendTransportVideoType<TParameters = unknown> = (options: ControlMediaHostNestedOptions<TParameters>) => Promise<void>;
+
+export declare interface ControlMediaHostMediaStreamLike {
+    getAudioTracks?: () => ControlMediaHostTrackLike[];
+    getVideoTracks?: () => ControlMediaHostTrackLike[];
+    tracks?: ControlMediaHostTrackLike[];
+    [key: string]: any;
+}
+
+export declare interface ControlMediaHostNestedOptions<TParameters = unknown> {
+    parameters: TParameters;
+}
+
+export declare interface ControlMediaHostOnScreenChangesOptions<TParameters = unknown> extends ControlMediaHostNestedOptions<TParameters> {
+    changed?: boolean;
+}
+
+export declare type ControlMediaHostOnScreenChangesType<TParameters = unknown> = (options: ControlMediaHostOnScreenChangesOptions<TParameters>) => Promise<void>;
+
+export declare interface ControlMediaHostOptions<TOnScreenChangesParameters = unknown, TStopShareScreenParameters = unknown, TDisconnectSendTransportVideoParameters = unknown, TDisconnectSendTransportAudioParameters = unknown, TDisconnectSendTransportScreenParameters = unknown, TAllParameters extends TOnScreenChangesParameters & TStopShareScreenParameters & TDisconnectSendTransportVideoParameters & TDisconnectSendTransportAudioParameters & TDisconnectSendTransportScreenParameters = TOnScreenChangesParameters & TStopShareScreenParameters & TDisconnectSendTransportVideoParameters & TDisconnectSendTransportAudioParameters & TDisconnectSendTransportScreenParameters, TMediaStream extends ControlMediaHostMediaStreamLike = MediaStream> {
+    type: 'audio' | 'video' | 'screenshare' | 'chat' | 'all';
+    parameters: ControlMediaHostParameters<TOnScreenChangesParameters, TStopShareScreenParameters, TDisconnectSendTransportVideoParameters, TDisconnectSendTransportAudioParameters, TDisconnectSendTransportScreenParameters, TAllParameters, TMediaStream> & TAllParameters;
+}
+
+export declare interface ControlMediaHostParameters<TOnScreenChangesParameters = unknown, TStopShareScreenParameters = unknown, TDisconnectSendTransportVideoParameters = unknown, TDisconnectSendTransportAudioParameters = unknown, TDisconnectSendTransportScreenParameters = unknown, TAllParameters extends TOnScreenChangesParameters & TStopShareScreenParameters & TDisconnectSendTransportVideoParameters & TDisconnectSendTransportAudioParameters & TDisconnectSendTransportScreenParameters = TOnScreenChangesParameters & TStopShareScreenParameters & TDisconnectSendTransportVideoParameters & TDisconnectSendTransportAudioParameters & TDisconnectSendTransportScreenParameters, TMediaStream extends ControlMediaHostMediaStreamLike = MediaStream> {
+    updateAdminRestrictSetting: (value: boolean) => void;
+    localStream: TMediaStream | null;
+    updateLocalStream: (stream: TMediaStream | null) => void;
+    updateAudioAlreadyOn: (value: boolean) => void;
+    localStreamScreen: TMediaStream | null;
+    updateLocalStreamScreen: (stream: TMediaStream | null) => void;
+    localStreamVideo: TMediaStream | null;
+    updateLocalStreamVideo: (stream: TMediaStream | null) => void;
+    updateScreenAlreadyOn: (value: boolean) => void;
+    updateVideoAlreadyOn: (value: boolean) => void;
+    updateChatAlreadyOn: (value: boolean) => void;
+    onScreenChanges: ControlMediaHostOnScreenChangesType<TOnScreenChangesParameters>;
+    stopShareScreen: ControlMediaHostStopShareScreenType<TStopShareScreenParameters>;
+    disconnectSendTransportVideo: ControlMediaHostDisconnectSendTransportVideoType<TDisconnectSendTransportVideoParameters>;
+    disconnectSendTransportAudio: ControlMediaHostDisconnectSendTransportAudioType<TDisconnectSendTransportAudioParameters>;
+    disconnectSendTransportScreen: ControlMediaHostDisconnectSendTransportScreenType<TDisconnectSendTransportScreenParameters>;
+    getUpdatedAllParams: () => ControlMediaHostParameters<TOnScreenChangesParameters, TStopShareScreenParameters, TDisconnectSendTransportVideoParameters, TDisconnectSendTransportAudioParameters, TDisconnectSendTransportScreenParameters, TAllParameters, TMediaStream> & TAllParameters;
+    [key: string]: any;
+}
+
+export declare type ControlMediaHostStopShareScreenType<TParameters = unknown> = (options: ControlMediaHostNestedOptions<TParameters>) => Promise<void>;
+
+export declare interface ControlMediaHostTrackLike {
+    enabled: boolean;
+    kind?: string;
+}
+
+export declare type ControlMediaHostType<TOnScreenChangesParameters = unknown, TStopShareScreenParameters = unknown, TDisconnectSendTransportVideoParameters = unknown, TDisconnectSendTransportAudioParameters = unknown, TDisconnectSendTransportScreenParameters = unknown, TAllParameters extends TOnScreenChangesParameters & TStopShareScreenParameters & TDisconnectSendTransportVideoParameters & TDisconnectSendTransportAudioParameters & TDisconnectSendTransportScreenParameters = TOnScreenChangesParameters & TStopShareScreenParameters & TDisconnectSendTransportVideoParameters & TDisconnectSendTransportAudioParameters & TDisconnectSendTransportScreenParameters, TMediaStream extends ControlMediaHostMediaStreamLike = MediaStream> = (options: ControlMediaHostOptions<TOnScreenChangesParameters, TStopShareScreenParameters, TDisconnectSendTransportVideoParameters, TDisconnectSendTransportAudioParameters, TDisconnectSendTransportScreenParameters, TAllParameters, TMediaStream>) => Promise<void>;
+
 export declare interface ControlMediaOptions {
+    data: ControlMediaData;
+    showAlert?: ShowAlert;
+    clickAudio?: () => void;
+    clickVideo?: () => void;
+    audioAlreadyOn?: boolean;
+    videoAlreadyOn?: boolean;
+}
+
+declare interface ControlMediaOptions_2 {
     participantId: string;
     participantName: string;
     type: 'audio' | 'video' | 'screenshare' | 'all';
@@ -1787,6 +2650,11 @@ export declare interface CreateJoinRoomError {
     success?: boolean;
 }
 
+declare interface CreateJoinRoomError_2 {
+    error: string;
+    success?: boolean;
+}
+
 export declare interface CreateJoinRoomResponse {
     message: string;
     roomName: string;
@@ -1797,8 +2665,18 @@ export declare interface CreateJoinRoomResponse {
     success: boolean;
 }
 
+declare interface CreateJoinRoomResponse_2 {
+    message: string;
+    roomName: string;
+    secureCode?: string;
+    publicURL: string;
+    link: string;
+    secret: string;
+    success: boolean;
+}
+
 export declare interface CreateJoinRoomResult {
-    data: CreateJoinRoomResponse | CreateJoinRoomError | null;
+    data: CreateJoinRoomResponse_2 | CreateJoinRoomError_2 | null;
     success: boolean;
 }
 
@@ -1807,7 +2685,18 @@ export declare type CreateJoinRoomType = (options: {
     apiUserName: string;
     apiKey: string;
     localLink?: string;
-}) => Promise<CreateJoinRoomResult>;
+}) => Promise<{
+    data: CreateJoinRoomResponse | CreateJoinRoomError | null;
+    success: boolean;
+}>;
+
+export declare const createLiveSubtitle: (params: {
+    text: string;
+    language: string;
+    speakerId: string;
+    speakerName?: string;
+    timestamp?: number;
+}) => LiveSubtitle;
 
 /**
  * Options for creating a local room
@@ -1857,12 +2746,67 @@ export declare interface CreateMediaSFURoomOptions {
     preferPCMA?: boolean;
 }
 
-export declare type CreateRoomOnMediaSFUType = (options: {
+/**
+ * Converts a local-room join response into the broader MediaSFU join response shape.
+ *
+ * This helper is useful when local/demo or self-hosted room flows need to be
+ * normalized to the same response contract consumed by the main runtime.
+ *
+ * @param options Response conversion options.
+ * @returns A normalized `ResponseJoinRoom` object.
+ *
+ * @example
+ * ```typescript
+ * const normalized = await createResponseJoinRoom({ localRoom });
+ * if (normalized.success) {
+ *   console.log(normalized.meetingRoomParams);
+ * }
+ * ```
+ */
+export declare const createResponseJoinRoom: CreateResponseJoinRoomType;
+
+export declare interface CreateResponseJoinRoomOptions {
+    localRoom: ResponseJoinLocalRoom;
+}
+
+export declare type CreateResponseJoinRoomType = (options: CreateResponseJoinRoomOptions) => Promise<ResponseJoinRoom>;
+
+/**
+ * Calls the MediaSFU create-room API and guards against duplicate in-flight room requests.
+ *
+ * A short-lived `localStorage` marker is used to prevent accidental duplicate
+ * submissions while a room create request is still pending.
+ *
+ * @param options API request options including credentials and create payload.
+ * @returns A result object containing either parsed response data or an error payload.
+ *
+ * @example
+ * ```typescript
+ * const created = await createRoomOnMediaSFU({
+ *   payload: {
+ *     action: 'create',
+ *     userName: 'Ada',
+ *     duration: 60,
+ *     capacity: 10,
+ *   } as CreateMediaSFURoomOptions,
+ *   apiUserName: 'sampleuser',
+ *   apiKey: '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
+ * });
+ *
+ * console.log(created.success);
+ * ```
+ */
+export declare const createRoomOnMediaSFU: CreateRoomOnMediaSFUType;
+
+export declare interface CreateRoomOnMediaSFUOptions {
     payload: CreateMediaSFURoomOptions;
     apiUserName: string;
     apiKey: string;
     localLink?: string;
-}) => Promise<CreateJoinRoomResult>;
+    pendingRequestStorage?: PendingRequestStorage;
+}
+
+export declare type CreateRoomOnMediaSFUType = (options: CreateRoomOnMediaSFUOptions) => Promise<CreateJoinRoomResult>;
 
 export declare interface CreateRoomOptions {
     action: 'create' | 'join';
@@ -2051,6 +2995,29 @@ export declare interface CustomVideoCardOptions {
 
 export declare interface DataBufferNotice {
     state: string;
+}
+
+/**
+ * Handles a forced session disconnect by redirecting web users or showing a local alert fallback.
+ *
+ * @param {DisconnectOptions} options - Redirect and alert handlers for the disconnect flow.
+ * @returns {Promise<void>} Resolves after the redirect or alert side effect is applied.
+ *
+ * @example
+ * ```typescript
+ * await disconnect({
+ *   onWeb: true,
+ *   redirectURL: 'https://example.com/exit',
+ * });
+ * ```
+ */
+export declare const disconnect: ({ showAlert, redirectURL, onWeb, }: DisconnectOptions) => Promise<void>;
+
+export declare interface DisconnectOptions {
+    showAlert?: ShowAlert;
+    redirectURL?: string;
+    onWeb: boolean;
+    updateValidated?: (isValidated: boolean) => void;
 }
 
 /**
@@ -2292,12 +3259,61 @@ export declare interface DisconnectSocketOptions {
 
 export declare type DisconnectSocketType = (options: DisconnectSocketOptions) => Promise<boolean>;
 
+export declare type DisconnectType = (options: DisconnectOptions) => Promise<void>;
+
+/**
+ * Emits a self-disconnect request, including the optional mirrored local socket.
+ *
+ * @param {DisconnectUserSelfOptions} options - Socket targets and participant identity.
+ * @returns {Promise<void>} Resolves after the disconnect events are emitted.
+ *
+ * @example
+ * ```typescript
+ * await disconnectUserSelf({
+ *   member: 'user123',
+ *   roomName: 'main-room',
+ *   socket,
+ *   localSocket,
+ * });
+ * ```
+ */
+export declare function disconnectUserSelf({ member, roomName, socket, localSocket, }: DisconnectUserSelfOptions): Promise<void>;
+
+export declare interface DisconnectUserSelfOptions {
+    member: string;
+    roomName: string;
+    socket: DisconnectUserSelfSocketLike;
+    localSocket?: DisconnectUserSelfSocketLike;
+}
+
+export declare interface DisconnectUserSelfSocketLike {
+    id?: string;
+    emit: (event: string, ...args: any[]) => void;
+}
+
+export declare type DisconnectUserSelfType = (options: DisconnectUserSelfOptions) => Promise<void>;
+
+declare interface DispParticipantLike<TMediaStream = MediaStream> extends DispStreamEntryLike<TMediaStream> {
+    name: string;
+    islevel?: string | null;
+    videoID?: string | null;
+}
+
 export declare type DispSpecs = {
     nameTags: boolean;
     backgroundColor: string;
     nameTagsColor: string;
     orientationVideo: string;
 };
+
+declare interface DispStreamEntryLike<TMediaStream = MediaStream> {
+    producerId?: string | null;
+    audioID?: string | null;
+    id?: string | null;
+    name?: string | null;
+    muted?: boolean | null;
+    stream?: TMediaStream | null;
+}
 
 /**
  * Function to display streams based on various parameters and conditions.
@@ -2390,26 +3406,38 @@ export declare type DispSpecs = {
  *     console.error('Error displaying streams:', error);
  *   });
  */
-export declare function dispStreams({ lStreams, ind, auto, ChatSkip, forChatID, parameters, breakRoom, inBreakRoom, }: DispStreamsOptions): Promise<void>;
+export declare function dispStreams<TParameters extends DispStreamsParameters<any, any, any, any> = DispStreamsParameters>({ lStreams, ind, auto, ChatSkip, forChatID, parameters, breakRoom, inBreakRoom, }: DispStreamsOptions<TParameters>): Promise<void>;
 
-export declare interface DispStreamsOptions {
-    lStreams: (Stream | Participant)[];
+declare type DispStreamsInvoker = (options: {
+    lStreams: any[];
+    ind: number;
+    auto?: boolean;
+    parameters: any;
+    breakRoom?: number;
+    inBreakRoom?: boolean;
+    ChatSkip?: boolean;
+    forChatCard?: any;
+    forChatID?: any;
+}) => Promise<void>;
+
+export declare interface DispStreamsOptions<TParameters extends DispStreamsParameters<any, any, any, any> = DispStreamsParameters> {
+    lStreams: TParameters extends DispStreamsParameters<infer TStream, infer TParticipant, any, any> ? (TStream | TParticipant)[] : (Stream | Participant)[];
     ind: number;
     auto?: boolean;
     ChatSkip?: boolean;
     forChatCard?: any;
     forChatID?: any;
-    parameters: DispStreamsParameters;
+    parameters: TParameters;
     breakRoom?: number;
     inBreakRoom?: boolean;
 }
 
-export declare interface DispStreamsParameters extends PrepopulateUserMediaParameters, RePortParameters, ProcessConsumerTransportsParameters, ResumePauseStreamsParameters, ReadjustParameters, ResumePauseAudioStreamsParameters, GetEstimateParameters, AddVideosGridParameters {
-    consumerTransports: Transport[];
-    streamNames: Stream[];
-    audStreamNames: Stream[];
-    participants: Participant[];
-    ref_participants: Participant[];
+export declare interface DispStreamsParameters<TStream extends DispStreamEntryLike<any> = Stream, TParticipant extends DispParticipantLike<any> = Participant, TTransport = Transport, TMediaStream = MediaStream> {
+    consumerTransports: TTransport[];
+    streamNames: TStream[];
+    audStreamNames: TStream[];
+    participants: TParticipant[];
+    ref_participants: TParticipant[];
     recordingDisplayType: 'video' | 'media' | 'all';
     recordingVideoOptimized: boolean;
     meetingDisplayType: string;
@@ -2424,7 +3452,7 @@ export declare interface DispStreamsParameters extends PrepopulateUserMediaParam
     shared: boolean;
     shareScreenStarted: boolean;
     shareEnded: boolean;
-    oldAllStreams: (Stream | Participant)[];
+    oldAllStreams: (TStream | TParticipant)[];
     updateMainWindow: boolean;
     remoteProducerId?: string;
     activeNames: string[];
@@ -2433,37 +3461,130 @@ export declare interface DispStreamsParameters extends PrepopulateUserMediaParam
     nForReadjustRecord: number;
     first_round: boolean;
     lock_screen: boolean;
-    chatRefStreams: (Stream | Participant)[];
+    chatRefStreams: (TStream | TParticipant)[];
     eventType: EventType;
     islevel: string;
-    localStreamVideo: MediaStream | null;
+    localStreamVideo: TMediaStream | null;
     breakOutRoomStarted: boolean;
     breakOutRoomEnded: boolean;
     keepBackground: boolean;
-    virtualStream: MediaStream | null;
+    virtualStream: TMediaStream | null;
     updateActiveNames: (names: string[]) => void;
     updateDispActiveNames: (names: string[]) => void;
-    updateLStreams: (streams: (Stream | Participant)[]) => void;
-    updateChatRefStreams: (streams: (Stream | Participant)[]) => void;
+    updateLStreams: StreamCollectionUpdater_2<TStream | TParticipant>;
+    updateChatRefStreams: StreamCollectionUpdater_2<TStream | TParticipant>;
     updateNForReadjustRecord: (n: number) => void;
     updateUpdateMainWindow: (value: boolean) => void;
     updateShowMiniView: (value: boolean) => void;
-    prepopulateUserMedia: PrepopulateUserMediaType;
-    rePort: RePortType;
-    processConsumerTransports: ProcessConsumerTransportsType;
-    resumePauseStreams: ResumePauseStreamsType;
-    readjust: ReadjustType;
-    addVideosGrid: AddVideosGridType;
-    getEstimate: GetEstimateType;
-    checkGrid: CheckGridType;
-    resumePauseAudioStreams: ResumePauseAudioStreamsType;
-    getUpdatedAllParams: () => DispStreamsParameters;
+    prepopulateUserMedia: OpaqueAsyncInvoker;
+    rePort: OpaqueAsyncInvoker;
+    processConsumerTransports: OpaqueAsyncInvoker;
+    resumePauseStreams: OpaqueAsyncInvoker;
+    readjust: OpaqueAsyncInvoker;
+    addVideosGrid: OpaqueAsyncInvoker;
+    getEstimate: OpaqueEstimateInvoker;
+    checkGrid: OpaqueCheckGridInvoker;
+    resumePauseAudioStreams: OpaqueAsyncInvoker;
+    getUpdatedAllParams: () => DispStreamsParameters<TStream, TParticipant, TTransport, TMediaStream>;
     [key: string]: any;
 }
 
-export declare type DispStreamsType = (options: DispStreamsOptions) => Promise<void>;
+export declare type DispStreamsType = <TParameters extends DispStreamsParameters<any, any, any, any> = DispStreamsParameters>(options: DispStreamsOptions<TParameters>) => Promise<void>;
+
+declare type EntryArrayUpdater<TEntry> = {
+    bivarianceHack: (entries: TEntry[]) => void;
+}["bivarianceHack"];
+
+declare type EntryMatrixUpdater<TEntry> = {
+    bivarianceHack: (entries: TEntry[][]) => void;
+}["bivarianceHack"];
+
+declare type EstimateResult = [unknown, number, number, ...unknown[]];
 
 export declare type EventType = 'conference' | 'webinar' | 'chat' | 'broadcast' | 'none';
+
+export declare const fetchLanguagesViaSocket: (socket: {
+    emit: (event: string, data: unknown, callback?: (response: {
+        languages?: LanguageOption[];
+    }) => void) => void;
+}, displayLocale?: string) => Promise<LanguageOption[]>;
+
+export declare const fetchVoicesViaSocket: (socket: {
+    emit: (event: string, data: unknown, callback?: (response: SocketVoiceResponse) => void) => void;
+}, provider?: TTSProvider | string, language?: string) => Promise<SocketVoiceResponse>;
+
+export declare const fhdCons: {
+    width: {
+        ideal: number;
+    };
+    height: {
+        ideal: number;
+    };
+};
+
+export declare const fhdConsNeu: {
+    width: {
+        ideal: number;
+    };
+    height: {
+        ideal: number;
+    };
+};
+
+export declare const fhdConsPort: {
+    width: {
+        ideal: number;
+    };
+    height: {
+        ideal: number;
+    };
+};
+
+export declare const fhdFrameRate = 20;
+
+export declare const findOriginalProducerForSpeaker: (speakerId: string, allAudioStreams: Array<{
+    producerId: string;
+    name?: string;
+    [key: string]: any;
+}>) => string | null;
+
+export declare const focusPanelists: ({ socket, roomName, member: _member, islevel, focusEnabled, muteOthersMic, muteOthersCamera, showAlert, }: FocusPanelistsOptions) => Promise<void>;
+
+export declare interface FocusPanelistsOptions {
+    socket: Socket;
+    roomName: string;
+    member: string;
+    islevel: string;
+    focusEnabled: boolean;
+    muteOthersMic?: boolean;
+    muteOthersCamera?: boolean;
+    showAlert?: ShowAlert;
+}
+
+export declare type FocusPanelistsType = (options: FocusPanelistsOptions) => Promise<void>;
+
+/**
+ * Formats large numbers into compact display strings.
+ *
+ * Values are converted to `K`, `M`, or `B` suffixes for UI-friendly display.
+ * Falsy values return `undefined` to match existing MediaSFU display behavior.
+ *
+ * @param options Number formatting options.
+ * @returns A compact string such as `1.2K` or `3.4M`, or `undefined` for empty input.
+ *
+ * @example
+ * ```typescript
+ * const viewers = await formatNumber({ number: 1530 });
+ * // viewers === '1.5K'
+ * ```
+ */
+export declare const formatNumber: ({ number }: FormatNumberOptions) => Promise<string | undefined>;
+
+export declare interface FormatNumberOptions {
+    number: number;
+}
+
+export declare type FormatNumberType = (options: FormatNumberOptions) => Promise<string | undefined>;
 
 /**
  * Generates the content for a specific page.
@@ -2509,27 +3630,129 @@ export declare type EventType = 'conference' | 'webinar' | 'chat' | 'broadcast' 
  *     console.error('Error generating page content:', error);
  *   });
  */
-export declare function generatePageContent({ page, parameters, breakRoom, inBreakRoom, }: GeneratePageContentOptions): Promise<void>;
+export declare function generatePageContent<TParameters extends GeneratePageContentParameters<any, any, any> = GeneratePageContentParameters>({ page, parameters, breakRoom, inBreakRoom, }: GeneratePageContentOptions<TParameters>): Promise<void>;
 
-export declare interface GeneratePageContentOptions {
+export declare interface GeneratePageContentOptions<TParameters extends GeneratePageContentParameters<any, any, any> = GeneratePageContentParameters> {
     page: number | string;
-    parameters: GeneratePageContentParameters;
+    parameters: TParameters;
     breakRoom?: number;
     inBreakRoom?: boolean;
 }
 
-export declare interface GeneratePageContentParameters extends DispStreamsParameters {
-    paginatedStreams: (Participant | Stream)[][];
+export declare interface GeneratePageContentParameters<TStream extends Stream = Stream, TParticipant extends Participant = Participant, TDispParameters extends DispStreamsParameters<any, any, any, any> = DispStreamsParameters<TStream, TParticipant>> extends DispStreamsParameters<TStream, TParticipant> {
+    paginatedStreams: (TParticipant | TStream)[][];
     currentUserPage: number;
     updateMainWindow: boolean;
     updateCurrentUserPage: (page: number) => void;
     updateUpdateMainWindow: (flag: boolean) => void;
-    dispStreams: DispStreamsType;
-    getUpdatedAllParams: () => GeneratePageContentParameters;
+    dispStreams: OpaqueDispStreamsInvoker;
+    getUpdatedAllParams: () => GeneratePageContentParameters<TStream, TParticipant, TDispParameters>;
     [key: string]: any;
 }
 
-export declare type GeneratePageContentType = (options: GeneratePageContentOptions) => Promise<void>;
+export declare type GeneratePageContentType = <TParameters extends GeneratePageContentParameters<any, any, any> = GeneratePageContentParameters>(options: GeneratePageContentOptions<TParameters>) => Promise<void>;
+
+export declare const generateRandomMessages: ({ participants, member, coHost, host, forChatBroadcast, }: GenerateRandomMessagesOptions) => Message[];
+
+export declare interface GenerateRandomMessagesOptions {
+    participants: Participant[];
+    member: string;
+    coHost?: string;
+    host: string;
+    forChatBroadcast?: boolean;
+}
+
+export declare type GenerateRandomMessagesType = (options: GenerateRandomMessagesOptions) => Message[];
+
+export declare const generateRandomParticipants: ({ member, coHost, host, forChatBroadcast, }: GenerateRandomParticipantsOptions) => Participant[];
+
+export declare interface GenerateRandomParticipantsOptions {
+    member: string;
+    coHost?: string;
+    host: string;
+    forChatBroadcast?: boolean;
+}
+
+export declare type GenerateRandomParticipantsType = (options: GenerateRandomParticipantsOptions) => Participant[];
+
+export declare const generateRandomPolls: ({ numberOfPolls }: GenerateRandomPollsOptions) => Poll[];
+
+export declare interface GenerateRandomPollsOptions {
+    numberOfPolls: number;
+}
+
+export declare type GenerateRandomPollsType = (options: GenerateRandomPollsOptions) => Poll[];
+
+export declare const generateRandomRequestList: ({ participants, hostName, coHostName, numberOfRequests, }: GenerateRandomRequestListOptions) => Request_2[];
+
+export declare interface GenerateRandomRequestListOptions {
+    participants: Participant[];
+    hostName: string;
+    coHostName?: string;
+    numberOfRequests: number;
+}
+
+export declare type GenerateRandomRequestListType = (options: GenerateRandomRequestListOptions) => Request_2[];
+
+export declare const generateRandomWaitingRoomList: () => WaitingRoomParticipant[];
+
+export declare type GenerateRandomWaitingRoomListType = () => WaitingRoomParticipant[];
+
+export declare const getActiveTranslationConsumers: (translationProducerMap: Map<string, {
+    translationProducerId: string;
+    originalProducerId: string;
+    language: string;
+}>, consumerTransports: Transport[]) => Array<{
+    speakerId: string;
+    translationProducerId: string;
+    originalProducerId: string;
+    language: string;
+}>;
+
+export declare const getAvailableVoices: (langCode: string, provider?: TTSProvider | string) => {
+    male: VoiceOption[];
+    female: VoiceOption[];
+};
+
+/**
+ * Resolves newly announced consuming domains to connection targets and connects missing ones.
+ *
+ * @param {GetDomainsOptions} options - Domain payload and shared consume-socket connection helpers.
+ * @returns {Promise<void>} Resolves after any missing consume domains are connected.
+ *
+ * @example
+ * ```typescript
+ * await getDomains({
+ *   domains: ['recv-1', 'recv-2'],
+ *   alt_domains,
+ *   apiUserName: 'api-user',
+ *   apiKey: 'api-key',
+ *   apiToken: 'api-token',
+ *   parameters,
+ * });
+ * ```
+ */
+export declare const getDomains: <TParameters = unknown, TConsumeSocket = ConsumeSocket, TRtpCapabilities = RtpCapabilities>({ domains, alt_domains, apiUserName, apiKey, apiToken, parameters, }: GetDomainsOptions<TParameters, TConsumeSocket, TRtpCapabilities>) => Promise<void>;
+
+export declare interface GetDomainsOptions<TParameters = unknown, TConsumeSocket = ConsumeSocket, TRtpCapabilities = RtpCapabilities> {
+    domains: string[];
+    alt_domains: AltDomains;
+    apiUserName: string;
+    apiKey: string;
+    apiToken: string;
+    parameters: GetDomainsParameters<TParameters, TConsumeSocket, TRtpCapabilities> & TParameters;
+}
+
+export declare interface GetDomainsParameters<TParameters = unknown, TConsumeSocket = ConsumeSocket, TRtpCapabilities = RtpCapabilities> {
+    roomRecvIPs: string[];
+    rtpCapabilities: TRtpCapabilities | null;
+    consume_sockets: TConsumeSocket[];
+    connectIps: ConnectIpsLikeType<TParameters, TConsumeSocket>;
+    getUpdatedAllParams: () => GetDomainsParameters<TParameters, TConsumeSocket, TRtpCapabilities> & TParameters;
+    [key: string]: any;
+}
+
+export declare type GetDomainsType<TParameters = unknown, TConsumeSocket = ConsumeSocket, TRtpCapabilities = RtpCapabilities> = (options: GetDomainsOptions<TParameters, TConsumeSocket, TRtpCapabilities>) => Promise<void>;
 
 /**
  * Estimates the number of rows and columns for a given set of parameters.
@@ -2595,6 +3818,43 @@ export declare interface GetEstimateParameters {
 
 export declare type GetEstimateType = (options: GetEstimateOptions) => [number, number, number];
 
+export declare const getLanguageMetadata: (code: string) => LanguageMetadata;
+
+export declare const getLanguageName: (code: string, displayLocale?: string) => string;
+
+export declare const getLanguageNativeName: (code: string) => string;
+
+export declare const getModalPosition: ({ position }: GetModalPositionOptions) => ModalPositionStyle;
+
+export declare interface GetModalPositionOptions {
+    position: string;
+}
+
+export declare type GetModalPositionType = (options: GetModalPositionOptions) => ModalPositionStyle;
+
+/**
+ * Maps a symbolic overlay position to CSS-style edge coordinates.
+ *
+ * This is used by display card components to anchor badges, audio indicators,
+ * or auxiliary overlays to a participant tile corner.
+ *
+ * @param options Overlay position options.
+ * @returns A partial coordinate object suitable for inline style application.
+ *
+ * @example
+ * ```typescript
+ * const style = getOverlayPosition({ position: 'bottomRight' });
+ * // style === { bottom: 0, right: 0 }
+ * ```
+ */
+export declare const getOverlayPosition: ({ position }: GetOverlayPositionOptions) => OverlayPositionStyle;
+
+export declare interface GetOverlayPositionOptions {
+    position: string;
+}
+
+export declare type GetOverlayPositionType = (options: GetOverlayPositionOptions) => OverlayPositionStyle;
+
 /**
  * Retrieves piped producers and signals new consumer transport for each retrieved producer.
  *
@@ -2640,9 +3900,19 @@ export declare interface GetPipedProducersAltOptions {
     parameters: GetPipedProducersAltParameters;
 }
 
-export declare interface GetPipedProducersAltParameters extends SignalNewConsumerTransportParameters {
+export declare interface GetPipedProducersAltParameters extends Omit<SignalNewConsumerTransportParameters, 'getUpdatedAllParams'> {
     member: string;
+    listenerTranslationPreferences?: {
+        perSpeaker: Map<string, {
+            speakerId: string;
+            language: string | null;
+            wantOriginal: boolean;
+        }>;
+        globalLanguage: string | null;
+    };
     signalNewConsumerTransport: SignalNewConsumerTransportType;
+    startConsumingTranslation?: (producerId: string, speakerId: string, language: string, originalProducerId?: string, nsock?: Socket) => Promise<void>;
+    getUpdatedAllParams?: () => GetPipedProducersAltParameters;
     [key: string]: any;
 }
 
@@ -2698,6 +3968,10 @@ export declare interface GetProducersPipedParameters extends SignalNewConsumerTr
 
 export declare type GetProducersPipedType = (options: GetProducersPipedOptions) => Promise<void>;
 
+export declare const getSubtitleForSpeaker: (subtitles: Map<string, LiveSubtitle>, speakerId: string, speakerName?: string, now?: number) => LiveSubtitle | null;
+
+export declare const getSupportedLanguages: (displayLocale?: string) => LanguageOption[];
+
 /**
  * Asynchronously processes and updates video streams by filtering out the admin's video stream.
  *
@@ -2747,6 +4021,11 @@ export declare interface GetVideosOptions {
 }
 
 export declare type GetVideosType = (options: GetVideosOptions) => Promise<void>;
+
+export declare interface GridPlanEntry<T> {
+    stream: T;
+    index: number;
+}
 
 export declare interface GridSizes {
     gridWidth?: number;
@@ -3101,9 +4380,74 @@ export declare interface HandleWelcomeRequestOptions {
     parameters: PreJoinPageParameters;
 }
 
+export declare const hdCons: {
+    width: {
+        ideal: number;
+    };
+    height: {
+        ideal: number;
+    };
+};
+
+export declare const hdConsNeu: {
+    width: {
+        ideal: number;
+    };
+    height: {
+        ideal: number;
+    };
+};
+
+export declare const hdConsPort: {
+    width: {
+        ideal: number;
+    };
+    height: {
+        ideal: number;
+    };
+};
+
+export declare const hdFrameRate = 15;
+
+/**
+ * Applies a host's response to a pending participant request.
+ *
+ * This helper removes the resolved request from the pending list, updates the
+ * caller's relevant request state, and triggers acceptance or rejection alerts
+ * with the correct retry cooldown timestamps.
+ *
+ * @param options Function options for processing the host response.
+ * @returns A promise that resolves after request state has been updated.
+ */
+export declare const hostRequestResponse: ({ requestResponse, showAlert, requestList, updateRequestList, updateMicAction, updateVideoAction, updateScreenAction, updateChatAction, updateAudioRequestState, updateVideoRequestState, updateScreenRequestState, updateChatRequestState, updateAudioRequestTime, updateVideoRequestTime, updateScreenRequestTime, updateChatRequestTime, updateRequestIntervalSeconds, }: HostRequestResponseOptions) => Promise<void>;
+
 export declare interface HostRequestResponseData {
     requestResponse: RequestResponse;
 }
+
+export declare interface HostRequestResponseOptions {
+    requestResponse: RequestResponse;
+    showAlert?: ShowAlert;
+    requestList: Request_2[];
+    updateRequestList: (requestList: Request_2[]) => void;
+    updateMicAction: (action: boolean) => void;
+    updateVideoAction: (action: boolean) => void;
+    updateScreenAction: (action: boolean) => void;
+    updateChatAction: (action: boolean) => void;
+    updateAudioRequestState: (state: string | null) => void;
+    updateVideoRequestState: (state: string | null) => void;
+    updateScreenRequestState: (state: string | null) => void;
+    updateChatRequestState: (state: string | null) => void;
+    updateAudioRequestTime: (time: number) => void;
+    updateVideoRequestTime: (time: number) => void;
+    updateScreenRequestTime: (time: number) => void;
+    updateChatRequestTime: (time: number) => void;
+    updateRequestIntervalSeconds: number;
+}
+
+export declare type HostRequestResponseType = (options: HostRequestResponseOptions) => Promise<void>;
+
+export declare const hParams: HParamsType;
 
 export declare type HParamsType = {
     encodings: RtpEncodingParameters[];
@@ -3111,6 +4455,412 @@ export declare type HParamsType = {
 };
 
 export declare type InfoPosition = 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight';
+
+export declare const initialValuesState: {
+    roomName: string;
+    member: string;
+    adminPasscode: string;
+    islevel: string;
+    coHost: string;
+    coHostResponsibility: {
+        name: string;
+        value: boolean;
+        dedicated: boolean;
+    }[];
+    youAreCoHost: boolean;
+    youAreHost: boolean;
+    confirmedToRecord: boolean;
+    meetingDisplayType: string;
+    meetingVideoOptimized: boolean;
+    eventType: string;
+    participants: never[];
+    filteredParticipants: never[];
+    participantsCounter: number;
+    participantsFilter: string;
+    validated: boolean;
+    localUIMode: boolean;
+    socket: {};
+    localSocket: undefined;
+    roomData: null;
+    device: null;
+    apiKey: string;
+    apiUserName: string;
+    apiToken: string;
+    link: string;
+    consume_sockets: never[];
+    rtpCapabilities: null;
+    roomRecvIPs: never[];
+    meetingRoomParams: null;
+    itemPageLimit: number;
+    audioOnlyRoom: boolean;
+    addForBasic: boolean;
+    screenPageLimit: number;
+    shareScreenStarted: boolean;
+    shared: boolean;
+    targetOrientation: string;
+    targetResolution: string;
+    targetResolutionHost: string;
+    vidCons: {
+        width: number;
+        height: number;
+    };
+    frameRate: number;
+    hParams: {};
+    vParams: {};
+    screenParams: {};
+    aParams: {};
+    recordingAudioPausesLimit: number;
+    recordingAudioPausesCount: number;
+    recordingAudioSupport: boolean;
+    recordingAudioPeopleLimit: number;
+    recordingAudioParticipantsTimeLimit: number;
+    recordingVideoPausesCount: number;
+    recordingVideoPausesLimit: number;
+    recordingVideoSupport: boolean;
+    recordingVideoPeopleLimit: number;
+    recordingVideoParticipantsTimeLimit: number;
+    recordingAllParticipantsSupport: boolean;
+    recordingVideoParticipantsSupport: boolean;
+    recordingAllParticipantsFullRoomSupport: boolean;
+    recordingVideoParticipantsFullRoomSupport: boolean;
+    recordingPreferredOrientation: string;
+    recordingSupportForOtherOrientation: boolean;
+    recordingMultiFormatsSupport: boolean;
+    userRecordingParams: {
+        mainSpecs: {
+            mediaOptions: string;
+            audioOptions: string;
+            videoOptions: string;
+            videoType: string;
+            videoOptimized: boolean;
+            recordingDisplayType: string;
+            addHLS: boolean;
+        };
+        dispSpecs: {
+            nameTags: boolean;
+            backgroundColor: string;
+            nameTagsColor: string;
+            orientationVideo: string;
+        };
+    };
+    canRecord: boolean;
+    startReport: boolean;
+    endReport: boolean;
+    recordTimerInterval: null;
+    recordStartTime: number;
+    recordElapsedTime: number;
+    isTimerRunning: boolean;
+    canPauseResume: boolean;
+    recordChangeSeconds: number;
+    pauseLimit: number;
+    pauseRecordCount: number;
+    canLaunchRecord: boolean;
+    stopLaunchRecord: boolean;
+    participantsAll: never[];
+    firstAll: boolean;
+    updateMainWindow: boolean;
+    first_round: boolean;
+    landScaped: boolean;
+    lock_screen: boolean;
+    screenId: string;
+    allVideoStreams: never[];
+    newLimitedStreams: never[];
+    newLimitedStreamsIDs: never[];
+    activeSounds: never[];
+    screenShareIDStream: string;
+    screenShareNameStream: string;
+    adminIDStream: string;
+    adminNameStream: string;
+    youYouStream: never[];
+    youYouStreamIDs: never[];
+    localStream: null;
+    recordStarted: boolean;
+    recordResumed: boolean;
+    recordPaused: boolean;
+    recordStopped: boolean;
+    adminRestrictSetting: boolean;
+    videoRequestState: null;
+    videoRequestTime: number;
+    videoAction: boolean;
+    localStreamVideo: null;
+    userDefaultVideoInputDevice: string;
+    currentFacingMode: string;
+    prevFacingMode: string;
+    defVideoID: string;
+    allowed: boolean;
+    dispActiveNames: never[];
+    activeNames: never[];
+    prevActiveNames: never[];
+    p_activeNames: never[];
+    p_dispActiveNames: never[];
+    membersReceived: boolean;
+    deferScreenReceived: boolean;
+    hostFirstSwitch: boolean;
+    micAction: boolean;
+    screenAction: boolean;
+    chatAction: boolean;
+    audioRequestState: null;
+    screenRequestState: null;
+    chatRequestState: null;
+    audioRequestTime: number;
+    screenRequestTime: number;
+    chatRequestTime: number;
+    updateRequestIntervalSeconds: number;
+    oldSoundIds: never[];
+    hostLabel: string;
+    mainScreenFilled: boolean;
+    localStreamScreen: null;
+    screenAlreadyOn: boolean;
+    chatAlreadyOn: boolean;
+    redirectURL: string;
+    oldAllStreams: never[];
+    adminVidID: string;
+    streamNames: never[];
+    non_alVideoStreams: never[];
+    sortAudioLoudness: boolean;
+    audioDecibels: never[];
+    mixed_alVideoStreams: never[];
+    non_alVideoStreams_muted: never[];
+    paginatedStreams: never[];
+    localStreamAudio: null;
+    defAudioID: string;
+    userDefaultAudioInputDevice: string;
+    userDefaultAudioOutputDevice: string;
+    prevAudioInputDevice: string;
+    prevVideoInputDevice: string;
+    audioPaused: boolean;
+    mainScreenPerson: string;
+    adminOnMainScreen: boolean;
+    screenStates: {
+        mainScreenPerson: string;
+        mainScreenProducerId: string;
+        mainScreenFilled: boolean;
+        adminOnMainScreen: boolean;
+    }[];
+    prevScreenStates: {
+        mainScreenPerson: string;
+        mainScreenProducerId: string;
+        mainScreenFilled: boolean;
+        adminOnMainScreen: boolean;
+    }[];
+    updateDateState: null;
+    lastUpdate: null;
+    nForReadjustRecord: number;
+    fixedPageLimit: number;
+    removeAltGrid: boolean;
+    nForReadjust: number;
+    reorderInterval: number;
+    fastReorderInterval: number;
+    lastReorderTime: number;
+    audStreamNames: never[];
+    currentUserPage: number;
+    mainHeightWidth: number;
+    prevMainHeightWidth: number;
+    prevDoPaginate: boolean;
+    doPaginate: boolean;
+    shareEnded: boolean;
+    lStreams: never[];
+    chatRefStreams: never[];
+    controlHeight: number;
+    isWideScreen: boolean;
+    isMediumScreen: boolean;
+    isSmallScreen: boolean;
+    addGrid: boolean;
+    addAltGrid: boolean;
+    gridRows: number;
+    gridCols: number;
+    altGridRows: number;
+    altGridCols: number;
+    numberPages: number;
+    currentStreams: never[];
+    showMiniView: boolean;
+    nStream: null;
+    defer_receive: boolean;
+    allAudioStreams: never[];
+    remoteScreenStream: never[];
+    screenProducer: null;
+    localScreenProducer: null;
+    gotAllVids: boolean;
+    paginationHeightWidth: number;
+    paginationDirection: string;
+    gridSizes: {
+        gridWidth: number;
+        gridHeight: number;
+        altGridWidth: number;
+        altGridHeight: number;
+    };
+    screenForceFullDisplay: boolean;
+    mainGridStream: never[];
+    otherGridStreams: never[][];
+    audioOnlyStreams: never[];
+    videoInputs: never[];
+    audioInputs: never[];
+    meetingProgressTime: string;
+    meetingElapsedTime: number;
+    ref_participants: never[];
+    messages: never[];
+    startDirectMessage: boolean;
+    directMessageDetails: null;
+    showMessagesBadge: boolean;
+    audioSetting: string;
+    videoSetting: string;
+    screenshareSetting: string;
+    chatSetting: string;
+    displayOption: string;
+    autoWave: boolean;
+    forceFullDisplay: boolean;
+    prevForceFullDisplay: boolean;
+    prevMeetingDisplayType: string;
+    waitingRoomFilter: string;
+    waitingRoomList: never[];
+    waitingRoomCounter: number;
+    filteredWaitingRoomList: never[];
+    requestFilter: string;
+    requestList: never[];
+    requestCounter: number;
+    filteredRequestList: never[];
+    totalReqWait: number;
+    alertVisible: boolean;
+    alertMessage: string;
+    alertType: string;
+    alertDuration: number;
+    progressTimerVisible: boolean;
+    progressTimerValue: number;
+    isMenuModalVisible: boolean;
+    isRecordingModalVisible: boolean;
+    isSettingsModalVisible: boolean;
+    isRequestsModalVisible: boolean;
+    isWaitingModalVisible: boolean;
+    isCoHostModalVisible: boolean;
+    isMediaSettingsModalVisible: boolean;
+    isDisplaySettingsModalVisible: boolean;
+    isParticipantsModalVisible: boolean;
+    isMessagesModalVisible: boolean;
+    isConfirmExitModalVisible: boolean;
+    isConfirmHereModalVisible: boolean;
+    isShareEventModalVisible: boolean;
+    isLoadingModalVisible: boolean;
+    recordingMediaOptions: string;
+    recordingAudioOptions: string;
+    recordingVideoOptions: string;
+    recordingVideoType: string;
+    recordingVideoOptimized: boolean;
+    recordingDisplayType: string;
+    recordingAddHLS: boolean;
+    recordingNameTags: boolean;
+    recordingBackgroundColor: string;
+    recordingNameTagsColor: string;
+    recordingAddText: boolean;
+    recordingCustomText: string;
+    recordingCustomTextPosition: string;
+    recordingCustomTextColor: string;
+    recordingOrientationVideo: string;
+    clearedToResume: boolean;
+    clearedToRecord: boolean;
+    recordState: string;
+    showRecordButtons: boolean;
+    recordingProgressTime: string;
+    audioSwitching: boolean;
+    videoSwitching: boolean;
+    videoAlreadyOn: boolean;
+    audioAlreadyOn: boolean;
+    componentSizes: {
+        mainHeight: number;
+        otherHeight: number;
+        mainWidth: number;
+        otherWidth: number;
+    };
+    hasCameraPermission: boolean;
+    hasAudioPermission: boolean;
+    transportCreated: boolean;
+    localTransportCreated: boolean;
+    transportCreatedVideo: boolean;
+    transportCreatedAudio: boolean;
+    transportCreatedScreen: boolean;
+    producerTransport: null;
+    localProducerTransport: null;
+    videoProducer: null;
+    localVideoProducer: null;
+    params: {};
+    videoParams: {};
+    audioParams: {};
+    audioProducer: null;
+    localAudioProducer: null;
+    consumerTransports: never[];
+    consumingTransports: never[];
+    polls: never[];
+    poll: null;
+    isPollModalVisible: boolean;
+    customImage: string;
+    selectedImage: string;
+    segmentVideo: null;
+    selfieSegmentation: null;
+    pauseSegmentation: boolean;
+    processedStream: null;
+    keepBackground: boolean;
+    backgroundHasChanged: boolean;
+    virtualStream: null;
+    mainCanvas: null;
+    prevKeepBackground: boolean;
+    appliedBackground: boolean;
+    isBackgroundModalVisible: boolean;
+    autoClickBackground: boolean;
+    breakoutRooms: never[];
+    currentRoomIndex: number;
+    canStartBreakout: boolean;
+    breakOutRoomStarted: boolean;
+    breakOutRoomEnded: boolean;
+    hostNewRoom: number;
+    limitedBreakRoom: never[];
+    mainRoomsLength: number;
+    memberRoom: number;
+    isBreakoutRoomsModalVisible: boolean;
+    whiteboardUsers: never[];
+    currentWhiteboardIndex: number;
+    canStartWhiteboard: boolean;
+    whiteboardStarted: boolean;
+    whiteboardEnded: boolean;
+    whiteboardLimit: number;
+    isWhiteboardModalVisible: boolean;
+    isConfigureWhiteboardModalVisible: boolean;
+    shapes: never[];
+    useImageBackground: boolean;
+    redoStack: never[];
+    undoStack: never[];
+    canvasStream: null;
+    canvasWhiteboard: null;
+    canvasScreenboard: null;
+    processedScreenStream: null;
+    annotateScreenStream: boolean;
+    mainScreenCanvas: null;
+    isScreenboardModalVisible: boolean;
+    micActive: boolean;
+    videoActive: boolean;
+    screenShareActive: boolean;
+    endCallActive: boolean;
+    participantsActive: boolean;
+    menuActive: boolean;
+    commentsActive: boolean;
+};
+
+export declare type InitialValuesStateType = typeof initialValuesState;
+
+export declare const isConsumingTranslationForSpeaker: (speakerId: string, consumerTransports: Transport[], translationProducerMap: Map<string, {
+    translationProducerId: string;
+    originalProducerId: string;
+    language: string;
+}>) => {
+    consuming: boolean;
+    language?: string;
+    translationProducerId?: string;
+    originalProducerId?: string;
+};
+
+export declare const isLanguageSupported: (code: string) => boolean;
+
+export declare const isSpeakerInMyBreakoutRoom: (speakerName: string, parameters: TranslationConsumerSwitchParameters) => boolean;
+
+export declare const isSubtitleExpired: (subtitle: LiveSubtitle, now?: number) => boolean;
 
 /**
  * Joins a conference room using the provided options.
@@ -3263,6 +5013,23 @@ export declare interface JoinLocalEventRoomParameters {
     audioOutputPreference?: string | null;
 }
 
+export declare function joinLocalRoom({ socket, roomName, islevel, member, sec, apiUserName, parameters, checkConnect, joinMediaSFURoom, localLink, }: JoinLocalRoomOptions): Promise<ResponseJoinLocalRoom>;
+
+export declare interface JoinLocalRoomOptions {
+    socket: Socket;
+    roomName: string;
+    islevel: string;
+    member: string;
+    sec: string;
+    apiUserName: string;
+    parameters: PreJoinPageParameters;
+    checkConnect?: boolean;
+    joinMediaSFURoom?: JoinRoomOnMediaSFUType;
+    localLink?: string;
+}
+
+export declare type JoinLocalRoomType = (options: JoinLocalRoomOptions) => Promise<ResponseJoinLocalRoom>;
+
 export declare interface JoinMediaSFURoomOptions {
     action: 'join';
     meetingID: string;
@@ -3270,12 +5037,129 @@ export declare interface JoinMediaSFURoomOptions {
     secureCode?: string;
 }
 
+/**
+ * Joins a user to a specified room via a socket connection.
+ *
+ * @param {JoinRoomOptions} options - The options for joining the room.
+ * @param {Socket} options.socket - The socket instance to use for communication.
+ * @param {string} options.roomName - The name of the room to join.
+ * @param {string} options.islevel - The level of the user.
+ * @param {string} options.member - The member identifier.
+ * @param {string} options.sec - The security token.
+ * @param {string} options.apiUserName - The API username of the user.
+ *
+ * @returns {Promise<JoinRoomResponse>} A promise that resolves with the data received from the 'joinRoom' event or rejects with a validation error.
+ */
+export declare function joinRoom({ socket, roomName, islevel, member, sec, apiUserName, }: JoinRoomOptions): Promise<JoinRoomResponse>;
+
+/**
+ * Joins a room by delegating to the producer or consumer join emit based on the consume flag.
+ *
+ * @param {JoinRoomClientOptions} options - The options for joining the room.
+ * @returns {Promise<JoinRoomClientResponse>} The response returned from the server.
+ */
+export declare const joinRoomClient: ({ socket, roomName, islevel, member, sec, apiUserName, consume, }: JoinRoomClientOptions) => Promise<JoinRoomClientResponse>;
+
+export declare interface JoinRoomClientOptions {
+    socket: Socket;
+    roomName: string;
+    islevel: string;
+    member: string;
+    sec: string;
+    apiUserName: string;
+    consume?: boolean;
+}
+
+export declare type JoinRoomClientResponse = JoinRoomResponse | JoinConRoomResponse;
+
+export declare type JoinRoomClientType = (options: JoinRoomClientOptions) => Promise<JoinRoomClientResponse>;
+
+/**
+ * Calls the MediaSFU join-room API and returns a normalized success/error result.
+ *
+ * This helper supports both cloud and self-hosted deployments through the
+ * optional `localLink` override.
+ *
+ * @param options API request options including credentials and join payload.
+ * @returns A result object containing either parsed response data or an error payload.
+ *
+ * @example
+ * ```typescript
+ * const result = await joinRoomOnMediaSFU({
+ *   payload: { action: 'join', meetingID: 'room123', userName: 'Ada' },
+ *   apiUserName: 'sampleuser',
+ *   apiKey: '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef',
+ * });
+ *
+ * if (result.success) {
+ *   console.log(result.data?.roomName);
+ * }
+ * ```
+ */
+export declare const joinRoomOnMediaSFU: CreateJoinRoomType;
+
 export declare type JoinRoomOnMediaSFUType = (options: {
     payload: JoinMediaSFURoomOptions;
     apiUserName: string;
     apiKey: string;
     localLink?: string;
+}) => Promise<{
+    data: CreateJoinRoomResponse | CreateJoinRoomError | null;
+    success: boolean;
+}>;
+
+declare type JoinRoomOnMediaSFUType_2 = (options: {
+    payload: JoinMediaSFURoomOptions;
+    apiUserName: string;
+    apiKey: string;
+    localLink?: string;
 }) => Promise<CreateJoinRoomResult>;
+
+export declare interface JoinRoomOptions {
+    socket: Socket;
+    roomName: string;
+    islevel: string;
+    member: string;
+    sec: string;
+    apiUserName: string;
+}
+
+export declare interface JoinRoomResponse {
+    success: boolean;
+    rtpCapabilities: RtpCapabilities | null;
+    reason?: string;
+    banned?: boolean;
+    suspended?: boolean;
+    noAdmin?: boolean;
+    [key: string]: any;
+}
+
+export declare type JoinRoomType = (options: JoinRoomOptions) => Promise<JoinRoomResponse>;
+
+export declare interface LanguageEntry {
+    code: string;
+    nickname?: string;
+    voiceConfig?: TranslationVoiceConfig;
+}
+
+export declare interface LanguageMetadata {
+    name: string;
+    nativeName: string;
+    region: LanguageRegion;
+    ttsSupport: TTSSupport;
+}
+
+export declare type LanguageMode = 'allowlist' | 'blocklist' | 'any';
+
+export declare interface LanguageOption {
+    code: string;
+    name: string;
+    nativeName: string;
+    region: LanguageRegion;
+    ttsSupport: TTSSupport;
+}
+
+export declare type LanguageRegion = 'global' | 'europe' | 'asia' | 'south-asia' | 'mena' | 'africa' | 'caucasus' | 'central-asia' | 'constructed' | 'special' | 'other';
 
 /**
  * Toggles the visibility of the background modal.
@@ -3510,6 +5394,15 @@ export declare interface LaunchMessagesOptions {
 
 export declare type LaunchMessagesType = (options: LaunchMessagesOptions) => void;
 
+export declare const launchPanelists: ({ updateIsPanelistsModalVisible, isPanelistsModalVisible, }: LaunchPanelistsOptions) => void;
+
+export declare interface LaunchPanelistsOptions {
+    updateIsPanelistsModalVisible: (visible: boolean) => void;
+    isPanelistsModalVisible: boolean;
+}
+
+export declare type LaunchPanelistsType = (options: LaunchPanelistsOptions) => void;
+
 /**
  * Toggles the visibility of the participants modal.
  *
@@ -3533,6 +5426,15 @@ export declare interface LaunchParticipantsOptions {
 }
 
 export declare type LaunchParticipantsType = (options: LaunchParticipantsOptions) => void;
+
+export declare const launchPermissions: ({ updateIsPermissionsModalVisible, isPermissionsModalVisible, }: LaunchPermissionsOptions) => void;
+
+export declare interface LaunchPermissionsOptions {
+    updateIsPermissionsModalVisible: (visible: boolean) => void;
+    isPermissionsModalVisible: boolean;
+}
+
+export declare type LaunchPermissionsType = (options: LaunchPermissionsOptions) => void;
 
 /**
  * Toggles the visibility of the poll modal.
@@ -3688,6 +5590,34 @@ export declare interface LaunchWaitingOptions {
 
 export declare type LaunchWaitingType = (options: LaunchWaitingOptions) => void;
 
+export declare interface LiveSubtitle {
+    text: string;
+    language: string;
+    timestamp: number;
+    expiresAt: number;
+    speakerId: string;
+    speakerName?: string;
+}
+
+export declare interface MainHostCardPlan {
+    kind: 'video' | 'audio' | 'mini';
+    key: string;
+    name: string;
+    initials?: string;
+    remoteProducerId?: string;
+    videoStream?: any;
+    doMirror?: boolean;
+    state: MainScreenState;
+}
+
+export declare type MainHostRenderMode = 'adminVideo' | 'audio' | 'mini' | 'video';
+
+export declare interface MainScreenState {
+    filled: boolean;
+    adminOnMainScreen: boolean;
+    mainScreenPerson: string;
+}
+
 export declare type MainSpecs = {
     mediaOptions: string;
     audioOptions: string;
@@ -3697,6 +5627,57 @@ export declare type MainSpecs = {
     recordingDisplayType: 'video' | 'media' | 'all';
     addHLS: boolean;
 };
+
+export declare const mediaDevices: {
+    getUserMedia: (_constraints: MediaStreamConstraints) => Promise<MediaStream_2>;
+    getDisplayMedia: (_constraints: MediaStreamConstraints) => Promise<MediaStream_2>;
+    enumerateDevices: () => Promise<MediaDeviceInfo[]>;
+};
+
+declare interface MediaEntryLike {
+    producerId?: string | null;
+    audioID?: string | null;
+}
+
+declare class MediaStream_2 {
+    tracks: any[];
+    constructor(tracks?: any[]);
+    [key: string]: any;
+}
+export { MediaStream_2 as MediaStream }
+
+declare class MediaStreamTrack_2 {
+    [key: string]: any;
+}
+export { MediaStreamTrack_2 as MediaStreamTrack }
+
+/**
+ * Announces that the current event has ended and optionally redirects on web.
+ *
+ * @param {MeetingEndedOptions} options - Event-end behavior settings.
+ * @returns {Promise<void>} Resolves after alerts and redirect scheduling are configured.
+ *
+ * @example
+ * ```typescript
+ * await meetingEnded({
+ *   onWeb: true,
+ *   eventType: 'conference',
+ *   redirectURL: 'https://example.com',
+ *   showAlert,
+ * });
+ * ```
+ */
+export declare const meetingEnded: ({ showAlert, redirectURL, onWeb, eventType, }: MeetingEndedOptions) => Promise<void>;
+
+export declare interface MeetingEndedOptions {
+    showAlert?: ShowAlert;
+    redirectURL?: string;
+    onWeb: boolean;
+    eventType: EventType;
+    updateValidated?: (isValid: boolean) => void;
+}
+
+export declare type MeetingEndedType = (options: MeetingEndedOptions) => Promise<void>;
 
 export declare interface MeetingRoomParams {
     itemPageLimit: number;
@@ -3713,13 +5694,50 @@ export declare interface MeetingRoomParams {
     chatSetting: 'allow' | 'disallow';
 }
 
+/**
+ * Shows the "still there" confirmation modal.
+ *
+ * @param {MeetingStillThereOptions} options - Visibility setter for the confirmation modal.
+ * @returns {Promise<void>} Resolves after the modal is shown.
+ *
+ * @example
+ * ```typescript
+ * await meetingStillThere({
+ *   updateIsConfirmHereModalVisible: setIsConfirmHereModalVisible,
+ * });
+ * ```
+ */
+export declare const meetingStillThere: ({ updateIsConfirmHereModalVisible, }: MeetingStillThereOptions) => Promise<void>;
+
 export declare interface MeetingStillThereData {
     timeRemaining: number;
 }
 
+export declare interface MeetingStillThereOptions {
+    updateIsConfirmHereModalVisible: (isVisible: boolean) => void;
+}
+
+export declare type MeetingStillThereType = (options: MeetingStillThereOptions) => Promise<void>;
+
+/**
+ * Shows a meeting countdown alert for non-chat event types.
+ *
+ * @param options Function options including the remaining time in milliseconds.
+ * @returns A promise that resolves after the alert has been evaluated and dispatched.
+ */
+export declare const meetingTimeRemaining: ({ timeRemaining, showAlert, eventType, }: MeetingTimeRemainingOptions) => Promise<void>;
+
 export declare interface MeetingTimeRemainingData {
     timeRemaining: number;
 }
+
+export declare interface MeetingTimeRemainingOptions {
+    timeRemaining: number;
+    showAlert?: ShowAlert;
+    eventType: EventType;
+}
+
+export declare type MeetingTimeRemainingType = (options: MeetingTimeRemainingOptions) => Promise<void>;
 
 export declare interface Message {
     sender: string;
@@ -3774,6 +5792,16 @@ export declare interface MessageParticipantsOptions {
 
 export declare type MessageParticipantsType = (options: any) => void;
 
+declare interface MixParticipantLike {
+    videoID?: string | null;
+    muted?: boolean | null;
+}
+
+declare interface MixStreamLike {
+    producerId?: string | null;
+    muted?: boolean | null;
+}
+
 /**
  * Mixes video and audio streams and participants based on specified parameters.
  *
@@ -3793,15 +5821,21 @@ export declare type MessageParticipantsType = (options: any) => void;
  * console.log('Mixed streams:', mixedStreams);
  * ```
  */
-export declare function mixStreams({ alVideoStreams, non_alVideoStreams, ref_participants, }: MixStreamsOptions): Promise<(Stream | Participant)[]>;
+export declare function mixStreams<TStream extends MixStreamLike = Stream, TParticipant extends MixParticipantLike = Participant>({ alVideoStreams, non_alVideoStreams, ref_participants, }: MixStreamsOptions<TStream, TParticipant>): Promise<(TStream | TParticipant)[]>;
 
-export declare interface MixStreamsOptions {
-    alVideoStreams: (Stream | Participant)[];
-    non_alVideoStreams: Participant[];
-    ref_participants: (Stream | Participant)[];
+declare type MixStreamsInvoker<TEntry, TParticipant> = (options: {
+    alVideoStreams: TEntry[];
+    non_alVideoStreams: TParticipant[];
+    ref_participants: TEntry[];
+}) => Promise<TEntry[]>;
+
+export declare interface MixStreamsOptions<TStream extends MixStreamLike = Stream, TParticipant extends MixParticipantLike = Participant> {
+    alVideoStreams: (TStream | TParticipant)[];
+    non_alVideoStreams: TParticipant[];
+    ref_participants: (TStream | TParticipant)[];
 }
 
-export declare type MixStreamsType = (options: MixStreamsOptions) => Promise<(Stream | Participant)[]>;
+export declare type MixStreamsType = <TStream extends MixStreamLike = Stream, TParticipant extends MixParticipantLike = Participant>(options: MixStreamsOptions<TStream, TParticipant>) => Promise<(TStream | TParticipant)[]>;
 
 export declare interface ModalPositionStyle {
     justifyContent: string;
@@ -3841,7 +5875,7 @@ export declare interface ModalPositionStyle {
  * // Sets User123 as the new co-host with specific responsibilities and emits the update event.
  * ```
  */
-export declare const modifyCoHostSettings: ({ roomName, showAlert, selectedParticipant, coHost, coHostResponsibility, updateIsCoHostModalVisible, updateCoHostResponsibility, updateCoHost, socket, }: ModifyCoHostSettingsOptions) => Promise<void>;
+export declare const modifyCoHostSettings: ({ roomName, selectedParticipant, coHost, coHostResponsibility, updateIsCoHostModalVisible, updateCoHostResponsibility, updateCoHost, socket, }: ModifyCoHostSettingsOptions) => Promise<void>;
 
 export declare interface ModifyCoHostSettingsOptions {
     roomName: string;
@@ -3936,6 +5970,7 @@ export declare interface ModifyDisplaySettingsParameters extends OnScreenChanges
     meetingDisplayType: string;
     autoWave: boolean;
     forceFullDisplay: boolean;
+    showSubtitlesOnCards?: boolean;
     meetingVideoOptimized: boolean;
     islevel: string;
     recordStarted: boolean;
@@ -3949,6 +5984,7 @@ export declare interface ModifyDisplaySettingsParameters extends OnScreenChanges
     updateMeetingDisplayType: (displayType: string) => void;
     updateAutoWave: (autoWave: boolean) => void;
     updateForceFullDisplay: (forceFullDisplay: boolean) => void;
+    updateShowSubtitlesOnCards?: (showSubtitlesOnCards: boolean) => void;
     updateMeetingVideoOptimized: (optimized: boolean) => void;
     updatePrevForceFullDisplay: (forceFullDisplay: boolean) => void;
     updatePrevMeetingDisplayType: (displayType: string) => void;
@@ -3989,7 +6025,7 @@ export declare type ModifyDisplaySettingsType = (options: ModifyDisplaySettingsO
  * });
  * ```
  */
-export declare function modifySettings({ showAlert, roomName, audioSet, videoSet, screenshareSet, chatSet, socket, updateAudioSetting, updateVideoSetting, updateScreenshareSetting, updateChatSetting, updateIsSettingsModalVisible, }: ModifySettingsOptions): Promise<void>;
+export declare function modifySettings({ roomName, audioSet, videoSet, screenshareSet, chatSet, socket, updateAudioSetting, updateVideoSetting, updateScreenshareSetting, updateChatSetting, updateIsSettingsModalVisible, }: ModifySettingsOptions): Promise<void>;
 
 export declare interface ModifySettingsOptions {
     showAlert?: ShowAlert;
@@ -4104,13 +6140,15 @@ export declare type MuteParticipantsType = (options: any) => Promise<void>;
  *
  * init();
  */
-export declare const newPipeProducer: ({ producerId, islevel, nsock, parameters, }: NewPipeProducerOptions) => Promise<void>;
+export declare const newPipeProducer: ({ producerId, islevel, nsock, parameters, isTranslation, translationMeta, }: NewPipeProducerOptions) => Promise<void>;
 
 export declare interface NewPipeProducerOptions {
     producerId: string;
     islevel: string;
     nsock: Socket;
     parameters: NewPipeProducerParameters;
+    isTranslation?: boolean;
+    translationMeta?: TranslationMeta;
 }
 
 export declare interface NewPipeProducerParameters extends ReorderStreamsParameters, SignalNewConsumerTransportParameters, ConnectRecvTransportParameters {
@@ -4129,6 +6167,32 @@ export declare interface NewPipeProducerParameters extends ReorderStreamsParamet
     connectRecvTransport: ConnectRecvTransportType;
     reorderStreams: ReorderStreamsType;
     getUpdatedAllParams: () => NewPipeProducerParameters;
+    startConsumingTranslation?: (producerId: string, speakerId: string, language: string, originalProducerId?: string, nsock?: Socket) => Promise<void>;
+    translationSubscriptions?: Map<string, {
+        speakerId: string;
+        language: string;
+    }>;
+    speakerTranslationStates?: Map<string, {
+        speakerId: string;
+        speakerName: string;
+        inputLanguage: string;
+        outputLanguage: string;
+        originalProducerId: string;
+        enabled: boolean;
+    }>;
+    listenerTranslationOverrides?: Map<string, {
+        speakerId: string;
+        wantOriginal: boolean;
+        preferredLanguage?: string;
+    }>;
+    listenerTranslationPreferences?: {
+        perSpeaker: Map<string, {
+            speakerId: string;
+            language: string | null;
+            wantOriginal: boolean;
+        }>;
+        globalLanguage: string | null;
+    };
     [key: string]: any;
 }
 
@@ -4139,6 +6203,12 @@ declare interface NewPoll {
     type: string;
     options: string[];
 }
+
+export declare const normalizeLanguageCode: (code: string) => string;
+
+declare type NumberUpdater = (value: number) => void;
+
+declare type NumberUpdater_2 = (value: number) => void;
 
 /**
  * Handles changes in screen events such as broadcast, chat, and conference.
@@ -4178,14 +6248,19 @@ declare interface NewPoll {
  * });
  * ```
  */
-export declare function onScreenChanges({ changed, parameters }: OnScreenChangesOptions): Promise<void>;
+export declare function onScreenChanges<TParameters extends OnScreenChangesParameters = OnScreenChangesParameters>({ changed, parameters }: OnScreenChangesOptions<TParameters>): Promise<void>;
 
-export declare interface OnScreenChangesOptions {
+declare type OnScreenChangesInvoker = (options: {
     changed?: boolean;
-    parameters: OnScreenChangesParameters;
+    parameters: any;
+}) => Promise<void>;
+
+export declare interface OnScreenChangesOptions<TParameters extends OnScreenChangesParameters = OnScreenChangesParameters> {
+    changed?: boolean;
+    parameters: TParameters;
 }
 
-export declare interface OnScreenChangesParameters extends ReorderStreamsParameters {
+export declare interface OnScreenChangesParameters extends ReorderStreamsParameters<any, any, any> {
     eventType: EventType;
     shareScreenStarted: boolean;
     shared: boolean;
@@ -4194,11 +6269,31 @@ export declare interface OnScreenChangesParameters extends ReorderStreamsParamet
     itemPageLimit: number;
     updateItemPageLimit: (value: number) => void;
     updateMainHeightWidth: (value: number) => void;
-    reorderStreams: ReorderStreamsType;
+    reorderStreams: OpaqueReorderStreamsInvoker;
     [key: string]: any;
 }
 
-export declare type OnScreenChangesType = (options: OnScreenChangesOptions) => Promise<void>;
+export declare type OnScreenChangesType = <TParameters extends OnScreenChangesParameters = OnScreenChangesParameters>(options: OnScreenChangesOptions<TParameters>) => Promise<void>;
+
+declare type OpaqueAsyncInvoker = {
+    bivarianceHack: (options: any) => Promise<any>;
+}["bivarianceHack"];
+
+declare type OpaqueCheckGridInvoker = {
+    bivarianceHack: (options: any) => Promise<any> | any;
+}["bivarianceHack"];
+
+declare type OpaqueDispStreamsInvoker = {
+    bivarianceHack: (options: any) => Promise<void>;
+}['bivarianceHack'];
+
+declare type OpaqueEstimateInvoker = {
+    bivarianceHack: (options: any) => EstimateResult;
+}["bivarianceHack"];
+
+declare type OpaqueReorderStreamsInvoker = {
+    bivarianceHack: (options: any) => Promise<void>;
+}["bivarianceHack"];
 
 export declare interface OverlayPositionStyle {
     top?: number;
@@ -4206,6 +6301,48 @@ export declare interface OverlayPositionStyle {
     right?: number;
     bottom?: number;
 }
+
+export declare const panelistControlMedia: ControlMediaType;
+
+export declare interface PanelistData {
+    id: string;
+    name: string;
+}
+
+export declare const panelistFocusChanged: PanelistFocusChangedType;
+
+export declare interface PanelistFocusChangedData {
+    focusEnabled: boolean;
+    panelists: PanelistData[];
+    muteOthersMic: boolean;
+    muteOthersCamera: boolean;
+}
+
+export declare interface PanelistFocusChangedOptions {
+    data: PanelistFocusChangedData;
+    updatePanelistsFocused?: (focused: boolean) => void;
+    updateMuteOthersMic?: (mute: boolean) => void;
+    updateMuteOthersCamera?: (mute: boolean) => void;
+    updatePanelists?: (panelists: Participant[]) => void;
+    currentPanelistsFocused?: boolean;
+    currentPanelists?: Participant[];
+    onScreenChanges?: () => Promise<void>;
+}
+
+export declare type PanelistFocusChangedType = (options: PanelistFocusChangedOptions) => Promise<void>;
+
+export declare const panelistsUpdated: PanelistsUpdatedType;
+
+export declare interface PanelistsUpdatedData {
+    panelists: PanelistData[];
+}
+
+export declare interface PanelistsUpdatedOptions {
+    data: PanelistsUpdatedData;
+    updatePanelists?: (panelists: Participant[]) => void;
+}
+
+export declare type PanelistsUpdatedType = (options: PanelistsUpdatedOptions) => Promise<void>;
 
 export declare interface Participant {
     id?: string;
@@ -4225,9 +6362,135 @@ export declare interface Participant {
     [key: string]: any;
 }
 
+declare interface ParticipantLike {
+    name: string;
+    islevel?: string | null;
+    audioID?: string | null;
+    producerId?: string | null;
+    breakRoom?: number | null;
+}
+
+declare interface ParticipantLike_2 {
+    name: string;
+    islevel?: string | null;
+    videoID?: string | null;
+}
+
+/**
+ * Appends a new participant request and refreshes the combined request/waiting count.
+ *
+ * @param {ParticipantRequestedOptions} options - Request payload and state setters.
+ * @returns {Promise<void>} Resolves after the request state is updated.
+ *
+ * @example
+ * ```typescript
+ * await participantRequested({
+ *   userRequest,
+ *   requestList,
+ *   waitingRoomList,
+ *   updateRequestList: setRequestList,
+ *   updateTotalReqWait: setTotalReqWait,
+ * });
+ * ```
+ */
+export declare const participantRequested: ({ userRequest, requestList, waitingRoomList, updateTotalReqWait, updateRequestList, }: ParticipantRequestedOptions) => Promise<void>;
+
 export declare interface ParticipantRequestedData {
     userRequest: Request_2;
 }
+
+export declare interface ParticipantRequestedOptions {
+    userRequest: Request_2;
+    requestList: Request_2[];
+    waitingRoomList: WaitingRoomParticipant[];
+    updateTotalReqWait: (count: number) => void;
+    updateRequestList: (list: Request_2[]) => void;
+}
+
+export declare type ParticipantRequestedType = (options: ParticipantRequestedOptions) => Promise<void>;
+
+export declare const pauseOriginalProducer: ({ originalProducerId, speakerId, parameters, }: PauseOriginalProducerOptions) => Promise<void>;
+
+export declare interface PauseOriginalProducerOptions {
+    originalProducerId: string;
+    speakerId?: string;
+    parameters: TranslationConsumerSwitchParameters;
+}
+
+export declare type PauseOriginalProducerType = (options: PauseOriginalProducerOptions) => Promise<void>;
+
+export declare interface PendingRequestStorage {
+    getItem: (key: string) => Promise<string | null>;
+    setItem: (key: string, value: string) => Promise<void>;
+    removeItem: (key: string) => Promise<void>;
+}
+
+export declare interface PermissionCapabilities {
+    useMic: 'allow' | 'approval' | 'disallow';
+    useCamera: 'allow' | 'approval' | 'disallow';
+    useScreen: 'allow' | 'approval' | 'disallow';
+    useChat: 'allow' | 'disallow';
+}
+
+export declare interface PermissionConfig {
+    level0: PermissionCapabilities;
+    level1: PermissionCapabilities;
+}
+
+export declare const permissionConfigUpdated: PermissionConfigUpdatedType;
+
+export declare interface PermissionConfigUpdatedData {
+    config: PermissionConfig;
+}
+
+export declare interface PermissionConfigUpdatedOptions {
+    data: PermissionConfigUpdatedData;
+    updatePermissionConfig?: (config: PermissionConfig) => void;
+}
+
+export declare type PermissionConfigUpdatedType = (options: PermissionConfigUpdatedOptions) => Promise<void>;
+
+export declare type PermissionLevel = '0' | '1' | '2';
+
+export declare const permissionUpdated: PermissionUpdatedType;
+
+export declare interface PermissionUpdatedData {
+    newLevel: string;
+    message?: string;
+}
+
+export declare interface PermissionUpdatedOptions {
+    data: PermissionUpdatedData;
+    showAlert?: ShowAlert;
+    updateIslevel?: (level: string) => void;
+}
+
+export declare type PermissionUpdatedType = (options: PermissionUpdatedOptions) => Promise<void>;
+
+/**
+ * Announces that a participant has joined the event.
+ *
+ * @param {PersonJoinedOptions} options - Join alert settings.
+ * @param {string} options.name - Participant name to display.
+ * @param {ShowAlert} [options.showAlert] - Optional alert presenter.
+ * @returns {Promise<void>} Resolves after the alert is dispatched.
+ *
+ * @example
+ * ```typescript
+ * await personJoined({
+ *   name: 'Alice',
+ *   showAlert: ({ message }) => console.log(message),
+ * });
+ * ```
+ */
+export declare const personJoined: ({ name, showAlert, }: PersonJoinedOptions) => Promise<void>;
+
+export declare interface PersonJoinedOptions {
+    showAlert?: ShowAlert;
+    name: string;
+}
+
+export declare type PersonJoinedType = (options: PersonJoinedOptions) => Promise<void>;
 
 export declare interface Poll {
     id: string;
@@ -4240,11 +6503,50 @@ export declare interface Poll {
     [key: string]: any;
 }
 
+/**
+ * Reconciles poll update payloads with current poll state.
+ *
+ * This helper updates the poll collection, manages active poll visibility, and
+ * emits user-facing alerts when a new poll starts or an active poll ends.
+ *
+ * @param options Poll update handling options.
+ * @returns A promise that resolves after local poll state has been synchronized.
+ *
+ * @example
+ * ```typescript
+ * await pollUpdated({
+ *   data,
+ *   polls,
+ *   poll,
+ *   member: 'Ada',
+ *   islevel: '1',
+ *   updatePolls: setPolls,
+ *   updatePoll: setCurrentPoll,
+ *   updateIsPollModalVisible: setPollModalVisible,
+ * });
+ * ```
+ */
+export declare const pollUpdated: ({ data, polls, poll, member, islevel, showAlert, updatePolls, updatePoll, updateIsPollModalVisible, }: PollUpdatedOptions) => Promise<void>;
+
 export declare interface PollUpdatedData {
     polls?: Poll[];
     poll: Poll;
     status: string;
 }
+
+export declare interface PollUpdatedOptions {
+    data: PollUpdatedData;
+    polls: Poll[];
+    poll: Poll;
+    member: string;
+    islevel: string;
+    showAlert?: ShowAlert;
+    updatePolls: (polls: Poll[]) => void;
+    updatePoll: (poll: Poll) => void;
+    updateIsPollModalVisible: (isVisible: boolean) => void;
+}
+
+export declare type PollUpdatedType = (options: PollUpdatedOptions) => Promise<void>;
 
 export declare interface PreJoinPageOptions {
     localLink?: string;
@@ -4254,7 +6556,7 @@ export declare interface PreJoinPageOptions {
     returnUI?: boolean;
     noUIPreJoinOptions?: CreateMediaSFURoomOptions | JoinMediaSFURoomOptions;
     createMediaSFURoom?: CreateRoomOnMediaSFUType;
-    joinMediaSFURoom?: JoinRoomOnMediaSFUType;
+    joinMediaSFURoom?: JoinRoomOnMediaSFUType_2;
 }
 
 export declare interface PreJoinPageParameters {
@@ -4273,7 +6575,25 @@ export declare interface PreJoinPageParameters {
     updateMember: (member: string) => void;
 }
 
+export declare interface PrepopulateParticipantLike {
+    name?: string;
+    islevel?: string;
+    ScreenID?: string;
+    ScreenOn?: boolean;
+    [key: string]: any;
+}
+
+export declare interface PrepopulateStreamLike {
+    producerId?: string;
+    stream?: any;
+    [key: string]: any;
+}
+
 export declare const prepopulateUserMedia: PrepopulateUserMediaType;
+
+declare type PrepopulateUserMediaInvoker = {
+    bivarianceHack: (options: PrepopulateUserMediaOptions) => Promise<unknown>;
+}['bivarianceHack'];
 
 export declare interface PrepopulateUserMediaOptions {
     name: string;
@@ -4282,6 +6602,17 @@ export declare interface PrepopulateUserMediaOptions {
 
 export declare interface PrepopulateUserMediaParameters {
     [key: string]: any;
+}
+
+export declare interface PrepopulateUserMediaPlan<P extends PrepopulateParticipantLike> {
+    screenFlowActive: boolean;
+    shouldReturnEarly: boolean;
+    shouldUpdateAdminOnMainScreen: boolean;
+    screenForceFullDisplay: boolean;
+    host: P | null;
+    hostStream: any;
+    adminOnMainScreen: boolean;
+    mainScreenPerson: string;
 }
 
 export declare type PrepopulateUserMediaType = (options: PrepopulateUserMediaOptions) => Promise<void>;
@@ -4322,7 +6653,7 @@ export declare type PrepopulateUserMediaType = (options: PrepopulateUserMediaOpt
  * });
  * ```
  */
-export declare function processConsumerTransports({ consumerTransports, lStreams_, parameters, }: ProcessConsumerTransportsOptions): Promise<void>;
+export declare function processConsumerTransports<TTransport extends TransportLike = Transport, TStreamEntry = Stream, TMediaEntry = Stream | Participant>({ consumerTransports, lStreams_, parameters, }: ProcessConsumerTransportsOptions<TTransport, TStreamEntry, TMediaEntry>): Promise<void>;
 
 /**
  * Processes consumer transports for audio streams by pausing and resuming them based on their current state and the provided streams.
@@ -4348,11 +6679,11 @@ export declare function processConsumerTransports({ consumerTransports, lStreams
  * });
  * ```
  */
-export declare const processConsumerTransportsAudio: ({ consumerTransports, lStreams, parameters, }: ProcessConsumerTransportsAudioOptions) => Promise<void>;
+export declare const processConsumerTransportsAudio: <TTransport extends TransportLike_2 = Transport, TMediaEntry = Stream | Participant>({ consumerTransports, lStreams, parameters, }: ProcessConsumerTransportsAudioOptions<TTransport, TMediaEntry>) => Promise<void>;
 
-export declare interface ProcessConsumerTransportsAudioOptions {
-    consumerTransports: Transport[];
-    lStreams: (Stream | Participant)[];
+export declare interface ProcessConsumerTransportsAudioOptions<TTransport extends TransportLike_2 = Transport, TMediaEntry = Stream | Participant> {
+    consumerTransports: TTransport[];
+    lStreams: TMediaEntry[];
     parameters: ProcessConsumerTransportsAudioParameters;
 }
 
@@ -4361,24 +6692,24 @@ export declare interface ProcessConsumerTransportsAudioParameters {
     [key: string]: any;
 }
 
-export declare type ProcessConsumerTransportsAudioType = (options: ProcessConsumerTransportsAudioOptions) => Promise<void>;
+export declare type ProcessConsumerTransportsAudioType = <TTransport extends TransportLike_2 = Transport, TMediaEntry = Stream | Participant>(options: ProcessConsumerTransportsAudioOptions<TTransport, TMediaEntry>) => Promise<void>;
 
-export declare interface ProcessConsumerTransportsOptions {
-    consumerTransports: Transport[];
-    lStreams_: (Stream | Participant)[];
-    parameters: ProcessConsumerTransportsParameters;
+export declare interface ProcessConsumerTransportsOptions<TTransport extends TransportLike = Transport, TStreamEntry = Stream, TMediaEntry = Stream | Participant> {
+    consumerTransports: TTransport[];
+    lStreams_: TMediaEntry[];
+    parameters: ProcessConsumerTransportsParameters<TStreamEntry, TMediaEntry>;
 }
 
-export declare interface ProcessConsumerTransportsParameters {
-    remoteScreenStream: Stream[];
-    oldAllStreams: (Stream | Participant)[];
-    newLimitedStreams: (Stream | Participant)[];
+export declare interface ProcessConsumerTransportsParameters<TStreamEntry = Stream, TMediaEntry = Stream | Participant> {
+    remoteScreenStream: TStreamEntry[];
+    oldAllStreams: TMediaEntry[];
+    newLimitedStreams: TMediaEntry[];
     sleep: SleepType;
-    getUpdatedAllParams: () => ProcessConsumerTransportsParameters;
+    getUpdatedAllParams: () => ProcessConsumerTransportsParameters<TStreamEntry, TMediaEntry>;
     [key: string]: any;
 }
 
-export declare type ProcessConsumerTransportsType = (options: ProcessConsumerTransportsOptions) => Promise<void>;
+export declare type ProcessConsumerTransportsType = <TTransport extends TransportLike = Transport, TStreamEntry = Stream, TMediaEntry = Stream | Participant>(options: ProcessConsumerTransportsOptions<TTransport, TStreamEntry, TMediaEntry>) => Promise<void>;
 
 /**
  * Handles the closure of a producer identified by its remote producer ID.
@@ -4435,11 +6766,104 @@ export declare interface ProducerClosedParameters extends CloseAndResizeParamete
 
 export declare type ProducerClosedType = (options: ProducerClosedOptions) => Promise<void>;
 
+/**
+ * Tears down a producer consumer transport and reconciles shared screen state when a producer closes.
+ *
+ * @param {ProducerMediaClosedOptions} options - Producer identity and shared room/media callbacks.
+ * @returns {Promise<void>} Resolves once transport teardown and UI cleanup are complete.
+ *
+ * @example
+ * ```typescript
+ * await producerMediaClosed({
+ *   producerId: '12345',
+ *   kind: 'screenshare',
+ *   parameters,
+ * });
+ * ```
+ */
+export declare const producerMediaClosed: <TTransport extends ProducerMediaClosedTransportLike = ProducerMediaClosedTransportLike, TCloseAndResizeParameters = CloseAndResizeParameters, TPrepopulateUserMediaParameters = PrepopulateUserMediaParameters, TReorderStreamsParameters = ReorderStreamsParameters, TAllParameters extends TCloseAndResizeParameters & TPrepopulateUserMediaParameters & TReorderStreamsParameters = TCloseAndResizeParameters & TPrepopulateUserMediaParameters & TReorderStreamsParameters>({ producerId, kind, parameters, }: ProducerMediaClosedOptions<TTransport, TCloseAndResizeParameters, TPrepopulateUserMediaParameters, TReorderStreamsParameters, TAllParameters>) => Promise<void>;
+
+export declare interface ProducerMediaClosedCloseAndResizeOptions<TParameters = unknown> {
+    producerId: string;
+    kind: 'video' | 'screen' | 'audio' | 'screenshare';
+    parameters: TParameters;
+}
+
+export declare type ProducerMediaClosedCloseAndResizeType<TParameters = unknown> = (options: ProducerMediaClosedCloseAndResizeOptions<TParameters>) => Promise<unknown>;
+
 export declare interface ProducerMediaClosedData {
     producerId: string;
     kind: 'audio' | 'video' | 'screenshare';
     name: string;
 }
+
+export declare interface ProducerMediaClosedOptions<TTransport extends ProducerMediaClosedTransportLike = ProducerMediaClosedTransportLike, TCloseAndResizeParameters = CloseAndResizeParameters, TPrepopulateUserMediaParameters = PrepopulateUserMediaParameters, TReorderStreamsParameters = ReorderStreamsParameters, TAllParameters extends TCloseAndResizeParameters & TPrepopulateUserMediaParameters & TReorderStreamsParameters = TCloseAndResizeParameters & TPrepopulateUserMediaParameters & TReorderStreamsParameters> {
+    producerId: string;
+    kind: 'video' | 'screen' | 'audio' | 'screenshare';
+    parameters: ProducerMediaClosedParameters<TTransport, TCloseAndResizeParameters, TPrepopulateUserMediaParameters, TReorderStreamsParameters, TAllParameters> & TAllParameters;
+}
+
+export declare interface ProducerMediaClosedParameters<TTransport extends ProducerMediaClosedTransportLike = ProducerMediaClosedTransportLike, TCloseAndResizeParameters = CloseAndResizeParameters, TPrepopulateUserMediaParameters = PrepopulateUserMediaParameters, TReorderStreamsParameters = ReorderStreamsParameters, TAllParameters extends TCloseAndResizeParameters & TPrepopulateUserMediaParameters & TReorderStreamsParameters = TCloseAndResizeParameters & TPrepopulateUserMediaParameters & TReorderStreamsParameters> {
+    consumerTransports: TTransport[];
+    updateConsumerTransports: (transports: TTransport[]) => void;
+    hostLabel: string;
+    shared: boolean;
+    updateShared: (shared: boolean) => void;
+    updateShareScreenStarted: (started: boolean) => void;
+    updateScreenId: (screenId: string) => void;
+    updateShareEnded: (ended: boolean) => void;
+    closeAndResize: ProducerMediaClosedCloseAndResizeType<TCloseAndResizeParameters>;
+    prepopulateUserMedia: ProducerMediaClosedPrepopulateUserMediaType<TPrepopulateUserMediaParameters>;
+    reorderStreams: ProducerMediaClosedReorderStreamsType<TReorderStreamsParameters>;
+    getUpdatedAllParams: () => ProducerMediaClosedParameters<TTransport, TCloseAndResizeParameters, TPrepopulateUserMediaParameters, TReorderStreamsParameters, TAllParameters> & TAllParameters;
+    [key: string]: any;
+}
+
+export declare interface ProducerMediaClosedPrepopulateUserMediaOptions<TParameters = unknown> {
+    name: string;
+    parameters: TParameters;
+}
+
+export declare type ProducerMediaClosedPrepopulateUserMediaType<TParameters = unknown> = (options: ProducerMediaClosedPrepopulateUserMediaOptions<TParameters>) => Promise<unknown>;
+
+export declare interface ProducerMediaClosedReorderStreamsOptions<TParameters = unknown> {
+    add: boolean;
+    screenChanged?: boolean;
+    parameters: TParameters;
+}
+
+export declare type ProducerMediaClosedReorderStreamsType<TParameters = unknown> = (options: ProducerMediaClosedReorderStreamsOptions<TParameters>) => Promise<unknown>;
+
+export declare interface ProducerMediaClosedTransportLike {
+    producerId: string;
+    consumerTransport?: {
+        close: () => Promise<void> | void;
+    };
+    consumer: {
+        close: () => Promise<void> | void;
+    };
+    [key: string]: any;
+}
+
+export declare type ProducerMediaClosedType<TTransport extends ProducerMediaClosedTransportLike = ProducerMediaClosedTransportLike, TCloseAndResizeParameters = CloseAndResizeParameters, TPrepopulateUserMediaParameters = PrepopulateUserMediaParameters, TReorderStreamsParameters = ReorderStreamsParameters, TAllParameters extends TCloseAndResizeParameters & TPrepopulateUserMediaParameters & TReorderStreamsParameters = TCloseAndResizeParameters & TPrepopulateUserMediaParameters & TReorderStreamsParameters> = (options: ProducerMediaClosedOptions<TTransport, TCloseAndResizeParameters, TPrepopulateUserMediaParameters, TReorderStreamsParameters, TAllParameters>) => Promise<void>;
+
+/**
+ * Reacts to a producer pause event by reconciling waveform state, main-window media, and layout ordering.
+ *
+ * @param {ProducerMediaPausedOptions} options - Producer identity and shared room/media callbacks.
+ * @returns {Promise<void>} Resolves once paused-media side effects are synchronized.
+ *
+ * @example
+ * ```typescript
+ * await producerMediaPaused({
+ *   producerId: 'abc123',
+ *   kind: 'audio',
+ *   name: 'Participant1',
+ *   parameters,
+ * });
+ * ```
+ */
+export declare const producerMediaPaused: <TParticipant extends ProducerMediaPausedParticipantLike = ProducerMediaPausedParticipantLike, TPrepopulateUserMediaParameters = PrepopulateUserMediaParameters, TReorderStreamsParameters = ReorderStreamsParameters, TReUpdateInterParameters = ReUpdateInterParameters, TAllParameters extends TPrepopulateUserMediaParameters & TReorderStreamsParameters & TReUpdateInterParameters = TPrepopulateUserMediaParameters & TReorderStreamsParameters & TReUpdateInterParameters>({ producerId, kind, name, parameters, }: ProducerMediaPausedOptions<TParticipant, TPrepopulateUserMediaParameters, TReorderStreamsParameters, TReUpdateInterParameters, TAllParameters>) => Promise<void>;
 
 export declare interface ProducerMediaPausedData {
     producerId: string;
@@ -4447,10 +6871,191 @@ export declare interface ProducerMediaPausedData {
     name: string;
 }
 
+export declare interface ProducerMediaPausedOptions<TParticipant extends ProducerMediaPausedParticipantLike = ProducerMediaPausedParticipantLike, TPrepopulateUserMediaParameters = PrepopulateUserMediaParameters, TReorderStreamsParameters = ReorderStreamsParameters, TReUpdateInterParameters = ReUpdateInterParameters, TAllParameters extends TPrepopulateUserMediaParameters & TReorderStreamsParameters & TReUpdateInterParameters = TPrepopulateUserMediaParameters & TReorderStreamsParameters & TReUpdateInterParameters> {
+    producerId: string;
+    kind: 'audio' | 'video' | 'screenshare' | 'screen';
+    name: string;
+    parameters: ProducerMediaPausedParameters<TParticipant, TPrepopulateUserMediaParameters, TReorderStreamsParameters, TReUpdateInterParameters, TAllParameters> & TAllParameters;
+}
+
+export declare interface ProducerMediaPausedParameters<TParticipant extends ProducerMediaPausedParticipantLike = ProducerMediaPausedParticipantLike, TPrepopulateUserMediaParameters = PrepopulateUserMediaParameters, TReorderStreamsParameters = ReorderStreamsParameters, TReUpdateInterParameters = ReUpdateInterParameters, TAllParameters extends TPrepopulateUserMediaParameters & TReorderStreamsParameters & TReUpdateInterParameters = TPrepopulateUserMediaParameters & TReorderStreamsParameters & TReUpdateInterParameters> {
+    activeSounds: string[];
+    meetingDisplayType: string;
+    meetingVideoOptimized: boolean;
+    participants: TParticipant[];
+    oldSoundIds: string[];
+    shared: boolean;
+    shareScreenStarted: boolean;
+    updateMainWindow: boolean;
+    hostLabel: string;
+    islevel: string;
+    updateActiveSounds: (activeSounds: string[]) => void;
+    updateUpdateMainWindow: (updateMainWindow: boolean) => void;
+    reorderStreams: ProducerMediaPausedReorderStreamsType<TReorderStreamsParameters>;
+    prepopulateUserMedia: ProducerMediaPausedPrepopulateUserMediaType<TPrepopulateUserMediaParameters>;
+    reUpdateInter: ProducerMediaPausedReUpdateInterType<TReUpdateInterParameters>;
+    getUpdatedAllParams: () => ProducerMediaPausedParameters<TParticipant, TPrepopulateUserMediaParameters, TReorderStreamsParameters, TReUpdateInterParameters, TAllParameters> & TAllParameters;
+    [key: string]: any;
+}
+
+export declare interface ProducerMediaPausedParticipantLike {
+    name?: string | null;
+    muted?: boolean;
+    islevel?: string | null;
+    videoID?: string | null;
+    audioID?: string | null;
+}
+
+export declare interface ProducerMediaPausedPrepopulateUserMediaOptions<TParameters = unknown> {
+    name: string;
+    parameters: TParameters;
+}
+
+export declare type ProducerMediaPausedPrepopulateUserMediaType<TParameters = unknown> = (options: ProducerMediaPausedPrepopulateUserMediaOptions<TParameters>) => Promise<unknown>;
+
+export declare interface ProducerMediaPausedReorderStreamsOptions<TParameters = unknown> {
+    add: boolean;
+    screenChanged?: boolean;
+    parameters: TParameters;
+}
+
+export declare type ProducerMediaPausedReorderStreamsType<TParameters = unknown> = (options: ProducerMediaPausedReorderStreamsOptions<TParameters>) => Promise<unknown>;
+
+export declare interface ProducerMediaPausedReUpdateInterOptions<TParameters = unknown> {
+    name: string;
+    add: boolean;
+    force?: boolean;
+    parameters: TParameters;
+}
+
+export declare type ProducerMediaPausedReUpdateInterType<TParameters = unknown> = (options: ProducerMediaPausedReUpdateInterOptions<TParameters>) => Promise<unknown>;
+
+export declare type ProducerMediaPausedType<TParticipant extends ProducerMediaPausedParticipantLike = ProducerMediaPausedParticipantLike, TPrepopulateUserMediaParameters = PrepopulateUserMediaParameters, TReorderStreamsParameters = ReorderStreamsParameters, TReUpdateInterParameters = ReUpdateInterParameters, TAllParameters extends TPrepopulateUserMediaParameters & TReorderStreamsParameters & TReUpdateInterParameters = TPrepopulateUserMediaParameters & TReorderStreamsParameters & TReUpdateInterParameters> = (options: ProducerMediaPausedOptions<TParticipant, TPrepopulateUserMediaParameters, TReorderStreamsParameters, TReUpdateInterParameters, TAllParameters>) => Promise<void>;
+
+/**
+ * Restores paused producer media state and refills the main window when needed.
+ *
+ * @param {ProducerMediaResumedOptions} options - Producer identity and shared room/media callbacks.
+ * @returns {Promise<void>} Resolves once the resumed-media UI state is synchronized.
+ *
+ * @example
+ * ```typescript
+ * await producerMediaResumed({
+ *   name: 'John Doe',
+ *   kind: 'audio',
+ *   parameters,
+ * });
+ * ```
+ */
+export declare const producerMediaResumed: <TParticipant extends ProducerMediaResumedParticipantLike = ProducerMediaResumedParticipantLike, TPrepopulateUserMediaParameters = PrepopulateUserMediaParameters, TReorderStreamsParameters = ReorderStreamsParameters, TAllParameters extends TPrepopulateUserMediaParameters & TReorderStreamsParameters = TPrepopulateUserMediaParameters & TReorderStreamsParameters>({ name, parameters, }: ProducerMediaResumedOptions<TParticipant, TPrepopulateUserMediaParameters, TReorderStreamsParameters, TAllParameters>) => Promise<void>;
+
 export declare interface ProducerMediaResumedData {
     kind: 'audio';
     name: string;
 }
+
+export declare interface ProducerMediaResumedOptions<TParticipant extends ProducerMediaResumedParticipantLike = ProducerMediaResumedParticipantLike, TPrepopulateUserMediaParameters = PrepopulateUserMediaParameters, TReorderStreamsParameters = ReorderStreamsParameters, TAllParameters extends TPrepopulateUserMediaParameters & TReorderStreamsParameters = TPrepopulateUserMediaParameters & TReorderStreamsParameters> {
+    name: string;
+    kind: 'audio';
+    parameters: ProducerMediaResumedParameters<TParticipant, TPrepopulateUserMediaParameters, TReorderStreamsParameters, TAllParameters> & TAllParameters;
+}
+
+export declare interface ProducerMediaResumedParameters<TParticipant extends ProducerMediaResumedParticipantLike = ProducerMediaResumedParticipantLike, TPrepopulateUserMediaParameters = PrepopulateUserMediaParameters, TReorderStreamsParameters = ReorderStreamsParameters, TAllParameters extends TPrepopulateUserMediaParameters & TReorderStreamsParameters = TPrepopulateUserMediaParameters & TReorderStreamsParameters> {
+    meetingDisplayType: string;
+    participants: TParticipant[];
+    shared: boolean;
+    shareScreenStarted: boolean;
+    mainScreenFilled: boolean;
+    hostLabel: string;
+    updateUpdateMainWindow: (updateMainWindow: boolean) => void;
+    reorderStreams: ProducerMediaResumedReorderStreamsType<TReorderStreamsParameters>;
+    prepopulateUserMedia: ProducerMediaResumedPrepopulateUserMediaType<TPrepopulateUserMediaParameters>;
+    getUpdatedAllParams: () => ProducerMediaResumedParameters<TParticipant, TPrepopulateUserMediaParameters, TReorderStreamsParameters, TAllParameters> & TAllParameters;
+    [key: string]: any;
+}
+
+export declare interface ProducerMediaResumedParticipantLike {
+    name?: string | null;
+    islevel?: string | null;
+    videoID?: string | null;
+}
+
+export declare interface ProducerMediaResumedPrepopulateUserMediaOptions<TParameters = unknown> {
+    name: string;
+    parameters: TParameters;
+}
+
+export declare type ProducerMediaResumedPrepopulateUserMediaType<TParameters = unknown> = (options: ProducerMediaResumedPrepopulateUserMediaOptions<TParameters>) => Promise<unknown>;
+
+export declare interface ProducerMediaResumedReorderStreamsOptions<TParameters = unknown> {
+    add: boolean;
+    screenChanged?: boolean;
+    parameters: TParameters;
+}
+
+export declare type ProducerMediaResumedReorderStreamsType<TParameters = unknown> = (options: ProducerMediaResumedReorderStreamsOptions<TParameters>) => Promise<unknown>;
+
+export declare type ProducerMediaResumedType<TParticipant extends ProducerMediaResumedParticipantLike = ProducerMediaResumedParticipantLike, TPrepopulateUserMediaParameters = PrepopulateUserMediaParameters, TReorderStreamsParameters = ReorderStreamsParameters, TAllParameters extends TPrepopulateUserMediaParameters & TReorderStreamsParameters = TPrepopulateUserMediaParameters & TReorderStreamsParameters> = (options: ProducerMediaResumedOptions<TParticipant, TPrepopulateUserMediaParameters, TReorderStreamsParameters, TAllParameters>) => Promise<void>;
+
+export declare const pruneExpiredSubtitles: (subtitles: Map<string, LiveSubtitle>, now?: number) => Map<string, LiveSubtitle>;
+
+export declare const qhdCons: {
+    width: {
+        ideal: number;
+    };
+    height: {
+        ideal: number;
+    };
+};
+
+export declare const qhdConsNeu: {
+    width: {
+        ideal: number;
+    };
+    height: {
+        ideal: number;
+    };
+};
+
+export declare const qhdConsPort: {
+    width: {
+        ideal: number;
+    };
+    height: {
+        ideal: number;
+    };
+};
+
+export declare const qhdFrameRate = 30;
+
+export declare const QnHDCons: {
+    width: {
+        ideal: number;
+    };
+    height: {
+        ideal: number;
+    };
+};
+
+export declare const QnHDConsNeu: {
+    width: {
+        ideal: number;
+    };
+    height: {
+        ideal: number;
+    };
+};
+
+export declare const QnHDConsPort: {
+    width: {
+        ideal: number;
+    };
+    height: {
+        ideal: number;
+    };
+};
+
+export declare const QnHDFrameRate = 5;
 
 /**
  * Adjusts the layout parameters based on the provided options.
@@ -4493,12 +7098,12 @@ export declare interface ProducerMediaResumedData {
  * });
  * ```
  */
-export declare function readjust({ n, state, parameters }: ReadjustOptions): Promise<void>;
+export declare function readjust<TParameters extends ReadjustParameters = ReadjustParameters>({ n, state, parameters, }: ReadjustOptions<TParameters>): Promise<void>;
 
-export declare interface ReadjustOptions {
+export declare interface ReadjustOptions<TParameters extends ReadjustParameters = ReadjustParameters> {
     n: number;
     state: number;
-    parameters: ReadjustParameters;
+    parameters: TParameters;
 }
 
 export declare interface ReadjustParameters extends PrepopulateUserMediaParameters {
@@ -4511,12 +7116,12 @@ export declare interface ReadjustParameters extends PrepopulateUserMediaParamete
     first_round: boolean;
     lock_screen: boolean;
     updateMainHeightWidth: (value: number) => void;
-    prepopulateUserMedia: PrepopulateUserMediaType;
+    prepopulateUserMedia: PrepopulateUserMediaInvoker;
     getUpdatedAllParams: () => ReadjustParameters;
     [key: string]: any;
 }
 
-export declare type ReadjustType = (options: ReadjustOptions) => Promise<void>;
+export declare type ReadjustType = <TParameters extends ReadjustParameters = ReadjustParameters>(options: ReadjustOptions<TParameters>) => Promise<void>;
 
 /**
  * Receives all piped transports by emitting an event to the server and processing the response.
@@ -4563,9 +7168,46 @@ export declare interface ReceiveAllPipedTransportsParameters extends GetPipedPro
 
 export declare type ReceiveAllPipedTransportsType = (options: ReceiveAllPipedTransportsOptions) => Promise<void>;
 
+/**
+ * Appends an inbound chat message, filters banned senders, and updates unread badge state.
+ *
+ * @param {ReceiveMessageOptions} options - Message payload, participant state, and update callbacks.
+ * @returns {Promise<void>} Resolves after message state is reconciled.
+ *
+ * @example
+ * ```typescript
+ * await receiveMessage({
+ *   message,
+ *   messages,
+ *   participantsAll,
+ *   member: 'Ada',
+ *   eventType: 'conference',
+ *   islevel: '1',
+ *   coHost: '',
+ *   updateMessages: setMessages,
+ *   updateShowMessagesBadge: setShowMessagesBadge,
+ * });
+ * ```
+ */
+export declare const receiveMessage: ({ message, messages, participantsAll, member, eventType, islevel, coHost, updateMessages, updateShowMessagesBadge, }: ReceiveMessageOptions) => Promise<void>;
+
 export declare interface ReceiveMessageData {
     message: Message;
 }
+
+export declare interface ReceiveMessageOptions {
+    message: Message;
+    messages: Message[];
+    participantsAll: Participant[];
+    member: string;
+    eventType: EventType;
+    islevel: string;
+    coHost: string;
+    updateMessages: (messages: Message[]) => void;
+    updateShowMessagesBadge: (showBadge: boolean) => void;
+}
+
+export declare type ReceiveMessageType = (options: ReceiveMessageOptions) => Promise<void>;
 
 /**
  * Retrieves messages from a specified room and updates the message state.
@@ -4602,11 +7244,111 @@ export declare interface RecordingImageData {
     jpegBuffer: ImageData;
 }
 
+/**
+ * Reconciles recording state updates, user recording settings, and progress UI after a recording socket notice.
+ *
+ * @param {RecordingNoticeOptions} options - Recording state payload and room-level update callbacks.
+ * @returns {Promise<void>} Resolves once recording state, UI flags, and progress text are synchronized.
+ *
+ * @example
+ * ```typescript
+ * await recordingNotice({
+ *   state: 'pause',
+ *   userRecordingParam,
+ *   pauseCount: 2,
+ *   timeDone: 3600,
+ *   parameters,
+ * });
+ * ```
+ */
+export declare const recordingNotice: <TUserRecordingParams extends RecordingNoticeUserRecordingParamsLike = UserRecordingParams, TEventType = EventType>({ state, userRecordingParam, pauseCount, timeDone, parameters, soundPlayer, }: RecordingNoticeOptions<TUserRecordingParams, TEventType>) => Promise<void>;
+
 export declare interface RecordingNoticeData {
     state: string;
     userRecordingParam: UserRecordingParams;
     pauseCount: number;
     timeDone: number;
+}
+
+export declare interface RecordingNoticeOptions<TUserRecordingParams extends RecordingNoticeUserRecordingParamsLike = UserRecordingParams, TEventType = EventType> {
+    state: string;
+    userRecordingParam: TUserRecordingParams | null;
+    pauseCount: number;
+    timeDone: number;
+    parameters: RecordingNoticeParameters<TUserRecordingParams, TEventType>;
+    soundPlayer?: SoundPlayerType;
+}
+
+export declare interface RecordingNoticeParameters<TUserRecordingParams extends RecordingNoticeUserRecordingParamsLike = UserRecordingParams, TEventType = EventType> {
+    islevel: string;
+    userRecordingParams: TUserRecordingParams;
+    pauseRecordCount?: number;
+    recordElapsedTime: number;
+    recordStartTime: number;
+    recordStarted: boolean;
+    recordPaused: boolean;
+    canLaunchRecord: boolean;
+    stopLaunchRecord: boolean;
+    recordStopped: boolean;
+    isTimerRunning: boolean;
+    canPauseResume: boolean;
+    eventType: TEventType;
+    updateRecordingProgressTime: (time: string) => void;
+    updateShowRecordButtons: (show: boolean) => void;
+    updateUserRecordingParams: (params: TUserRecordingParams) => void;
+    updateRecordingMediaOptions: (options: string) => void;
+    updateRecordingAudioOptions: (options: string) => void;
+    updateRecordingVideoOptions: (options: string) => void;
+    updateRecordingVideoType: (type: string) => void;
+    updateRecordingVideoOptimized: (optimized: boolean) => void;
+    updateRecordingDisplayType: (type: 'video' | 'media' | 'all') => void;
+    updateRecordingAddHLS: (addHLS: boolean) => void;
+    updateRecordingNameTags: (nameTags: boolean) => void;
+    updateRecordingBackgroundColor: (color: string) => void;
+    updateRecordingNameTagsColor: (color: string) => void;
+    updateRecordingOrientationVideo: (orientation: string) => void;
+    updateRecordingAddText: (addText: boolean) => void;
+    updateRecordingCustomText: (text: string) => void;
+    updateRecordingCustomTextPosition: (position: string) => void;
+    updateRecordingCustomTextColor: (color: string) => void;
+    updatePauseRecordCount: (count: number) => void;
+    updateRecordElapsedTime: (time: number) => void;
+    updateRecordStarted: (started: boolean) => void;
+    updateRecordPaused: (paused: boolean) => void;
+    updateCanLaunchRecord: (canLaunch: boolean) => void;
+    updateStopLaunchRecord: (stop: boolean) => void;
+    updateRecordStopped: (stopped: boolean) => void;
+    updateIsTimerRunning: (running: boolean) => void;
+    updateCanPauseResume: (canPause: boolean) => void;
+    updateRecordStartTime: (startTime: number) => void;
+    updateRecordState: (state: string) => void;
+    [key: string]: any;
+}
+
+export declare type RecordingNoticeType<TUserRecordingParams extends RecordingNoticeUserRecordingParamsLike = UserRecordingParams, TEventType = EventType> = (options: RecordingNoticeOptions<TUserRecordingParams, TEventType>) => Promise<void>;
+
+export declare interface RecordingNoticeUserRecordingParamsLike {
+    mainSpecs: {
+        mediaOptions: string;
+        audioOptions: string;
+        videoOptions: string;
+        videoType: string;
+        videoOptimized: boolean;
+        recordingDisplayType: 'video' | 'media' | 'all';
+        addHLS: boolean;
+    };
+    dispSpecs: {
+        nameTags: boolean;
+        backgroundColor: string;
+        nameTagsColor: string;
+        orientationVideo: string;
+    };
+    textSpecs?: {
+        addText?: boolean;
+        customText?: string;
+        customTextPosition?: string;
+        customTextColor?: string;
+    };
 }
 
 export declare interface RecordingParams {
@@ -4696,13 +7438,13 @@ export declare interface RecordResumeTimerParameters {
     canPauseResume: boolean;
     recordElapsedTime: number;
     recordStartTime: number;
-    recordTimerInterval?: NodeJS.Timeout | null;
+    recordTimerInterval?: ReturnType<typeof setInterval> | null;
     showAlert?: ShowAlert;
     recordPaused: boolean;
     recordStopped: boolean;
     roomName: string | null;
     updateRecordStartTime: (time: number) => void;
-    updateRecordTimerInterval: (interval: NodeJS.Timeout | null) => void;
+    updateRecordTimerInterval: (interval: ReturnType<typeof setInterval> | null) => void;
     updateIsTimerRunning: (isRunning: boolean) => void;
     updateCanPauseResume: (canPause: boolean) => void;
     updateRecordElapsedTime: (elapsed: number) => void;
@@ -4741,7 +7483,7 @@ export declare interface RecordStartTimerOptions {
 
 export declare interface RecordStartTimerParameters {
     recordStartTime: number;
-    recordTimerInterval?: NodeJS.Timeout | null;
+    recordTimerInterval?: ReturnType<typeof setInterval> | null;
     isTimerRunning: boolean;
     canPauseResume: boolean;
     recordChangeSeconds: number;
@@ -4749,7 +7491,7 @@ export declare interface RecordStartTimerParameters {
     recordStopped: boolean;
     roomName: string | null;
     updateRecordStartTime: (time: number) => void;
-    updateRecordTimerInterval: (interval: NodeJS.Timeout | null) => void;
+    updateRecordTimerInterval: (interval: ReturnType<typeof setInterval> | null) => void;
     updateIsTimerRunning: (isRunning: boolean) => void;
     updateCanPauseResume: (canPause: boolean) => void;
     recordElapsedTime: number;
@@ -4791,6 +7533,70 @@ export declare interface RecordUpdateTimerOptions {
 }
 
 export declare type RecordUpdateTimerType = (options: RecordUpdateTimerOptions) => void;
+
+export declare function registerGlobals(): void;
+
+/**
+ * Re-requests recording startup when host controls allow it.
+ *
+ * @param {ReInitiateRecordingOptions} options - Room identity, socket, and admin restriction state.
+ * @returns {Promise<void>} Resolves after the emit request is sent or skipped.
+ *
+ * @example
+ * ```typescript
+ * await reInitiateRecording({
+ *   roomName: 'exampleRoom',
+ *   member: 'adminUser',
+ *   socket,
+ *   adminRestrictSetting: false,
+ * });
+ * ```
+ */
+export declare const reInitiateRecording: ({ roomName, member, socket, adminRestrictSetting, }: ReInitiateRecordingOptions) => Promise<void>;
+
+export declare interface ReInitiateRecordingOptions {
+    roomName: string;
+    member: string;
+    socket: ReInitiateRecordingSocketLike;
+    adminRestrictSetting: boolean;
+}
+
+export declare interface ReInitiateRecordingSocketLike {
+    emit: (event: string, payload: {
+        roomName: string;
+        member: string;
+    }, callback?: (response: {
+        success: boolean;
+    }) => void) => void;
+}
+
+export declare type ReInitiateRecordingType = (options: ReInitiateRecordingOptions) => Promise<void>;
+
+export declare const removedFromPanelists: RemovedFromPanelistsType;
+
+export declare interface RemovedFromPanelistsData {
+    message: string;
+}
+
+export declare interface RemovedFromPanelistsOptions {
+    data: RemovedFromPanelistsData;
+    showAlert?: ShowAlert;
+}
+
+export declare type RemovedFromPanelistsType = (options: RemovedFromPanelistsOptions) => Promise<void>;
+
+export declare const removePanelist: ({ socket, participant, roomName, member: _member, islevel, showAlert, }: RemovePanelistOptions) => Promise<void>;
+
+export declare interface RemovePanelistOptions {
+    socket: Socket;
+    participant: Participant;
+    roomName: string;
+    member: string;
+    islevel: string;
+    showAlert?: ShowAlert;
+}
+
+export declare type RemovePanelistType = (options: RemovePanelistOptions) => Promise<void>;
 
 /**
  * Removes a participant from the room if the user has the necessary permissions.
@@ -4840,6 +7646,17 @@ export declare interface RemoveParticipantsOptions {
 
 export declare type RemoveParticipantsType = (options: any) => Promise<void>;
 
+declare interface ReorderParticipantLike {
+    name: string;
+    islevel?: string | null;
+    videoID?: string | null;
+    ScreenID?: string | null;
+}
+
+declare interface ReorderStreamLike {
+    producerId?: string | null;
+}
+
 /**
  * Reorders the video streams based on the provided options and updates the UI accordingly.
  *
@@ -4887,41 +7704,47 @@ export declare type RemoveParticipantsType = (options: any) => Promise<void>;
  * });
  * ```
  */
-export declare const reorderStreams: ({ add, screenChanged, parameters, }: ReorderStreamsOptions) => Promise<void>;
+export declare const reorderStreams: <TParameters extends ReorderStreamsParameters<any, any, any> = ReorderStreamsParameters>({ add, screenChanged, parameters, }: ReorderStreamsOptions<TParameters>) => Promise<void>;
 
-export declare interface ReorderStreamsOptions {
+declare type ReorderStreamsInvoker = (options: {
     add?: boolean;
     screenChanged?: boolean;
-    parameters: ReorderStreamsParameters;
+    parameters: any;
+}) => Promise<void>;
+
+export declare interface ReorderStreamsOptions<TParameters extends ReorderStreamsParameters<any, any, any> = ReorderStreamsParameters> {
+    add?: boolean;
+    screenChanged?: boolean;
+    parameters: TParameters;
 }
 
-export declare interface ReorderStreamsParameters extends ChangeVidsParameters {
-    allVideoStreams: (Stream | Participant)[];
-    participants: Participant[];
-    oldAllStreams: (Stream | Participant)[];
+export declare interface ReorderStreamsParameters<TStream extends ReorderStreamLike = Stream, TParticipant extends ReorderParticipantLike = Participant, TChangeVidsParameters = unknown> {
+    allVideoStreams: (TStream | TParticipant)[];
+    participants: TParticipant[];
+    oldAllStreams: (TStream | TParticipant)[];
     screenId?: string;
     adminVidID?: string;
-    newLimitedStreams: (Stream | Participant)[];
+    newLimitedStreams: (TStream | TParticipant)[];
     newLimitedStreamsIDs: string[];
     activeSounds: string[];
     screenShareIDStream?: string;
     screenShareNameStream?: string;
     adminIDStream?: string;
     adminNameStream?: string;
-    updateNewLimitedStreams: (streams: (Stream | Participant)[]) => void;
+    updateNewLimitedStreams: StreamCollectionUpdater<TStream | TParticipant>;
     updateNewLimitedStreamsIDs: (ids: string[]) => void;
     updateActiveSounds: (sounds: string[]) => void;
     updateScreenShareIDStream: (id: string) => void;
     updateScreenShareNameStream: (name: string) => void;
     updateAdminIDStream: (id: string) => void;
     updateAdminNameStream: (name: string) => void;
-    updateYouYouStream: (streams: (Stream | Participant)[]) => void;
-    changeVids: ChangeVidsType;
-    getUpdatedAllParams: () => ReorderStreamsParameters;
+    updateYouYouStream: StreamCollectionUpdater<TStream | TParticipant>;
+    changeVids: ChangeVidsInvoker;
+    getUpdatedAllParams: () => ReorderStreamsParameters<TStream, TParticipant, TChangeVidsParameters>;
     [key: string]: any;
 }
 
-export declare type ReorderStreamsType = (options: ReorderStreamsOptions) => Promise<void>;
+export declare type ReorderStreamsType = <TParameters extends ReorderStreamsParameters<any, any, any> = ReorderStreamsParameters>(options: ReorderStreamsOptions<TParameters>) => Promise<void>;
 
 /**
  * RePort function that handles the reporting logic based on the provided parameters.
@@ -5060,6 +7883,34 @@ export declare interface RequestScreenShareParameters extends StartShareScreenPa
 export declare type RequestScreenShareType = (options: RequestScreenShareOptions) => Promise<void>;
 
 /**
+ * Resolves the correct host video stream source for non-screen-share rendering.
+ */
+export declare function resolveHostVideoStream<TStreamLike extends PrepopulateStreamLike = PrepopulateStreamLike>({ islevel, keepBackground, virtualStream, localStreamVideo, oldAllStreams, hostVideoID, }: ResolveHostVideoStreamOptions<TStreamLike>): any;
+
+export declare interface ResolveHostVideoStreamOptions<TStreamLike = PrepopulateStreamLike> {
+    islevel: string;
+    keepBackground: boolean;
+    virtualStream: any;
+    localStreamVideo: any;
+    oldAllStreams: TStreamLike[];
+    hostVideoID?: string;
+}
+
+/**
+ * Pure helper for resolving which non-screen-share host card mode should render.
+ */
+export declare function resolveMainHostRenderMode({ islevel, localUIMode, videoAlreadyOn, audioAlreadyOn, hostVideoOn, hostMuted, }: ResolveMainHostRenderModeOptions): MainHostRenderMode;
+
+export declare interface ResolveMainHostRenderModeOptions {
+    islevel: string;
+    localUIMode: boolean;
+    videoAlreadyOn: boolean;
+    audioAlreadyOn: boolean;
+    hostVideoOn: boolean;
+    hostMuted?: boolean;
+}
+
+/**
  * Responds to incoming requests by updating the request list and emitting a response to the server.
  *
  * @param {Object} options - The options for responding to requests.
@@ -5186,6 +8037,16 @@ export declare interface ResponseLocalConnectionData {
     recordingParams_: RecordingParams;
 }
 
+export declare const resumeOriginalProducer: ({ originalProducerId, speakerId, parameters, }: ResumeOriginalProducerOptions) => Promise<void>;
+
+export declare interface ResumeOriginalProducerOptions {
+    originalProducerId: string;
+    speakerId?: string;
+    parameters: TranslationConsumerSwitchParameters;
+}
+
+export declare type ResumeOriginalProducerType = (options: ResumeOriginalProducerOptions) => Promise<void>;
+
 /**
  * Resumes or pauses audio streams based on the provided options.
  *
@@ -5209,28 +8070,32 @@ export declare interface ResponseLocalConnectionData {
  * });
  * ```
  */
-export declare const resumePauseAudioStreams: ({ breakRoom, inBreakRoom, parameters, }: ResumePauseAudioStreamsOptions) => Promise<void>;
+export declare const resumePauseAudioStreams: <TTransport extends AudioTransportLike = Transport, TMediaEntry extends MediaEntryLike | ParticipantLike = Stream | Participant>({ breakRoom, inBreakRoom, parameters, }: ResumePauseAudioStreamsOptions<TTransport, TMediaEntry>) => Promise<void>;
 
-export declare interface ResumePauseAudioStreamsOptions {
+export declare interface ResumePauseAudioStreamsOptions<TTransport extends AudioTransportLike = Transport, TMediaEntry extends MediaEntryLike | ParticipantLike = Stream | Participant> {
     breakRoom?: number;
     inBreakRoom?: boolean;
-    parameters: ResumePauseAudioStreamsParameters;
+    parameters: ResumePauseAudioStreamsParameters<TTransport, TMediaEntry>;
 }
 
-export declare interface ResumePauseAudioStreamsParameters extends ProcessConsumerTransportsAudioParameters {
-    breakoutRooms: BreakoutParticipant[][];
-    ref_participants: Participant[];
-    allAudioStreams: (Stream | Participant)[];
-    participants: Participant[];
+export declare interface ResumePauseAudioStreamsParameters<TTransport extends AudioTransportLike = Transport, TMediaEntry extends MediaEntryLike | ParticipantLike = Stream | Participant> extends ProcessConsumerTransportsAudioParameters {
+    breakoutRooms: BreakoutParticipantLike_2[][];
+    ref_participants: ParticipantLike[];
+    allAudioStreams: TMediaEntry[];
+    participants: ParticipantLike[];
     islevel: string;
     eventType: EventType;
-    consumerTransports: Transport[];
-    limitedBreakRoom: BreakoutParticipant[];
+    consumerTransports: TTransport[];
+    limitedBreakRoom: BreakoutParticipantLike_2[];
     hostNewRoom: number;
     member: string;
-    updateLimitedBreakRoom: (limitedBreakRoom: BreakoutParticipant[]) => void;
-    processConsumerTransportsAudio: ProcessConsumerTransportsAudioType;
-    getUpdatedAllParams: () => ResumePauseAudioStreamsParameters;
+    updateLimitedBreakRoom: (limitedBreakRoom: BreakoutParticipantLike_2[]) => void;
+    processConsumerTransportsAudio: (options: {
+        consumerTransports: TTransport[];
+        lStreams: TMediaEntry[];
+        parameters: ProcessConsumerTransportsAudioParameters;
+    }) => Promise<void>;
+    getUpdatedAllParams: () => ResumePauseAudioStreamsParameters<TTransport, TMediaEntry>;
     [key: string]: any;
 }
 
@@ -5264,24 +8129,24 @@ export declare type ResumePauseAudioStreamsType = (options: ResumePauseAudioStre
  * });
  * ```
  */
-export declare function resumePauseStreams({ parameters, }: ResumePauseStreamsOptions): Promise<void>;
+export declare function resumePauseStreams<TParticipant extends ParticipantLike_2 = Participant, TTransport extends TransportLike_3 = Transport, TStream = Stream>({ parameters, }: ResumePauseStreamsOptions<TParticipant, TTransport, TStream>): Promise<void>;
 
-export declare interface ResumePauseStreamsOptions {
-    parameters: ResumePauseStreamsParameters;
+export declare interface ResumePauseStreamsOptions<TParticipant extends ParticipantLike_2 = Participant, TTransport extends TransportLike_3 = Transport, TStream = Stream> {
+    parameters: ResumePauseStreamsParameters<TParticipant, TTransport, TStream>;
 }
 
-export declare interface ResumePauseStreamsParameters {
-    participants: Participant[];
+export declare interface ResumePauseStreamsParameters<TParticipant extends ParticipantLike_2 = Participant, TTransport extends TransportLike_3 = Transport, TStream = Stream> {
+    participants: TParticipant[];
     dispActiveNames: string[];
-    remoteScreenStream: Stream[];
-    consumerTransports: Transport[];
+    remoteScreenStream: TStream[];
+    consumerTransports: TTransport[];
     screenId?: string;
     islevel: string;
-    getUpdatedAllParams: () => ResumePauseStreamsParameters;
+    getUpdatedAllParams: () => ResumePauseStreamsParameters<TParticipant, TTransport, TStream>;
     [key: string]: any;
 }
 
-export declare type ResumePauseStreamsType = (options: ResumePauseStreamsOptions) => Promise<void>;
+export declare type ResumePauseStreamsType = <TParticipant extends ParticipantLike_2 = Participant, TTransport extends TransportLike_3 = Transport, TStream = Stream>(options: ResumePauseStreamsOptions<TParticipant, TTransport, TStream>) => Promise<void>;
 
 /**
  * Resumes the send transport for audio and updates the UI and audio producer state accordingly.
@@ -5425,24 +8290,24 @@ export declare type ResumeSendTransportAudioType = (options: ResumeSendTransport
  * });
  * ```
  */
-export declare function reUpdateInter({ name, add, force, average, parameters, }: ReUpdateInterOptions): Promise<void>;
+export declare function reUpdateInter<TParameters extends ReUpdateInterParameters<any, any> = ReUpdateInterParameters>({ name, add, force, average, parameters, }: ReUpdateInterOptions<TParameters>): Promise<void>;
 
-export declare interface ReUpdateInterOptions {
+export declare interface ReUpdateInterOptions<TParameters extends ReUpdateInterParameters<any, any> = ReUpdateInterParameters> {
     name: string;
     add?: boolean;
     force?: boolean;
     average?: number;
-    parameters: ReUpdateInterParameters;
+    parameters: TParameters;
 }
 
-export declare interface ReUpdateInterParameters extends OnScreenChangesParameters, ReorderStreamsParameters, ChangeVidsParameters {
+export declare interface ReUpdateInterParameters<TStream extends ReUpdateInterStreamLike = Stream, TParticipant extends ReUpdateInterParticipantLike = Participant> {
     screenPageLimit: number;
     itemPageLimit: number;
     reorderInterval: number;
     fastReorderInterval: number;
     eventType: EventType;
-    participants: Participant[];
-    allVideoStreams: (Participant | Stream)[];
+    participants: TParticipant[];
+    allVideoStreams: (TParticipant | TStream)[];
     shared: boolean;
     shareScreenStarted: boolean;
     adminNameStream?: string;
@@ -5450,35 +8315,144 @@ export declare interface ReUpdateInterParameters extends OnScreenChangesParamete
     updateMainWindow: boolean;
     sortAudioLoudness: boolean;
     lastReorderTime: number;
-    newLimitedStreams: (Participant | Stream)[];
+    newLimitedStreams: (TParticipant | TStream)[];
     newLimitedStreamsIDs: string[];
     oldSoundIds: string[];
-    updateUpdateMainWindow: (value: boolean) => void;
-    updateSortAudioLoudness: (value: boolean) => void;
-    updateLastReorderTime: (value: number) => void;
-    updateNewLimitedStreams: (streams: (Participant | Stream)[]) => void;
-    updateNewLimitedStreamsIDs: (ids: string[]) => void;
-    updateOldSoundIds: (ids: string[]) => void;
-    onScreenChanges: OnScreenChangesType;
-    reorderStreams: ReorderStreamsType;
-    changeVids: ChangeVidsType;
-    getUpdatedAllParams: () => ReUpdateInterParameters;
+    updateUpdateMainWindow: BooleanUpdater;
+    updateSortAudioLoudness: BooleanUpdater;
+    updateLastReorderTime: NumberUpdater;
+    updateNewLimitedStreams: (streams: (TParticipant | TStream)[]) => void;
+    updateNewLimitedStreamsIDs: StringListUpdater;
+    updateOldSoundIds: StringListUpdater;
+    onScreenChanges: OnScreenChangesInvoker;
+    reorderStreams: ReorderStreamsInvoker;
+    changeVids: ChangeVidsInvoker_2;
+    getUpdatedAllParams: () => ReUpdateInterParameters<TStream, TParticipant>;
     [key: string]: any;
 }
 
-export declare type ReUpdateInterType = (options: ReUpdateInterOptions) => Promise<void>;
+declare interface ReUpdateInterParticipantLike {
+    name: string;
+    videoID?: string | null;
+    muted?: boolean | null;
+}
+
+declare interface ReUpdateInterStreamLike {
+    producerId?: string | null;
+}
+
+export declare type ReUpdateInterType = <TParameters extends ReUpdateInterParameters<any, any> = ReUpdateInterParameters>(options: ReUpdateInterOptions<TParameters>) => Promise<void>;
+
+/**
+ * Applies room-level recording capability limits and toggles to UI state.
+ *
+ * @param {RoomRecordParamsOptions} options - Recording capability payload and setters.
+ * @returns {Promise<void>} Resolves after all setters are applied.
+ *
+ * @example
+ * ```typescript
+ * await roomRecordParams({
+ *   recordParams,
+ *   parameters: recordingSetters,
+ * });
+ * ```
+ */
+export declare const roomRecordParams: ({ recordParams, parameters, }: RoomRecordParamsOptions) => Promise<void>;
+
+export declare interface RoomRecordParamsOptions {
+    recordParams: RecordParams;
+    parameters: RoomRecordParamsParameters;
+}
+
+export declare interface RoomRecordParamsParameters {
+    updateRecordingAudioPausesLimit: (value: number) => void;
+    updateRecordingAudioPausesCount: (value: number) => void;
+    updateRecordingAudioSupport: (value: boolean) => void;
+    updateRecordingAudioPeopleLimit: (value: number) => void;
+    updateRecordingAudioParticipantsTimeLimit: (value: number) => void;
+    updateRecordingVideoPausesCount: (value: number) => void;
+    updateRecordingVideoPausesLimit: (value: number) => void;
+    updateRecordingVideoSupport: (value: boolean) => void;
+    updateRecordingVideoPeopleLimit: (value: number) => void;
+    updateRecordingVideoParticipantsTimeLimit: (value: number) => void;
+    updateRecordingAllParticipantsSupport: (value: boolean) => void;
+    updateRecordingVideoParticipantsSupport: (value: boolean) => void;
+    updateRecordingAllParticipantsFullRoomSupport: (value: boolean) => void;
+    updateRecordingVideoParticipantsFullRoomSupport: (value: boolean) => void;
+    updateRecordingPreferredOrientation: (value: string) => void;
+    updateRecordingSupportForOtherOrientation: (value: boolean) => void;
+    updateRecordingMultiFormatsSupport: (value: boolean) => void;
+    [key: string]: any;
+}
+
+export declare type RoomRecordParamsType = (options: RoomRecordParamsOptions) => Promise<void>;
+
+export declare class RTCView {
+    render(): null;
+}
 
 export declare interface SafeRoomNoticeData {
     state: string;
 }
+
+export declare const screenFrameRate = 30;
+
+export declare const screenParams: ScreenParamsType;
 
 export declare type ScreenParamsType = {
     encodings: RtpEncodingParameters[];
     codecOptions?: ProducerCodecOptions;
 };
 
+/**
+ * Reconciles a screen-share producer id with current participant state.
+ *
+ * @param {ScreenProducerIdOptions} options - Screen-share identifiers and setters.
+ * @returns {void} Updates screen state synchronously.
+ *
+ * @example
+ * ```typescript
+ * screenProducerId({
+ *   producerId: 'screen-producer',
+ *   screenId: 'host-screen',
+ *   membersReceived: true,
+ *   shareScreenStarted: false,
+ *   deferScreenReceived: false,
+ *   participants,
+ *   updateScreenId: setScreenId,
+ *   updateShareScreenStarted: setShareScreenStarted,
+ *   updateDeferScreenReceived: setDeferScreenReceived,
+ * });
+ * ```
+ */
+export declare const screenProducerId: ({ producerId, screenId, membersReceived, participants, updateScreenId, updateShareScreenStarted, updateDeferScreenReceived, }: ScreenProducerIdOptions) => void;
+
 export declare interface ScreenProducerIdData {
     producerId: string;
+}
+
+export declare interface ScreenProducerIdOptions {
+    producerId: string;
+    screenId: string;
+    membersReceived: boolean;
+    shareScreenStarted: boolean;
+    deferScreenReceived: boolean;
+    participants: Participant[];
+    updateScreenId: (id: string) => void;
+    updateShareScreenStarted: (started: boolean) => void;
+    updateDeferScreenReceived: (received: boolean) => void;
+}
+
+export declare type ScreenProducerIdType = (options: ScreenProducerIdOptions) => void;
+
+export declare interface ScreenShareHostCardPlan {
+    key: string;
+    name: string;
+    remoteProducerId: string;
+    videoStream: any;
+    forceFullDisplay: boolean;
+    doMirror: false;
+    state: MainScreenState;
 }
 
 export declare interface ScreenState {
@@ -5487,6 +8461,35 @@ export declare interface ScreenState {
     mainScreenFilled: boolean;
     adminOnMainScreen: boolean;
 }
+
+export declare const sdCons: {
+    width: {
+        ideal: number;
+    };
+    height: {
+        ideal: number;
+    };
+};
+
+export declare const sdConsNeu: {
+    width: {
+        ideal: number;
+    };
+    height: {
+        ideal: number;
+    };
+};
+
+export declare const sdConsPort: {
+    width: {
+        ideal: number;
+    };
+    height: {
+        ideal: number;
+    };
+};
+
+export declare const sdFrameRate = 10;
 
 export declare type SeedData = {
     member?: string;
@@ -5543,7 +8546,7 @@ export declare type SeedData = {
  * });
  * ```
  */
-export declare const sendMessage: ({ message, receivers, group, messagesLength, member, sender, islevel, eventType, showAlert, coHostResponsibility, coHost, roomName, socket, chatSetting, }: SendMessageOptions) => Promise<void>;
+export declare const sendMessage: ({ message, receivers, group, messagesLength, member, sender, islevel, showAlert, coHostResponsibility, coHost, roomName, socket, chatSetting, }: SendMessageOptions) => Promise<void>;
 
 export declare interface SendMessageOptions {
     message: string;
@@ -5587,7 +8590,7 @@ export declare interface Shapes {
 
 export declare type ShowAlert = (options: {
     message: string;
-    type: 'success' | 'danger';
+    type: 'success' | 'danger' | 'info';
     duration?: number;
 }) => void;
 
@@ -5650,9 +8653,131 @@ export declare interface SignalNewConsumerTransportParameters extends ReorderStr
 
 export declare type SignalNewConsumerTransportType = (options: SignalNewConsumerTransportOptions) => Promise<string[] | void>;
 
-export declare type SleepType = (options: {
+/**
+ * Delays execution for a specified number of milliseconds.
+ *
+ * This helper is used throughout MediaSFU to wait for short transport or media
+ * lifecycle transitions before continuing work.
+ *
+ * @param options Delay configuration.
+ * @returns A promise that resolves after the requested delay.
+ *
+ * @example
+ * ```typescript
+ * await sleep({ ms: 500 });
+ * // Continue after a half-second pause.
+ * ```
+ */
+export declare function sleep({ ms }: SleepOptions): Promise<void>;
+
+export declare interface SleepOptions {
     ms: number;
-}) => Promise<void>;
+}
+
+export declare type SleepType = (options: SleepOptions) => Promise<void>;
+
+declare interface SocketLike {
+    emit: (event: string, payload: {
+        serverConsumerId: string;
+    }, callback?: ((payload?: {
+        resumed: boolean;
+    }) => void | Promise<unknown>)) => void;
+}
+
+declare interface SocketLike_2 {
+    emit: (event: string, payload: {
+        serverConsumerId: string;
+    }, callback?: ((payload?: {
+        resumed: boolean;
+    }) => void | Promise<unknown>)) => void;
+}
+
+declare interface SocketLike_3 {
+    emit: (event: string, payload: {
+        serverConsumerId: string;
+    }, callback?: ((payload: {
+        resumed: boolean;
+    }) => void | Promise<unknown>)) => void;
+}
+
+export declare interface SocketVoiceResponse {
+    provider: string;
+    language: string;
+    voices: {
+        male: VoiceOption[];
+        female: VoiceOption[];
+    };
+    providers?: Record<string, unknown>;
+    error?: string;
+}
+
+/**
+ * Attempts to play a remote sound asset when the runtime supports browser audio playback.
+ *
+ * @param {SoundPlayerOptions} options - The sound asset URL to play.
+ * @returns {void | Promise<void>} Completes after playback attempt starts/completes or is skipped.
+ *
+ * @example
+ * ```typescript
+ * await SoundPlayer({
+ *   soundUrl: 'https://www.mediasfu.com/sounds/record-progress.mp3',
+ * });
+ * ```
+ */
+export declare const SoundPlayer: ({ soundUrl }: SoundPlayerOptions) => Promise<void>;
+
+export declare interface SoundPlayerOptions {
+    soundUrl: string;
+}
+
+export declare type SoundPlayerType = (options: SoundPlayerOptions) => void | Promise<void>;
+
+declare interface SpeakerTranslationState {
+    speakerId: string;
+    speakerName: string;
+    inputLanguage: string;
+    outputLanguage: string;
+    originalProducerId: string;
+    enabled: boolean;
+}
+
+/**
+ * Starts a one-second meeting progress timer and updates a formatted elapsed-time string.
+ *
+ * The timer automatically stops when the current runtime parameters indicate the
+ * meeting is no longer validated or no room is active.
+ *
+ * @param options Timer start options.
+ *
+ * @example
+ * ```typescript
+ * startMeetingProgressTimer({
+ *   startTime: Math.floor(Date.now() / 1000),
+ *   parameters: {
+ *     validated: true,
+ *     roomName: 'room123',
+ *     updateMeetingProgressTime: setMeetingTime,
+ *     getUpdatedAllParams: () => currentParams,
+ *   },
+ * });
+ * ```
+ */
+export declare function startMeetingProgressTimer({ startTime, parameters, }: StartMeetingProgressTimerOptions): void;
+
+export declare interface StartMeetingProgressTimerOptions {
+    startTime: number;
+    parameters: StartMeetingProgressTimerParameters;
+}
+
+export declare interface StartMeetingProgressTimerParameters {
+    updateMeetingProgressTime: (formattedTime: string) => void;
+    validated: boolean;
+    roomName: string;
+    getUpdatedAllParams: () => StartMeetingProgressTimerParameters;
+    [key: string]: any;
+}
+
+export declare type StartMeetingProgressTimerType = (options: StartMeetingProgressTimerOptions) => void;
 
 /**
  * Starts the recording process based on the provided parameters.
@@ -5778,6 +8903,40 @@ export declare type StartRecordingRePort = (options: {
 export declare type StartRecordingType = (options: StartRecordingOptions) => Promise<boolean | undefined>;
 
 /**
+ * Requests recording startup for the current room.
+ *
+ * @param {StartRecordsOptions} options - Room, member, and socket details.
+ * @returns {Promise<void>} Resolves after the emit request is sent.
+ *
+ * @example
+ * ```typescript
+ * await startRecords({
+ *   roomName: 'RoomA',
+ *   member: 'AdminUser',
+ *   socket,
+ * });
+ * ```
+ */
+export declare const startRecords: ({ roomName, member, socket, }: StartRecordsOptions) => Promise<void>;
+
+export declare interface StartRecordsOptions {
+    roomName: string;
+    member: string;
+    socket: StartRecordsSocketLike;
+}
+
+export declare interface StartRecordsSocketLike {
+    emit: (event: string, payload: {
+        roomName: string;
+        member: string;
+    }, callback?: (response: {
+        success: boolean;
+    }) => void) => void;
+}
+
+export declare type StartRecordsType = (options: StartRecordsOptions) => Promise<void>;
+
+/**
  * Starts the screen sharing process.
  *
  * @param {StartShareScreenOptions} options - The options for starting screen sharing.
@@ -5837,10 +8996,46 @@ export declare interface StartShareScreenParameters extends StreamSuccessScreenP
 
 export declare type StartShareScreenType = (options: StartShareScreenOptions) => Promise<void>;
 
+export declare const stopConsumingTranslation: (options: StopConsumingTranslationOptions) => Promise<string | null>;
+
+export declare interface StopConsumingTranslationOptions {
+    speakerId?: string;
+    language: string;
+    translationProducerMap: Record<string, Record<string, string>>;
+    parameters: TranslationConsumerSwitchParameters;
+}
+
+export declare type StopConsumingTranslationType = (options: StopConsumingTranslationOptions) => Promise<string | null>;
+
+/**
+ * Shows a reasoned alert when the backend reports that recording has stopped.
+ *
+ * @param {StoppedRecordingOptions} options - Recording stop state and alert helper.
+ * @returns {Promise<void>} Resolves after the alert is dispatched.
+ *
+ * @example
+ * ```typescript
+ * await stoppedRecording({
+ *   state: 'stop',
+ *   reason: 'The session ended',
+ *   showAlert,
+ * });
+ * ```
+ */
+export declare const stoppedRecording: ({ state, reason, showAlert, }: StoppedRecordingOptions) => Promise<void>;
+
 export declare interface StoppedRecordingData {
     state: string;
     reason?: string;
 }
+
+export declare interface StoppedRecordingOptions {
+    state: string;
+    reason: string;
+    showAlert?: ShowAlert;
+}
+
+export declare type StoppedRecordingType = (options: StoppedRecordingOptions) => Promise<void>;
 
 /**
  * Stops the recording process if it has been started and not yet stopped.
@@ -6016,6 +9211,14 @@ export declare interface Stream {
     name?: string;
     [key: string]: any;
 }
+
+declare type StreamCollectionUpdater<TEntry> = {
+    bivarianceHack: (streams: TEntry[]) => void;
+}["bivarianceHack"];
+
+declare type StreamCollectionUpdater_2<TEntry> = {
+    bivarianceHack: (streams: TEntry[]) => void;
+}["bivarianceHack"];
 
 /**
  * Handles the successful streaming of audio by setting up the necessary transports and updating the relevant states.
@@ -6374,7 +9577,7 @@ export declare interface StreamSuccessScreenOptions {
     parameters: StreamSuccessScreenParameters;
 }
 
-export declare interface StreamSuccessScreenParameters extends CreateSendTransportParameters, ConnectSendTransportScreenParameters, DisconnectSendTransportScreenParameters, StopShareScreenParameters, ReorderStreamsParameters, PrepopulateUserMediaParameters {
+export declare interface StreamSuccessScreenParameters extends CreateSendTransportParameters, ConnectSendTransportScreenParameters, DisconnectSendTransportScreenParameters, StopShareScreenParameters, ReorderStreamsParameters, PrepopulateUserMediaParameters, RePortParameters {
     socket: Socket;
     transportCreated: boolean;
     localStreamScreen: MediaStream | null;
@@ -6536,6 +9739,7 @@ export declare interface StreamSuccessVideoParameters extends CreateSendTranspor
     keepBackground: boolean;
     appliedBackground: boolean;
     videoProducer: Producer | null;
+    removeSingleVideoEncoding?: boolean;
     updateTransportCreatedVideo: (created: boolean) => void;
     updateVideoAlreadyOn: (videoOn: boolean) => void;
     updateVideoAction: (videoAction: boolean) => void;
@@ -6561,7 +9765,13 @@ export declare interface StreamSuccessVideoParameters extends CreateSendTranspor
 
 export declare type StreamSuccessVideoType = (options: StreamSuccessVideoOptions) => Promise<void>;
 
+declare type StringListUpdater = (ids: string[]) => void;
+
+declare type StringListUpdater_2 = (names: string[]) => void;
+
 export declare type StyleDictionary = Record<string, string | number | undefined>;
+
+export declare const SUPPORTED_LANGUAGE_CODES: string[];
 
 /**
  * Switches the audio input device based on user preference.
@@ -6926,6 +10136,8 @@ export declare interface SwitchVideoParameters extends SwitchUserVideoParameters
 
 export declare type SwitchVideoType = (options: SwitchVideoOptions) => Promise<void>;
 
+export declare const syncTranslationStateAfterBreakoutChange: (translationProducerMap: Record<string, Record<string, string>>, speakerIdByProducerId: Record<string, string>, parameters: TranslationConsumerSwitchParameters) => Promise<void>;
+
 export declare type TextSpecs = {
     addText: boolean;
     customText?: string;
@@ -6933,8 +10145,349 @@ export declare type TextSpecs = {
     customTextColor?: string;
 };
 
+/**
+ * Shows a short warning that the current recording session is about to end.
+ *
+ * @param options Function options including the remaining recording time in seconds.
+ */
+export declare const timeLeftRecording: ({ timeLeft, showAlert }: TimeLeftRecordingOptions) => void;
+
 export declare interface TimeLeftRecordingData {
     timeLeft: number;
+}
+
+export declare interface TimeLeftRecordingOptions {
+    timeLeft: number;
+    showAlert?: ShowAlert;
+}
+
+export declare type TimeLeftRecordingType = (options: TimeLeftRecordingOptions) => void;
+
+export declare const translationChannelsAvailable: TranslationChannelsAvailableType;
+
+export declare interface TranslationChannelsAvailableData {
+    speakerId: string;
+    speakerName?: string;
+    languages: string[];
+    originalProducerId: string;
+}
+
+export declare interface TranslationChannelsAvailableOptions {
+    data: TranslationChannelsAvailableData;
+    updateAvailableTranslationChannels?: (speakerId: string, languages: string[], originalProducerId: string) => void;
+    myDefaultListenLanguage?: string | null;
+    socket?: {
+        emit: (event: string, payload: Record<string, unknown>) => void;
+    } | null;
+    roomName?: string;
+}
+
+export declare type TranslationChannelsAvailableType = (options: TranslationChannelsAvailableOptions) => Promise<void>;
+
+export declare const translationConfigUpdated: TranslationConfigUpdatedType;
+
+export declare interface TranslationConfigUpdatedData {
+    config: TranslationRoomConfig;
+}
+
+export declare interface TranslationConfigUpdatedOptions {
+    data: TranslationConfigUpdatedData;
+    updateTranslationConfig?: (config: TranslationRoomConfig) => void;
+    showAlert?: ShowAlert;
+}
+
+export declare type TranslationConfigUpdatedType = (options: TranslationConfigUpdatedOptions) => Promise<void>;
+
+export declare interface TranslationConsumerSwitchParameters {
+    consumerTransports: Transport[];
+    roomName: string;
+    member: string;
+    updateConsumerTransports: (transports: Transport[]) => void;
+    breakOutRoomStarted?: boolean;
+    breakOutRoomEnded?: boolean;
+    breakoutRooms?: BreakoutParticipant[][];
+    limitedBreakRoom?: BreakoutParticipant[];
+    participants?: Participant[];
+    ref_participants?: Participant[];
+    islevel?: string;
+    eventType?: EventType;
+    hostNewRoom?: number;
+    [key: string]: any;
+}
+
+export declare const translationError: TranslationErrorType;
+
+export declare interface TranslationErrorData {
+    error: string;
+    code?: string;
+    details?: unknown;
+    availableChannels?: string[];
+    maxChannels?: number;
+    message?: string;
+}
+
+export declare interface TranslationErrorOptions {
+    data: TranslationErrorData;
+    showAlert?: ShowAlert;
+}
+
+export declare type TranslationErrorType = (options: TranslationErrorOptions) => Promise<void>;
+
+export declare interface TranslationLanguageEntry {
+    code: string;
+    nickname?: string;
+    voiceConfig?: TranslationVoiceConfig;
+}
+
+export declare const translationLanguageSet: TranslationLanguageSetType;
+
+export declare interface TranslationLanguageSetData {
+    success: boolean;
+    language: string;
+    enabled: boolean;
+    error?: string;
+}
+
+export declare interface TranslationLanguageSetOptions {
+    data: TranslationLanguageSetData;
+    updateMySpokenLanguage?: (lang: string) => void;
+    updateMySpokenLanguageEnabled?: (enabled: boolean) => void;
+    showAlert?: ShowAlert;
+}
+
+export declare type TranslationLanguageSetType = (options: TranslationLanguageSetOptions) => Promise<void>;
+
+export declare const translationMemberState: TranslationMemberStateType;
+
+export declare interface TranslationMemberStateData {
+    memberId: string;
+    memberName?: string;
+    state: {
+        speaking?: {
+            enabled: boolean;
+            inputLanguage: string;
+            originalProducerId: string;
+        };
+        listening?: {
+            [speakerId: string]: {
+                language: string;
+                producerId: string | null;
+            };
+        };
+    };
+}
+
+export declare interface TranslationMemberStateOptions {
+    data: TranslationMemberStateData;
+    updateParticipantTranslationState?: (memberId: string, state: TranslationMemberStateData['state']) => void;
+}
+
+export declare type TranslationMemberStateType = (options: TranslationMemberStateOptions) => Promise<void>;
+
+export declare interface TranslationMeta {
+    speakerId: string;
+    speakerName: string;
+    language: string;
+    originalProducerId?: string;
+    isSpeakerControlled?: boolean;
+}
+
+export declare const translationProducerClosed: TranslationProducerClosedType;
+
+export declare interface TranslationProducerClosedData {
+    speakerId: string;
+    language: string;
+    producerId: string;
+    reason?: string;
+}
+
+export declare interface TranslationProducerClosedOptions {
+    data: TranslationProducerClosedData;
+    updateTranslationProducerMap?: (updater: (prev: TranslationProducerMap) => TranslationProducerMap) => void;
+    stopConsumingTranslation?: (producerId: string) => Promise<void>;
+    resumeOriginalProducer?: (speakerId: string) => Promise<void>;
+    showAlert?: ShowAlert;
+}
+
+export declare type TranslationProducerClosedType = (options: TranslationProducerClosedOptions) => Promise<void>;
+
+export declare interface TranslationProducerMap {
+    [originalProducerId: string]: {
+        [languageCode: string]: string;
+    };
+}
+
+export declare const translationProducerReady: TranslationProducerReadyType;
+
+export declare interface TranslationProducerReadyData {
+    speakerId: string;
+    speakerName?: string;
+    language: string;
+    producerId: string;
+    originalProducerId: string;
+}
+
+export declare interface TranslationProducerReadyOptions {
+    data: TranslationProducerReadyData;
+    updateTranslationProducerMap?: (updater: (prev: TranslationProducerMap) => TranslationProducerMap) => void;
+    startConsumingTranslation?: (producerId: string, speakerId: string, language: string, originalProducerId: string) => Promise<void>;
+    pauseOriginalProducer?: (originalProducerId: string) => Promise<void>;
+    showAlert?: ShowAlert;
+}
+
+export declare type TranslationProducerReadyType = (options: TranslationProducerReadyOptions) => Promise<void>;
+
+export declare interface TranslationRoomConfig {
+    supportTranslation: boolean;
+    spokenLanguageMode: LanguageMode;
+    allowedSpokenLanguages?: LanguageEntry[];
+    blockedSpokenLanguages?: string[];
+    listenLanguageMode: LanguageMode;
+    allowedListenLanguages?: LanguageEntry[];
+    blockedListenLanguages?: string[];
+    maxActiveChannelsPerSpeaker: number;
+    autoDetectSpokenLanguage: boolean;
+    allowSpokenLanguageChange?: boolean;
+    allowListenLanguageChange?: boolean;
+    translationVoiceConfig?: TranslationVoiceConfig | null;
+    providerGroups?: {
+        groupA?: {
+            languages: string[];
+            sttNickName?: string;
+            llmNickName?: string;
+            ttsNickName?: string;
+        };
+        groupB?: {
+            languages: string[];
+            sttNickName?: string;
+            llmNickName?: string;
+            ttsNickName?: string;
+        };
+        default?: {
+            sttNickName?: string;
+            llmNickName?: string;
+            ttsNickName?: string;
+        };
+    } | null;
+}
+
+export declare const translationRoomConfig: TranslationRoomConfigType;
+
+export declare interface TranslationRoomConfigData {
+    config: TranslationRoomConfig;
+}
+
+export declare interface TranslationRoomConfigOptions {
+    data: TranslationRoomConfigData;
+    updateTranslationConfig?: (config: TranslationRoomConfig) => void;
+    updateTranslationSupported?: (supported: boolean) => void;
+}
+
+export declare type TranslationRoomConfigType = (options: TranslationRoomConfigOptions) => Promise<void>;
+
+export declare const translationSpeakerOutputChanged: TranslationSpeakerOutputChangedType;
+
+export declare interface TranslationSpeakerOutputChangedData {
+    speakerId: string;
+    speakerName: string;
+    inputLanguage: string;
+    outputLanguage: string | null;
+    originalProducerId: string;
+    enabled: boolean;
+}
+
+export declare interface TranslationSpeakerOutputChangedOptions {
+    data: TranslationSpeakerOutputChangedData;
+    pauseOriginalProducer?: (originalProducerId: string, speakerId: string) => Promise<void>;
+    resumeOriginalProducer?: (originalProducerId: string, speakerId: string) => Promise<void>;
+    stopConsumingTranslationForSpeaker?: (speakerId: string) => Promise<void>;
+    updateSpeakerTranslationState?: (speakerId: string, outputLanguage: string | null, originalProducerId: string) => void;
+    showAlert?: ShowAlert;
+    listenerOverride?: {
+        speakerId: string;
+        wantOriginal: boolean;
+        preferredLanguage?: string;
+    } | null;
+}
+
+export declare type TranslationSpeakerOutputChangedType = (options: TranslationSpeakerOutputChangedOptions) => Promise<void>;
+
+export declare const translationSubscribed: TranslationSubscribedType;
+
+export declare interface TranslationSubscribedData {
+    speakerId: string;
+    speakerName?: string;
+    language: string;
+    channelCreated: boolean;
+    producerId?: string;
+    originalProducerId?: string;
+}
+
+export declare interface TranslationSubscribedOptions {
+    data: TranslationSubscribedData;
+    updateListenPreferences?: (updater: (prev: Map<string, string>) => Map<string, string>) => void;
+    updateTranslationProducerMap?: (updater: (prev: TranslationProducerMap) => TranslationProducerMap) => void;
+    startConsumingTranslation?: (producerId: string, speakerId: string, language: string, originalProducerId?: string) => Promise<void>;
+    showAlert?: ShowAlert;
+}
+
+export declare type TranslationSubscribedType = (options: TranslationSubscribedOptions) => Promise<void>;
+
+export declare const translationTranscript: TranslationTranscriptType;
+
+export declare interface TranslationTranscriptData {
+    speakerId: string;
+    speakerName?: string;
+    language: string;
+    originalText: string;
+    translatedText?: string;
+    timestamp?: number;
+    targetLanguage?: string;
+    isFinal?: boolean;
+    [key: string]: any;
+}
+
+export declare interface TranslationTranscriptOptions {
+    data: TranslationTranscriptData;
+    updateTranscripts?: (updater: (prev: TranslationTranscriptData[]) => TranslationTranscriptData[]) => void;
+    onTranscriptReceived?: (transcript: TranslationTranscriptData) => void;
+    maxTranscripts?: number;
+}
+
+export declare type TranslationTranscriptType = (options: TranslationTranscriptOptions) => Promise<void>;
+
+export declare const translationUnsubscribed: TranslationUnsubscribedType;
+
+export declare interface TranslationUnsubscribedData {
+    speakerId: string;
+    language: string;
+    channelClosed: boolean;
+}
+
+export declare interface TranslationUnsubscribedOptions {
+    data: TranslationUnsubscribedData;
+    updateListenPreferences?: (updater: (prev: Map<string, string>) => Map<string, string>) => void;
+    stopConsumingTranslation?: (speakerId: string, language: string) => Promise<void>;
+}
+
+export declare type TranslationUnsubscribedType = (options: TranslationUnsubscribedOptions) => Promise<void>;
+
+export declare interface TranslationVoiceConfig {
+    voiceGender?: VoiceGender;
+    voiceId?: string;
+    voiceClone?: {
+        provider: 'elevenlabs' | 'playht' | 'coqui' | 'cartesia';
+        voiceId: string;
+        stability?: number;
+        similarity?: number;
+    };
+    sttNickName?: string;
+    llmNickName?: string;
+    ttsNickName?: string;
+    ttsProvider?: string;
+    sttParams?: Record<string, string | number | boolean>;
+    llmParams?: Record<string, string | number | boolean>;
+    ttsParams?: Record<string, string | number | boolean>;
 }
 
 export declare interface Transport {
@@ -6943,6 +10496,27 @@ export declare interface Transport {
     socket_: Socket;
     serverConsumerTransportId: string;
     [key: string]: any;
+}
+
+declare interface TransportLike {
+    producerId?: string | null;
+    consumer?: ConsumerLike;
+    socket_: SocketLike;
+    serverConsumerTransportId: string;
+}
+
+declare interface TransportLike_2 {
+    producerId?: string | null;
+    consumer?: ConsumerLike_2;
+    socket_: SocketLike_2;
+    serverConsumerTransportId: string;
+}
+
+declare interface TransportLike_3 {
+    producerId?: string | null;
+    consumer: ConsumerLike_3;
+    socket_: SocketLike_3;
+    serverConsumerTransportId: string;
 }
 
 /**
@@ -7017,6 +10591,29 @@ export declare interface TriggerParameters {
 
 export declare type TriggerType = (options: TriggerOptions) => Promise<void>;
 
+export declare const TTS_PROVIDERS: Record<TTSProvider, {
+    name: string;
+    supportsSSML: boolean;
+    multilingual?: boolean;
+    isDefault?: boolean;
+}>;
+
+export declare type TTSProvider = 'deepgram' | 'openai' | 'azure' | 'google' | 'aws' | 'elevenlabs' | 'playht' | 'cartesia' | 'rime' | 'kokoro' | 'gemini' | 'assemblyai';
+
+export declare type TTSSupport = 'excellent' | 'good' | 'moderate' | 'limited' | 'unknown' | 'n/a';
+
+export declare const unfocusPanelists: ({ socket, roomName, member: _member, islevel, showAlert, }: UnfocusPanelistsOptions) => Promise<void>;
+
+export declare interface UnfocusPanelistsOptions {
+    socket: Socket;
+    roomName: string;
+    member: string;
+    islevel: string;
+    showAlert?: ShowAlert;
+}
+
+export declare type UnfocusPanelistsType = (options: UnfocusPanelistsOptions) => Promise<void>;
+
 export declare interface UnsafeAlertData {
     name: string;
 }
@@ -7026,19 +10623,158 @@ export declare interface UnSafeData {
     evidence: RecordingImageData;
 }
 
+/**
+ * Connects newly announced consuming domains, routing through alternate-domain lookup when needed.
+ *
+ * @param {UpdateConsumingDomainsOptions} options - Domain payload and consume-domain connection helpers.
+ * @returns {Promise<void>} Resolves once the needed consume domains are connected.
+ *
+ * @example
+ * ```typescript
+ * await updateConsumingDomains({
+ *   domains,
+ *   alt_domains,
+ *   apiUserName: 'api-user',
+ *   apiKey: 'api-key',
+ *   apiToken: 'api-token',
+ *   parameters,
+ * });
+ * ```
+ */
+export declare const updateConsumingDomains: <TParameters = unknown, TParticipant extends {
+    name?: string | null;
+} = Participant, TConsumeSocket = ConsumeSocket>({ domains, alt_domains, parameters, apiUserName, apiKey, apiToken, }: UpdateConsumingDomainsOptions<TParameters, TParticipant, TConsumeSocket>) => Promise<void>;
+
 export declare interface UpdateConsumingDomainsData {
     domains: string[];
     alt_domains: AltDomains;
 }
+
+export declare interface UpdateConsumingDomainsGetDomainsOptions<TParameters = unknown, TParticipant extends {
+    name?: string | null;
+} = Participant, TConsumeSocket = ConsumeSocket> {
+    domains: string[];
+    alt_domains: AltDomains;
+    apiUserName: string;
+    apiKey: string;
+    apiToken: string;
+    parameters: UpdateConsumingDomainsParameters<TParameters, TParticipant, TConsumeSocket> & TParameters;
+}
+
+export declare type UpdateConsumingDomainsGetDomainsType<TParameters = unknown, TParticipant extends {
+    name?: string | null;
+} = Participant, TConsumeSocket = ConsumeSocket> = (options: UpdateConsumingDomainsGetDomainsOptions<TParameters, TParticipant, TConsumeSocket>) => Promise<void>;
+
+export declare interface UpdateConsumingDomainsOptions<TParameters = unknown, TParticipant extends {
+    name?: string | null;
+} = Participant, TConsumeSocket = ConsumeSocket> {
+    domains: string[];
+    alt_domains: AltDomains;
+    apiUserName: string;
+    apiKey: string;
+    apiToken: string;
+    parameters: UpdateConsumingDomainsParameters<TParameters, TParticipant, TConsumeSocket> & TParameters;
+}
+
+export declare interface UpdateConsumingDomainsParameters<TParameters = unknown, TParticipant extends {
+    name?: string | null;
+} = Participant, TConsumeSocket = ConsumeSocket> {
+    participants: TParticipant[];
+    consume_sockets: TConsumeSocket[];
+    connectIps: ConnectIpsLikeType<TParameters, TConsumeSocket>;
+    getDomains: UpdateConsumingDomainsGetDomainsType<TParameters, TParticipant, TConsumeSocket>;
+    getUpdatedAllParams: () => UpdateConsumingDomainsParameters<TParameters, TParticipant, TConsumeSocket> & TParameters;
+    [key: string]: any;
+}
+
+export declare type UpdateConsumingDomainsType<TParameters = unknown, TParticipant extends {
+    name?: string | null;
+} = Participant, TConsumeSocket = ConsumeSocket> = (options: UpdateConsumingDomainsOptions<TParameters, TParticipant, TConsumeSocket>) => Promise<void>;
+
+/**
+ * Synchronizes co-host assignment state and optionally alerts the newly assigned co-host.
+ *
+ * @param {UpdatedCoHostOptions} options - Co-host payload and state setters.
+ * @returns {Promise<void>} Resolves after co-host state is synchronized.
+ *
+ * @example
+ * ```typescript
+ * await updatedCoHost({
+ *   coHost: 'user123',
+ *   coHostResponsibility: responsibilities,
+ *   eventType: 'conference',
+ *   islevel: '1',
+ *   member: 'user123',
+ *   youAreCoHost: false,
+ *   updateCoHost: setCoHost,
+ *   updateCoHostResponsibility: setCoHostResponsibility,
+ *   updateYouAreCoHost: setYouAreCoHost,
+ *   showAlert,
+ * });
+ * ```
+ */
+export declare const updatedCoHost: ({ coHost, coHostResponsibility, showAlert, eventType, islevel, member, youAreCoHost, updateCoHost, updateCoHostResponsibility, updateYouAreCoHost, }: UpdatedCoHostOptions) => Promise<void>;
 
 export declare interface UpdatedCoHostData {
     coHost: string;
     coHostResponsibilities: CoHostResponsibility[];
 }
 
+export declare interface UpdatedCoHostOptions {
+    coHost: string;
+    coHostResponsibility: CoHostResponsibility[];
+    showAlert?: ShowAlert;
+    eventType: EventType;
+    islevel: string;
+    member: string;
+    youAreCoHost: boolean;
+    updateCoHost: (coHost: string) => void;
+    updateCoHostResponsibility: (responsibility: CoHostResponsibility[]) => void;
+    updateYouAreCoHost: (youAreCoHost: boolean) => void;
+}
+
+export declare type UpdatedCoHostType = (options: UpdatedCoHostOptions) => Promise<void>;
+
+export declare const updateLiveSubtitlesFromTranscript: ({ currentSubtitles, transcript, now, }: UpdateLiveSubtitlesOptions) => Map<string, LiveSubtitle>;
+
+export declare interface UpdateLiveSubtitlesOptions {
+    currentSubtitles: Map<string, LiveSubtitle>;
+    transcript: TranslationTranscriptData;
+    now?: number;
+}
+
+/**
+ * Expands the shared `Settings` tuple into individual media setting updaters.
+ *
+ * @param {UpdateMediaSettingsOptions} options - Settings tuple and update callbacks.
+ * @returns {void} Updates state synchronously.
+ *
+ * @example
+ * ```typescript
+ * updateMediaSettings({
+ *   settings: ['allow', 'allow', 'deny', 'allow'],
+ *   updateAudioSetting: setAudioSetting,
+ *   updateVideoSetting: setVideoSetting,
+ *   updateScreenshareSetting: setScreenshareSetting,
+ *   updateChatSetting: setChatSetting,
+ * });
+ * ```
+ */
+export declare const updateMediaSettings: ({ settings, updateAudioSetting, updateVideoSetting, updateScreenshareSetting, updateChatSetting, }: UpdateMediaSettingsOptions) => void;
+
 export declare interface UpdateMediaSettingsData {
     settings: Settings;
 }
+
+export declare interface UpdateMediaSettingsOptions {
+    settings: Settings;
+    updateAudioSetting: (value: string) => void;
+    updateVideoSetting: (value: string) => void;
+    updateScreenshareSetting: (value: string) => void;
+    updateChatSetting: (value: string) => void;
+}
+
+export declare type UpdateMediaSettingsType = (options: UpdateMediaSettingsOptions) => void;
 
 export declare const updateMicLevel: (audioProducer: Producer, updateAudioLevel: (level: number) => void) => Promise<void>;
 
@@ -7109,6 +10845,19 @@ export declare interface UpdateMiniCardsGridParameters {
 
 export declare type UpdateMiniCardsGridType = (options: UpdateMiniCardsGridOptions) => Promise<void>;
 
+export declare const updatePanelists: ({ socket, panelists, roomName, member: _member, islevel, showAlert, }: UpdatePanelistsOptions) => Promise<void>;
+
+export declare interface UpdatePanelistsOptions {
+    socket: Socket;
+    panelists: Participant[];
+    roomName: string;
+    member: string;
+    islevel: string;
+    showAlert?: ShowAlert;
+}
+
+export declare type UpdatePanelistsType = (options: UpdatePanelistsOptions) => Promise<void>;
+
 /**
  * Updates the audio decibels for a participant.
  *
@@ -7140,6 +10889,29 @@ export declare interface UpdateParticipantAudioDecibelsOptions {
 }
 
 export declare type UpdateParticipantAudioDecibelsType = (options: UpdateParticipantAudioDecibelsOptions) => void;
+
+export declare const updateParticipantPermission: ({ socket, participant, newLevel, member: _member, islevel, roomName, showAlert, }: UpdateParticipantPermissionOptions) => Promise<void>;
+
+export declare interface UpdateParticipantPermissionOptions {
+    socket: Socket;
+    participant: Participant;
+    newLevel: PermissionLevel;
+    member: string;
+    islevel: string;
+    roomName: string;
+    showAlert?: ShowAlert;
+}
+
+export declare const updatePermissionConfig: ({ socket, config, islevel, roomName, showAlert, }: UpdatePermissionConfigOptions) => Promise<void>;
+
+export declare interface UpdatePermissionConfigOptions {
+    socket: Socket;
+    config: PermissionConfig;
+    member: string;
+    islevel: string;
+    roomName: string;
+    showAlert?: ShowAlert;
+}
 
 /**
  * Updates the recording state based on the provided parameters.
@@ -7191,20 +10963,159 @@ export declare type UpdateRecordingRePort = (options: {
 
 export declare type UpdateRecordingType = (options: UpdateRecordingOptions) => Promise<void>;
 
+export declare const updateRoomParametersClient: ({ parameters }: UpdateRoomParametersClientOptions) => void;
+
+export declare type UpdateRoomParametersClientOptions = {
+    parameters: UpdateRoomParametersClientParameters;
+};
+
+export declare interface UpdateRoomParametersClientParameters {
+    rtpCapabilities: RtpCapabilities | null;
+    roomRecvIPs: string[];
+    meetingRoomParams: MeetingRoomParams | null;
+    itemPageLimit: number;
+    audioOnlyRoom: boolean;
+    addForBasic: boolean;
+    screenPageLimit: number;
+    shareScreenStarted: boolean;
+    shared: boolean;
+    targetOrientation: string;
+    vidCons: VidCons;
+    recordingVideoSupport: boolean;
+    frameRate: number;
+    adminPasscode: string;
+    eventType: EventType;
+    youAreCoHost: boolean;
+    autoWave: boolean;
+    forceFullDisplay: boolean;
+    chatSetting: string;
+    meetingDisplayType: string;
+    audioSetting: string;
+    videoSetting: string;
+    screenshareSetting: string;
+    hParams: HParamsType;
+    vParams: VParamsType;
+    screenParams: ScreenParamsType;
+    aParams: AParamsType;
+    islevel: string;
+    showAlert?: ShowAlert;
+    data: ResponseJoinRoom;
+    updateRtpCapabilities: (rtpCapabilities: RtpCapabilities | null) => void;
+    updateRoomRecvIPs: (roomRecvIPs: string[]) => void;
+    updateMeetingRoomParams: (meetingRoomParams: MeetingRoomParams | null) => void;
+    updateItemPageLimit: (limit: number) => void;
+    updateAudioOnlyRoom: (isAudioOnly: boolean) => void;
+    updateAddForBasic: (addForBasic: boolean) => void;
+    updateScreenPageLimit: (limit: number) => void;
+    updateVidCons: (cons: VidCons) => void;
+    updateFrameRate: (frameRate: number) => void;
+    updateAdminPasscode: (passcode: string) => void;
+    updateEventType: (eventType: EventType) => void;
+    updateYouAreCoHost: (coHost: boolean) => void;
+    updateAutoWave: (autoWave: boolean) => void;
+    updateForceFullDisplay: (forceFull: boolean) => void;
+    updateChatSetting: (setting: string) => void;
+    updateMeetingDisplayType: (type: string) => void;
+    updateAudioSetting: (setting: string) => void;
+    updateVideoSetting: (setting: string) => void;
+    updateScreenshareSetting: (setting: string) => void;
+    updateHParams: (params: HParamsType) => void;
+    updateVParams: (params: VParamsType) => void;
+    updateScreenParams: (params: ScreenParamsType) => void;
+    updateAParams: (params: AParamsType) => void;
+    updateMainHeightWidth: (heightWidth: number) => void;
+    updateTargetResolution: (resolution: string) => void;
+    updateTargetResolutionHost: (resolution: string) => void;
+    updateRecordingAudioPausesLimit: (limit: number) => void;
+    updateRecordingAudioPausesCount: (count: number) => void;
+    updateRecordingAudioSupport: (support: boolean) => void;
+    updateRecordingAudioPeopleLimit: (limit: number) => void;
+    updateRecordingAudioParticipantsTimeLimit: (limit: number) => void;
+    updateRecordingVideoPausesCount: (count: number) => void;
+    updateRecordingVideoPausesLimit: (limit: number) => void;
+    updateRecordingVideoSupport: (support: boolean) => void;
+    updateRecordingVideoPeopleLimit: (limit: number) => void;
+    updateRecordingVideoParticipantsTimeLimit: (limit: number) => void;
+    updateRecordingAllParticipantsSupport: (support: boolean) => void;
+    updateRecordingVideoParticipantsSupport: (support: boolean) => void;
+    updateRecordingAllParticipantsFullRoomSupport: (support: boolean) => void;
+    updateRecordingVideoParticipantsFullRoomSupport: (support: boolean) => void;
+    updateRecordingPreferredOrientation: (orientation: string) => void;
+    updateRecordingSupportForOtherOrientation: (support: boolean) => void;
+    updateRecordingMultiFormatsSupport: (support: boolean) => void;
+    updateRecordingVideoOptions: (options: string) => void;
+    updateRecordingAudioOptions: (options: string) => void;
+}
+
+export declare type UpdateRoomParametersClientType = (options: UpdateRoomParametersClientOptions) => void;
+
 export declare interface UserRecordingParams {
     mainSpecs: MainSpecs;
     dispSpecs: DispSpecs;
     textSpecs?: TextSpecs;
 }
 
+/**
+ * Handles a participant joining the waiting room by notifying the UI and bumping the pending total.
+ *
+ * @param {UserWaitingOptions} options - Waiting-room notification settings.
+ * @param {string} options.name - Participant name shown in the alert.
+ * @param {ShowAlert} [options.showAlert] - Optional alert presenter.
+ * @param {number} options.totalReqWait - Current combined waiting/request count.
+ * @param {(total: number) => void} options.updateTotalReqWait - Updates the combined waiting/request count.
+ * @returns {Promise<void>} Resolves after state updates complete.
+ *
+ * @example
+ * ```typescript
+ * await userWaiting({
+ *   name: 'Ada',
+ *   totalReqWait: 2,
+ *   updateTotalReqWait: setTotalReqWait,
+ *   showAlert: ({ message }) => console.log(message),
+ * });
+ * ```
+ */
+export declare const userWaiting: ({ name, showAlert, totalReqWait, updateTotalReqWait, }: UserWaitingOptions) => Promise<void>;
+
 export declare interface UserWaitingData {
     name: string;
 }
 
+export declare interface UserWaitingOptions {
+    name: string;
+    showAlert?: ShowAlert;
+    totalReqWait: number;
+    updateTotalReqWait: (total: number) => void;
+}
+
+export declare type UserWaitingType = (options: UserWaitingOptions) => Promise<void>;
+
+/**
+ * Validates if the given string contains only alphanumeric characters.
+ *
+ * @param {ValidateAlphanumericOptions} options - The options containing the string to validate.
+ * @param {string} options.str - The string to be validated.
+ * @returns {Promise<boolean>} - A promise that resolves to `true` if the string is alphanumeric, otherwise `false`.
+ *
+ * @example
+ * ```typescript
+ * const isValid = await validateAlphanumeric({ str: "abc123" });
+ * console.log(isValid);
+ * // Output: true
+ * ```
+ */
+export declare const validateAlphanumeric: ({ str }: ValidateAlphanumericOptions) => Promise<boolean>;
+
+export declare interface ValidateAlphanumericOptions {
+    str: string;
+}
+
+export declare type ValidateAlphanumericType = (options: ValidateAlphanumericOptions) => Promise<boolean>;
+
 /**
  * Validates alphanumeric strings
  */
-export declare function validateAlphanumeric(str: string): boolean;
+export declare function validateWelcomeAlphanumeric(str: string): boolean;
 
 export declare function validateWelcomeInputs({ name, secret, eventID, link, }: ValidateWelcomeInputsOptions): {
     valid: boolean;
@@ -7233,6 +11144,25 @@ export declare interface VidCons {
         min?: number;
     };
 }
+
+export declare type VoiceGender = 'male' | 'female' | 'neutral';
+
+export declare interface VoiceOption {
+    id: string;
+    name: string;
+    gender: VoiceGender;
+    provider: string;
+    language: string;
+    style?: string;
+}
+
+export declare interface VoiceSelectionPreference {
+    gender: VoiceGender;
+    voiceId?: string;
+    style?: string;
+}
+
+export declare const vParams: VParamsType;
 
 export declare type VParamsType = {
     encodings: RtpEncodingParameters[];

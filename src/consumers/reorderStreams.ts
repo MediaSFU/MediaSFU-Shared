@@ -1,42 +1,74 @@
  
-import { Participant, Stream, ChangeVidsParameters, ChangeVidsType } from "../types/types";
+import { Participant, Stream } from "../types/types";
 
-export interface ReorderStreamsParameters extends ChangeVidsParameters {
-  allVideoStreams: (Stream | Participant)[];
-  participants: Participant[];
-  oldAllStreams: (Stream | Participant)[];
+interface ReorderStreamLike {
+  producerId?: string | null;
+}
+
+interface ReorderParticipantLike {
+  name: string;
+  islevel?: string | null;
+  videoID?: string | null;
+  ScreenID?: string | null;
+}
+
+type ChangeVidsInvoker = (options: {
+  screenChanged?: boolean;
+  parameters: any;
+}) => Promise<void>;
+
+type StreamCollectionUpdater<TEntry> = {
+  bivarianceHack: (streams: TEntry[]) => void;
+}["bivarianceHack"];
+
+const getProducerId = (value: unknown): string | null | undefined => {
+  return (value as ReorderStreamLike | null | undefined)?.producerId;
+};
+
+export interface ReorderStreamsParameters<
+  TStream extends ReorderStreamLike = Stream,
+  TParticipant extends ReorderParticipantLike = Participant,
+  TChangeVidsParameters = unknown,
+> {
+  allVideoStreams: (TStream | TParticipant)[];
+  participants: TParticipant[];
+  oldAllStreams: (TStream | TParticipant)[];
   screenId?: string;
   adminVidID?: string;
-  newLimitedStreams: (Stream | Participant)[];
+  newLimitedStreams: (TStream | TParticipant)[];
   newLimitedStreamsIDs: string[];
   activeSounds: string[];
   screenShareIDStream?: string;
   screenShareNameStream?: string;
   adminIDStream?: string;
   adminNameStream?: string;
-  updateNewLimitedStreams: (streams: (Stream | Participant)[]) => void;
+  updateNewLimitedStreams: StreamCollectionUpdater<TStream | TParticipant>;
   updateNewLimitedStreamsIDs: (ids: string[]) => void;
   updateActiveSounds: (sounds: string[]) => void;
   updateScreenShareIDStream: (id: string) => void;
   updateScreenShareNameStream: (name: string) => void;
   updateAdminIDStream: (id: string) => void;
   updateAdminNameStream: (name: string) => void;
-  updateYouYouStream: (streams: (Stream | Participant)[]) => void;
+  updateYouYouStream: StreamCollectionUpdater<TStream | TParticipant>;
 
   // mediasfu functions
-  changeVids: ChangeVidsType;
-  getUpdatedAllParams: () => ReorderStreamsParameters;
+  changeVids: ChangeVidsInvoker;
+  getUpdatedAllParams: () => ReorderStreamsParameters<TStream, TParticipant, TChangeVidsParameters>;
   [key: string]: any;
 }
 
-export interface ReorderStreamsOptions {
+export interface ReorderStreamsOptions<
+  TParameters extends ReorderStreamsParameters<any, any, any> = ReorderStreamsParameters,
+> {
   add?: boolean;
   screenChanged?: boolean;
-  parameters: ReorderStreamsParameters;
+  parameters: TParameters;
 }
 
 
-export type ReorderStreamsType = (options: ReorderStreamsOptions) => Promise<void>;
+export type ReorderStreamsType = <
+  TParameters extends ReorderStreamsParameters<any, any, any> = ReorderStreamsParameters,
+>(options: ReorderStreamsOptions<TParameters>) => Promise<void>;
 
 /**
  * Reorders the video streams based on the provided options and updates the UI accordingly.
@@ -86,13 +118,15 @@ export type ReorderStreamsType = (options: ReorderStreamsOptions) => Promise<voi
  * ```
  */
 
-export const reorderStreams = async ({
+export const reorderStreams = async <
+  TParameters extends ReorderStreamsParameters<any, any, any> = ReorderStreamsParameters,
+>({
   add = false,
   screenChanged = false,
   parameters,
-}: ReorderStreamsOptions): Promise<void> => {
+}: ReorderStreamsOptions<TParameters>): Promise<void> => {
   const { getUpdatedAllParams } = parameters;
-  parameters = getUpdatedAllParams();
+  const updatedParameters = getUpdatedAllParams() as TParameters;
 
   let {
     allVideoStreams,
@@ -118,7 +152,7 @@ export const reorderStreams = async ({
 
     //mediasfu functions
     changeVids,
-  } = parameters;
+  } = updatedParameters;
 
   // function to reorder streams on the ui
   if (!add) {
@@ -127,27 +161,27 @@ export const reorderStreams = async ({
     activeSounds = [];
   }
 
-  const youyou = allVideoStreams.filter((stream) => stream.producerId === "youyou");
+  const youyou = allVideoStreams.filter((stream) => getProducerId(stream) === "youyou");
   const admin = participants.filter((participant) => participant.islevel === "2");
 
   if (admin.length > 0) {
-    adminVidID = admin[0].videoID;
+    adminVidID = admin[0].videoID ?? undefined;
   } else {
     adminVidID = "";
   }
 
   if (adminVidID) {
-    const adminStream = allVideoStreams.find((stream) => stream.producerId === adminVidID);
+    const adminStream = allVideoStreams.find((stream) => getProducerId(stream) === adminVidID);
 
     if (!add) {
       newLimitedStreams = [...newLimitedStreams, ...youyou];
-      newLimitedStreamsIDs = [...newLimitedStreamsIDs, ...youyou.map((stream) => stream.producerId)];
+      newLimitedStreamsIDs = [...newLimitedStreamsIDs, ...youyou.map((stream) => getProducerId(stream) ?? "")];
     } else {
-      const youyouStream = newLimitedStreams.find((stream) => stream.producerId === "youyou");
+      const youyouStream = newLimitedStreams.find((stream) => getProducerId(stream) === "youyou");
 
       if (!youyouStream) {
         newLimitedStreams = [...newLimitedStreams, ...youyou];
-        newLimitedStreamsIDs = [...newLimitedStreamsIDs, ...youyou.map((stream) => stream.producerId)];
+        newLimitedStreamsIDs = [...newLimitedStreamsIDs, ...youyou.map((stream) => getProducerId(stream) ?? "")];
       }
     }
 
@@ -156,17 +190,17 @@ export const reorderStreams = async ({
 
       if (!add) {
         newLimitedStreams = [...newLimitedStreams, adminStream];
-        newLimitedStreamsIDs = [...newLimitedStreamsIDs, adminStream.producerId];
+        newLimitedStreamsIDs = [...newLimitedStreamsIDs, getProducerId(adminStream) ?? ""];
       } else {
-        const adminStreamer = newLimitedStreams.find((stream) => stream.producerId === adminVidID);
+        const adminStreamer = newLimitedStreams.find((stream) => getProducerId(stream) === adminVidID);
 
         if (!adminStreamer) {
           newLimitedStreams = [...newLimitedStreams, adminStream];
-          newLimitedStreamsIDs = [...newLimitedStreamsIDs, adminStream.producerId];
+          newLimitedStreamsIDs = [...newLimitedStreamsIDs, getProducerId(adminStream) ?? ""];
         }
       }
     } else {
-      const oldAdminStream = oldAllStreams.find((stream) => stream.producerId === adminVidID);
+      const oldAdminStream = oldAllStreams.find((stream) => getProducerId(stream) === adminVidID);
 
       if (oldAdminStream) {
         //add it to the allVideoStream
@@ -176,13 +210,13 @@ export const reorderStreams = async ({
 
         if (!add) {
           newLimitedStreams = [...newLimitedStreams, oldAdminStream];
-          newLimitedStreamsIDs = [...newLimitedStreamsIDs, oldAdminStream.producerId];
+          newLimitedStreamsIDs = [...newLimitedStreamsIDs, getProducerId(oldAdminStream) ?? ""];
         } else {
-          const adminStreamer = newLimitedStreams.find((stream) => stream.producerId === adminVidID);
+          const adminStreamer = newLimitedStreams.find((stream) => getProducerId(stream) === adminVidID);
 
           if (!adminStreamer) {
             newLimitedStreams = [...newLimitedStreams, oldAdminStream];
-            newLimitedStreamsIDs = [...newLimitedStreamsIDs, oldAdminStream.producerId];
+            newLimitedStreamsIDs = [...newLimitedStreamsIDs, getProducerId(oldAdminStream) ?? ""];
           }
         }
       }
@@ -191,42 +225,42 @@ export const reorderStreams = async ({
     const screenParticipant = participants.filter((participant) => participant.ScreenID === screenId);
 
     if (screenParticipant.length > 0) {
-      const screenParticipantVidID = screenParticipant[0].videoID;
-      const screenParticipantVidID_ = newLimitedStreams.filter((stream) => stream.producerId === screenParticipantVidID);
+      const screenParticipantVidID = screenParticipant[0].videoID ?? undefined;
+      const screenParticipantVidID_ = newLimitedStreams.filter((stream) => getProducerId(stream) === screenParticipantVidID);
 
       if (screenParticipantVidID_?.length < 1 && screenParticipantVidID) {
         screenShareIDStream = screenParticipantVidID;
         screenShareNameStream = screenParticipant[0].name;
-        const screenParticipantVidID__ = allVideoStreams.filter((stream) => stream.producerId === screenParticipantVidID);
+        const screenParticipantVidID__ = allVideoStreams.filter((stream) => getProducerId(stream) === screenParticipantVidID);
         newLimitedStreams = [...newLimitedStreams, ...screenParticipantVidID__];
-        newLimitedStreamsIDs = [...newLimitedStreamsIDs, ...screenParticipantVidID__.map((stream) => stream.producerId)];
+        newLimitedStreamsIDs = [...newLimitedStreamsIDs, ...screenParticipantVidID__.map((stream) => getProducerId(stream) ?? "")];
       }
     }
   } else {
     if (!add) {
       newLimitedStreams = [...newLimitedStreams, ...youyou];
-      newLimitedStreamsIDs = [...newLimitedStreamsIDs, ...youyou.map((stream) => stream.producerId)];
+      newLimitedStreamsIDs = [...newLimitedStreamsIDs, ...youyou.map((stream) => getProducerId(stream) ?? "")];
     } else {
-      const youyouStream = newLimitedStreams.find((stream) => stream.producerId === "youyou");
+      const youyouStream = newLimitedStreams.find((stream) => getProducerId(stream) === "youyou");
 
       if (!youyouStream) {
         newLimitedStreams = [...newLimitedStreams, ...youyou];
-        newLimitedStreamsIDs = [...newLimitedStreamsIDs, ...youyou.map((stream) => stream.producerId)];
+        newLimitedStreamsIDs = [...newLimitedStreamsIDs, ...youyou.map((stream) => getProducerId(stream) ?? "")];
       }
     }
 
     const screenParticipant = participants.filter((participant) => participant.ScreenID === screenId);
 
     if (screenParticipant.length > 0) {
-      const screenParticipantVidID = screenParticipant[0].videoID;
-      const screenParticipantVidID_ = newLimitedStreams.filter((stream) => stream.producerId === screenParticipantVidID);
+      const screenParticipantVidID = screenParticipant[0].videoID ?? undefined;
+      const screenParticipantVidID_ = newLimitedStreams.filter((stream) => getProducerId(stream) === screenParticipantVidID);
 
       if (screenParticipantVidID_?.length < 1 && screenParticipantVidID) {
         screenShareIDStream = screenParticipantVidID;
         screenShareNameStream = screenParticipant[0].name;
-        const screenParticipantVidID__ = allVideoStreams.filter((stream) => stream.producerId === screenParticipantVidID);
+        const screenParticipantVidID__ = allVideoStreams.filter((stream) => getProducerId(stream) === screenParticipantVidID);
         newLimitedStreams = [...newLimitedStreams, ...screenParticipantVidID__];
-        newLimitedStreamsIDs = [...newLimitedStreamsIDs, ...screenParticipantVidID__.map((stream) => stream.producerId)];
+        newLimitedStreamsIDs = [...newLimitedStreamsIDs, ...screenParticipantVidID__.map((stream) => getProducerId(stream) ?? "")];
       }
     }
   }
@@ -241,6 +275,6 @@ export const reorderStreams = async ({
   updateYouYouStream(youyou);
 
   //reflect the changes on the ui
-  await changeVids({ screenChanged, parameters });
+  await changeVids({ screenChanged, parameters: updatedParameters });
 };
 

@@ -1,13 +1,47 @@
  
-import { Participant, Stream, OnScreenChangesType, ReorderStreamsType, ChangeVidsType, OnScreenChangesParameters, ReorderStreamsParameters, ChangeVidsParameters, EventType } from "../types/types";
-export interface ReUpdateInterParameters extends OnScreenChangesParameters, ReorderStreamsParameters, ChangeVidsParameters {
+import { Participant, Stream, EventType } from "../types/types";
+
+interface ReUpdateInterStreamLike {
+  producerId?: string | null;
+}
+
+interface ReUpdateInterParticipantLike {
+  name: string;
+  videoID?: string | null;
+  muted?: boolean | null;
+}
+
+type BooleanUpdater = (value: boolean) => void;
+type NumberUpdater = (value: number) => void;
+type StringListUpdater = (ids: string[]) => void;
+
+type OnScreenChangesInvoker = (options: {
+  changed?: boolean;
+  parameters: any;
+}) => Promise<void>;
+
+type ReorderStreamsInvoker = (options: {
+  add?: boolean;
+  screenChanged?: boolean;
+  parameters: any;
+}) => Promise<void>;
+
+type ChangeVidsInvoker = (options: {
+  screenChanged?: boolean;
+  parameters: any;
+}) => Promise<void>;
+
+export interface ReUpdateInterParameters<
+  TStream extends ReUpdateInterStreamLike = Stream,
+  TParticipant extends ReUpdateInterParticipantLike = Participant,
+> {
   screenPageLimit: number;
   itemPageLimit: number;
   reorderInterval: number;
   fastReorderInterval: number;
   eventType: EventType;
-  participants: Participant[];
-  allVideoStreams: (Participant | Stream)[];
+  participants: TParticipant[];
+  allVideoStreams: (TParticipant | TStream)[];
   shared: boolean;
   shareScreenStarted: boolean;
   adminNameStream?: string;
@@ -15,35 +49,39 @@ export interface ReUpdateInterParameters extends OnScreenChangesParameters, Reor
   updateMainWindow: boolean;
   sortAudioLoudness: boolean;
   lastReorderTime: number;
-  newLimitedStreams: (Participant | Stream)[];
+  newLimitedStreams: (TParticipant | TStream)[];
   newLimitedStreamsIDs: string[];
   oldSoundIds: string[];
-  updateUpdateMainWindow: (value: boolean) => void;
-  updateSortAudioLoudness: (value: boolean) => void;
-  updateLastReorderTime: (value: number) => void;
-  updateNewLimitedStreams: (streams: (Participant | Stream)[]) => void;
-  updateNewLimitedStreamsIDs: (ids: string[]) => void;
-  updateOldSoundIds: (ids: string[]) => void;
+  updateUpdateMainWindow: BooleanUpdater;
+  updateSortAudioLoudness: BooleanUpdater;
+  updateLastReorderTime: NumberUpdater;
+  updateNewLimitedStreams: (streams: (TParticipant | TStream)[]) => void;
+  updateNewLimitedStreamsIDs: StringListUpdater;
+  updateOldSoundIds: StringListUpdater;
 
   // mediasfu functions
-  onScreenChanges: OnScreenChangesType;
-  reorderStreams: ReorderStreamsType;
-  changeVids: ChangeVidsType;
+  onScreenChanges: OnScreenChangesInvoker;
+  reorderStreams: ReorderStreamsInvoker;
+  changeVids: ChangeVidsInvoker;
 
-  getUpdatedAllParams: () => ReUpdateInterParameters;
+  getUpdatedAllParams: () => ReUpdateInterParameters<TStream, TParticipant>;
   [key: string]: any;
 }
 
-export interface ReUpdateInterOptions {
+export interface ReUpdateInterOptions<
+  TParameters extends ReUpdateInterParameters<any, any> = ReUpdateInterParameters,
+> {
   name: string;
   add?: boolean;
   force?: boolean;
   average?: number;
-  parameters: ReUpdateInterParameters;
+  parameters: TParameters;
 }
 
 // Export the type definition for the function
-export type ReUpdateInterType = (options: ReUpdateInterOptions) => Promise<void>;
+export type ReUpdateInterType = <
+  TParameters extends ReUpdateInterParameters<any, any> = ReUpdateInterParameters,
+>(options: ReUpdateInterOptions<TParameters>) => Promise<void>;
 
 /**
  * Updates the interaction state based on the provided options and parameters.
@@ -123,13 +161,15 @@ export type ReUpdateInterType = (options: ReUpdateInterOptions) => Promise<void>
  */
 
 
-export async function reUpdateInter({
+export async function reUpdateInter<
+  TParameters extends ReUpdateInterParameters<any, any> = ReUpdateInterParameters,
+>({
   name,
   add = false,
   force = false,
   average = 127,
   parameters,
-}: ReUpdateInterOptions): Promise<void> {
+}: ReUpdateInterOptions<TParameters>): Promise<void> {
   let {
     screenPageLimit,
     itemPageLimit,
@@ -159,7 +199,7 @@ export async function reUpdateInter({
     onScreenChanges,
     reorderStreams,
     changeVids,
-  } = parameters;
+  } = parameters as TParameters;
 
   if (eventType === "broadcast" || eventType === "chat") {
     return;

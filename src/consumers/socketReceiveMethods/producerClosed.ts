@@ -63,6 +63,19 @@ export const producerClosed = async ({
 }: ProducerClosedOptions): Promise<void> => {
   let { consumerTransports, closeAndResize, screenId, updateConsumerTransports } = parameters;
 
+  const activeTranslationProducerIds = parameters.activeTranslationProducerIds;
+  const isTranslationProducer = activeTranslationProducerIds?.has?.(remoteProducerId);
+
+  if (isTranslationProducer) {
+    activeTranslationProducerIds?.delete?.(remoteProducerId);
+
+    const removeTranslationStream = parameters.removeTranslationStream as ((producerId: string) => void) | undefined;
+
+    if (removeTranslationStream) {
+      removeTranslationStream(remoteProducerId);
+    }
+  }
+
   // Handle producer closed
   const producerToClose = consumerTransports.find(
     (transportData: any) => transportData.producerId === remoteProducerId

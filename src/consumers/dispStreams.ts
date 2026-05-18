@@ -1,15 +1,52 @@
 import {
-  Stream, Participant, Transport, PrepopulateUserMediaParameters, PrepopulateUserMediaType, RePortParameters, RePortType,
-  ProcessConsumerTransportsParameters, ProcessConsumerTransportsType, ResumePauseStreamsParameters, ResumePauseStreamsType, ReadjustParameters, ReadjustType, AddVideosGridType, AddVideosGridParameters, GetEstimateType, CheckGridType, ResumePauseAudioStreamsParameters, ResumePauseAudioStreamsType, GetEstimateParameters,
+  Stream, Participant, Transport,
   EventType
 } from "../types/types";
 
-export interface DispStreamsParameters extends PrepopulateUserMediaParameters, RePortParameters, ProcessConsumerTransportsParameters, ResumePauseStreamsParameters, ReadjustParameters, ResumePauseAudioStreamsParameters, GetEstimateParameters, AddVideosGridParameters {
-  consumerTransports: Transport[];
-  streamNames: Stream[];
-  audStreamNames: Stream[];
-  participants: Participant[];
-  ref_participants: Participant[];
+interface DispStreamEntryLike<TMediaStream = MediaStream> {
+  producerId?: string | null;
+  audioID?: string | null;
+  id?: string | null;
+  name?: string | null;
+  muted?: boolean | null;
+  stream?: TMediaStream | null;
+}
+
+interface DispParticipantLike<TMediaStream = MediaStream> extends DispStreamEntryLike<TMediaStream> {
+  name: string;
+  islevel?: string | null;
+  videoID?: string | null;
+}
+
+type StreamCollectionUpdater<TEntry> = {
+  bivarianceHack: (streams: TEntry[]) => void;
+}["bivarianceHack"];
+
+type OpaqueAsyncInvoker = {
+  bivarianceHack: (options: any) => Promise<any>;
+}["bivarianceHack"];
+
+type EstimateResult = [unknown, number, number, ...unknown[]];
+
+type OpaqueEstimateInvoker = {
+  bivarianceHack: (options: any) => EstimateResult;
+}["bivarianceHack"];
+
+type OpaqueCheckGridInvoker = {
+  bivarianceHack: (options: any) => Promise<any> | any;
+}["bivarianceHack"];
+
+export interface DispStreamsParameters<
+  TStream extends DispStreamEntryLike<any> = Stream,
+  TParticipant extends DispParticipantLike<any> = Participant,
+  TTransport = Transport,
+  TMediaStream = MediaStream,
+> {
+  consumerTransports: TTransport[];
+  streamNames: TStream[];
+  audStreamNames: TStream[];
+  participants: TParticipant[];
+  ref_participants: TParticipant[];
   recordingDisplayType: 'video' | 'media' | 'all';
   recordingVideoOptimized: boolean;
   meetingDisplayType: string;
@@ -24,7 +61,7 @@ export interface DispStreamsParameters extends PrepopulateUserMediaParameters, R
   shared: boolean;
   shareScreenStarted: boolean;
   shareEnded: boolean;
-  oldAllStreams: (Stream | Participant)[];
+  oldAllStreams: (TStream | TParticipant)[];
   updateMainWindow: boolean;
   remoteProducerId?: string;
   activeNames: string[];
@@ -33,53 +70,59 @@ export interface DispStreamsParameters extends PrepopulateUserMediaParameters, R
   nForReadjustRecord: number;
   first_round: boolean;
   lock_screen: boolean;
-  chatRefStreams: (Stream | Participant)[];
+  chatRefStreams: (TStream | TParticipant)[];
   eventType: EventType;
   islevel: string;
-  localStreamVideo: MediaStream | null;
+  localStreamVideo: TMediaStream | null;
 
   breakOutRoomStarted: boolean;
   breakOutRoomEnded: boolean;
   keepBackground: boolean;
-  virtualStream: MediaStream | null;
+  virtualStream: TMediaStream | null;
 
   updateActiveNames: (names: string[]) => void;
   updateDispActiveNames: (names: string[]) => void;
-  updateLStreams: (streams: (Stream | Participant)[]) => void;
-  updateChatRefStreams: (streams: (Stream | Participant)[]) => void;
+  updateLStreams: StreamCollectionUpdater<TStream | TParticipant>;
+  updateChatRefStreams: StreamCollectionUpdater<TStream | TParticipant>;
   updateNForReadjustRecord: (n: number) => void;
   updateUpdateMainWindow: (value: boolean) => void;
   updateShowMiniView: (value: boolean) => void;
 
   // mediasfu functions
-  prepopulateUserMedia: PrepopulateUserMediaType;
-  rePort: RePortType;
-  processConsumerTransports: ProcessConsumerTransportsType;
-  resumePauseStreams: ResumePauseStreamsType;
-  readjust: ReadjustType;
-  addVideosGrid: AddVideosGridType;
-  getEstimate: GetEstimateType;
-  checkGrid: CheckGridType;
-  resumePauseAudioStreams: ResumePauseAudioStreamsType;
+  prepopulateUserMedia: OpaqueAsyncInvoker;
+  rePort: OpaqueAsyncInvoker;
+  processConsumerTransports: OpaqueAsyncInvoker;
+  resumePauseStreams: OpaqueAsyncInvoker;
+  readjust: OpaqueAsyncInvoker;
+  addVideosGrid: OpaqueAsyncInvoker;
+  getEstimate: OpaqueEstimateInvoker;
+  checkGrid: OpaqueCheckGridInvoker;
+  resumePauseAudioStreams: OpaqueAsyncInvoker;
 
-  getUpdatedAllParams: () => DispStreamsParameters;
+  getUpdatedAllParams: () => DispStreamsParameters<TStream, TParticipant, TTransport, TMediaStream>;
   [key: string]: any;
 }
 
-export interface DispStreamsOptions {
-  lStreams: (Stream | Participant)[];
+export interface DispStreamsOptions<
+  TParameters extends DispStreamsParameters<any, any, any, any> = DispStreamsParameters,
+> {
+  lStreams: TParameters extends DispStreamsParameters<infer TStream, infer TParticipant, any, any>
+    ? (TStream | TParticipant)[]
+    : (Stream | Participant)[];
   ind: number;
   auto?: boolean;
   ChatSkip?: boolean;
   forChatCard?: any;
   forChatID?: any;
-  parameters: DispStreamsParameters;
+  parameters: TParameters;
   breakRoom?: number;
   inBreakRoom?: boolean;
 }
 
 // Export the type definition for the function
-export type DispStreamsType = (options: DispStreamsOptions) => Promise<void>;
+export type DispStreamsType = <
+  TParameters extends DispStreamsParameters<any, any, any, any> = DispStreamsParameters,
+>(options: DispStreamsOptions<TParameters>) => Promise<void>;
 
 /**
  * Function to display streams based on various parameters and conditions.
@@ -173,7 +216,9 @@ export type DispStreamsType = (options: DispStreamsOptions) => Promise<void>;
  *   });
  */
 
-export async function dispStreams({
+export async function dispStreams<
+  TParameters extends DispStreamsParameters<any, any, any, any> = DispStreamsParameters,
+>({
   lStreams,
   ind,
   auto = false,
@@ -182,11 +227,12 @@ export async function dispStreams({
   parameters,
   breakRoom = -1,
   inBreakRoom = false,
-}: DispStreamsOptions): Promise<void> {
+}: DispStreamsOptions<TParameters>): Promise<void> {
   // Function to display streams
 
-  let { getUpdatedAllParams } = parameters;
-  parameters = getUpdatedAllParams();
+  const { getUpdatedAllParams } = parameters;
+  const updatedParameters = getUpdatedAllParams() as TParameters;
+  parameters = updatedParameters;
 
   let {
     consumerTransports,
@@ -547,11 +593,11 @@ export async function dispStreams({
   }
 
   if (eventType == "broadcast") {
-    lStreams = lStreams_;
+    lStreams = lStreams_ as typeof lStreams;
     updateLStreams(lStreams);
   } else if (eventType == "chat") {
     if (forChatID != null) {
-      lStreams = chatRefStreams;
+      lStreams = chatRefStreams as typeof lStreams;
       updateLStreams(lStreams);
     } else {
       updateShowMiniView(false);
@@ -581,7 +627,7 @@ export async function dispStreams({
               //remove any stream with name of host.name
               lStreams = lStreams.filter((stream) => {
                 return stream.name != host.name;
-              });
+              }) as typeof lStreams;
 
               lStreams.push(streame);
             }
@@ -598,7 +644,7 @@ export async function dispStreams({
         return (
           stream.producerId != "youyou" && stream.producerId != "youyouyou"
         );
-      });
+      }) as typeof lStreams;
 
       if (youyou) {
         lStreams.push(youyou);

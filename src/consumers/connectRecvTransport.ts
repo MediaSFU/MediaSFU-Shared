@@ -1,6 +1,84 @@
 import { Socket } from "socket.io-client";
-import { ConsumerResumeType, ConsumerResumeParameters, Transport as TransportType } from "../types/types";
+import { ConsumerResumeType, ConsumerResumeParameters, Transport as TransportType, Participant } from "../types/types";
 import type { Consumer, Device, Transport } from "mediasoup-client/lib/types";
+
+interface SpeakerTranslationState {
+  speakerId: string;
+  speakerName: string;
+  inputLanguage: string;
+  outputLanguage: string;
+  originalProducerId: string;
+  enabled: boolean;
+}
+
+const getSpeakerNameForProducerId = (
+  producerId: string,
+  parameters: Record<string, any>,
+): string | undefined => {
+  const participants = parameters.participants as Participant[] | undefined;
+  const participant = participants?.find((candidate) => candidate.audioID === producerId);
+
+  if (participant?.name) {
+    return participant.name;
+  }
+
+  const audStreamName = (parameters.audStreamNames as Array<{ producerId?: string; name?: string }> | undefined)
+    ?.find((stream) => stream.producerId === producerId && typeof stream.name === 'string');
+  if (audStreamName?.name) {
+    return audStreamName.name;
+  }
+
+  return (parameters.allAudioStreams as Array<{ producerId?: string; name?: string }> | undefined)
+    ?.find((stream) => stream.producerId === producerId && typeof stream.name === 'string')
+    ?.name;
+};
+
+const isOriginalAudioSuppressedByTranslation = (
+  producerId: string,
+  parameters: Record<string, any>,
+): boolean => {
+  const activeTranslationProducerIds = parameters.activeTranslationProducerIds as Set<string> | undefined;
+  if (activeTranslationProducerIds?.has(producerId)) {
+    return false;
+  }
+
+  const speakerTranslationStates = parameters.speakerTranslationStates as
+    | Map<string, SpeakerTranslationState>
+    | undefined;
+
+  if (!speakerTranslationStates?.size) {
+    return false;
+  }
+
+  const speakerName = getSpeakerNameForProducerId(producerId, parameters);
+
+  if (speakerName) {
+    const speakerState = speakerTranslationStates.get(speakerName);
+    if (speakerState?.enabled) {
+      return true;
+    }
+  }
+
+  return Array.from(speakerTranslationStates.values()).some((speakerState) => {
+    if (!speakerState?.enabled) {
+      return false;
+    }
+
+    if (speakerState.originalProducerId === producerId) {
+      return true;
+    }
+
+    if (!speakerName) {
+      return false;
+    }
+
+    return (
+      speakerState.speakerId === speakerName ||
+      speakerState.speakerName === speakerName
+    );
+  });
+};
+
 interface Params {
   id: string;
   producerId: string;
@@ -14,6 +92,7 @@ export interface ConnectRecvTransportParameters extends ConsumerResumeParameters
   device: Device | null;
   consumerTransports: TransportType[];
   updateConsumerTransports: (transports: TransportType[]) => void;
+  speakerTranslationStates?: Map<string, SpeakerTranslationState>;
 
   // mediasfu functions
   consumerResume: ConsumerResumeType;
@@ -137,6 +216,22 @@ export const connectRecvTransport = async ({
                     nsock,
                     consumer,
                   });
+
+                  if (params.kind === 'audio') {
+                    try {
+                      const updatedParams = parameters.getUpdatedAllParams();
+                      if (isOriginalAudioSuppressedByTranslation(remoteProducerId, updatedParams)) {
+                        consumer.pause();
+                        nsock.emit(
+                          'consumer-pause',
+                          { serverConsumerId: params.serverConsumerId },
+                          () => {},
+                        );
+                        return;
+                      }
+                    } catch {
+                    }
+                  }
                 } catch (error) {
                   // Handle error
                   console.log("consumerResume error", error);

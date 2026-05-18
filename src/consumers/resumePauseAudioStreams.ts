@@ -1,28 +1,74 @@
-import { Participant, Stream, ProcessConsumerTransportsAudioType, ProcessConsumerTransportsAudioParameters, Transport, BreakoutParticipant, EventType } from '../types/types';
+import { Participant, Stream, ProcessConsumerTransportsAudioParameters, Transport, EventType } from '../types/types';
 
-export interface ResumePauseAudioStreamsParameters extends ProcessConsumerTransportsAudioParameters {
-  breakoutRooms: BreakoutParticipant[][];
-  ref_participants: Participant[];
-  allAudioStreams: (Stream | Participant)[];
-  participants: Participant[];
+interface BreakoutParticipantLike {
+  name: string;
+  breakRoom?: number | null;
+}
+
+interface ParticipantLike {
+  name: string;
+  islevel?: string | null;
+  audioID?: string | null;
+  producerId?: string | null;
+  breakRoom?: number | null;
+}
+
+interface MediaEntryLike {
+  producerId?: string | null;
+  audioID?: string | null;
+}
+
+interface AudioTransportLike {
+  producerId?: string | null;
+  consumer?: {
+    paused?: boolean;
+    kind?: string;
+    pause: () => unknown;
+    resume: () => unknown;
+  };
+  socket_: {
+    emit: (
+      event: string,
+      payload: { serverConsumerId: string },
+      callback?: ((payload?: { resumed: boolean }) => void | Promise<unknown>)
+    ) => void;
+  };
+  serverConsumerTransportId: string;
+}
+
+export interface ResumePauseAudioStreamsParameters<
+  TTransport extends AudioTransportLike = Transport,
+  TMediaEntry extends MediaEntryLike | ParticipantLike = Stream | Participant,
+> extends ProcessConsumerTransportsAudioParameters {
+  breakoutRooms: BreakoutParticipantLike[][];
+  ref_participants: ParticipantLike[];
+  allAudioStreams: TMediaEntry[];
+  participants: ParticipantLike[];
   islevel: string;
   eventType: EventType;
-  consumerTransports: Transport[];
-  limitedBreakRoom: BreakoutParticipant[];
+  consumerTransports: TTransport[];
+  limitedBreakRoom: BreakoutParticipantLike[];
   hostNewRoom: number;
   member: string;
-  updateLimitedBreakRoom: (limitedBreakRoom: BreakoutParticipant[]) => void;
+  updateLimitedBreakRoom: (limitedBreakRoom: BreakoutParticipantLike[]) => void;
 
   // mediasfu functions
-  processConsumerTransportsAudio: ProcessConsumerTransportsAudioType;
-  getUpdatedAllParams: () => ResumePauseAudioStreamsParameters;
+  processConsumerTransportsAudio: (options: {
+    consumerTransports: TTransport[];
+    lStreams: TMediaEntry[];
+    parameters: ProcessConsumerTransportsAudioParameters;
+  }) => Promise<void>;
+  getUpdatedAllParams: () => ResumePauseAudioStreamsParameters<TTransport, TMediaEntry>;
   [key: string]: any;
 }
 
-export interface ResumePauseAudioStreamsOptions {
+export interface ResumePauseAudioStreamsOptions<
+  TTransport extends AudioTransportLike = Transport,
+  TMediaEntry extends MediaEntryLike | ParticipantLike = Stream | Participant,
+> {
   breakRoom?: number;
   inBreakRoom?: boolean;
-  parameters: ResumePauseAudioStreamsParameters;
+  parameters: ResumePauseAudioStreamsParameters<TTransport, TMediaEntry>;
 }
 
 // Export the type definition for the function
@@ -54,11 +100,14 @@ export type ResumePauseAudioStreamsType = (
  * ```
  */
 
-export const resumePauseAudioStreams = async ({
+export const resumePauseAudioStreams = async <
+  TTransport extends AudioTransportLike = Transport,
+  TMediaEntry extends MediaEntryLike | ParticipantLike = Stream | Participant,
+>({
   breakRoom = -1,
   inBreakRoom = false,
   parameters,
-}: ResumePauseAudioStreamsOptions): Promise<void> => {
+}: ResumePauseAudioStreamsOptions<TTransport, TMediaEntry>): Promise<void> => {
   const { getUpdatedAllParams } = parameters;
   parameters = getUpdatedAllParams();
 
@@ -76,8 +125,8 @@ export const resumePauseAudioStreams = async ({
     processConsumerTransportsAudio,
   } = parameters;
 
-  let room: BreakoutParticipant[] = [];
-  let currentStreams: (Stream | Participant)[] = [];
+  let room: BreakoutParticipantLike[] = [];
+  let currentStreams: TMediaEntry[] = [];
   // Determine the room based on breakout status
   if (inBreakRoom && breakRoom !== -1) {
     room = breakoutRooms[breakRoom];

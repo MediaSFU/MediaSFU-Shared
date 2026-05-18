@@ -51,7 +51,7 @@ export type ModifyCoHostSettingsType = (options: ModifyCoHostSettingsOptions) =>
  */
 export const modifyCoHostSettings = async ({
   roomName,
-  showAlert,
+  // showAlert,
   selectedParticipant,
   coHost,
   coHostResponsibility,
@@ -61,15 +61,15 @@ export const modifyCoHostSettings = async ({
   socket,
 }: ModifyCoHostSettingsOptions): Promise<void> => {
   // Check if the chat room is in demo mode
-  if (roomName.toLowerCase().startsWith('d')) {
-    showAlert?.({
-      message: 'You cannot add co-host in demo mode.',
-      type: 'danger',
-      duration: 3000,
-    });
+  // if (roomName.toLowerCase().startsWith('d')) {
+  //   showAlert?.({
+  //     message: 'You cannot add co-host in demo mode.',
+  //     type: 'danger',
+  //     duration: 3000,
+  //   });
 
-    return;
-  }
+  //   return;
+  // }
 
   let newCoHost = coHost;
 

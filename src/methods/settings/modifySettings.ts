@@ -46,7 +46,7 @@ export type ModifySettingsType = (options: ModifySettingsOptions) => Promise<voi
  * ```
  */
 export async function modifySettings({
-  showAlert,
+  // showAlert,
   roomName,
   audioSet,
   videoSet,
@@ -59,23 +59,23 @@ export async function modifySettings({
   updateChatSetting,
   updateIsSettingsModalVisible,
 }: ModifySettingsOptions): Promise<void> {
-  if (roomName.toLowerCase().startsWith('d')) {
-    // none should be approval
-    if (
-      audioSet === 'approval' ||
-      videoSet === 'approval' ||
-      screenshareSet === 'approval' ||
-      chatSet === 'approval'
-    ) {
-      showAlert?.({
-        message: 'You cannot set approval for demo mode.',
-        type: 'danger',
-        duration: 3000,
-      });
+  // if (roomName.toLowerCase().startsWith('d')) {
+  //   // none should be approval
+  //   if (
+  //     audioSet === 'approval' ||
+  //     videoSet === 'approval' ||
+  //     screenshareSet === 'approval' ||
+  //     chatSet === 'approval'
+  //   ) {
+  //     showAlert?.({
+  //       message: 'You cannot set approval for demo mode.',
+  //       type: 'danger',
+  //       duration: 3000,
+  //     });
 
-      return;
-    }
-  }
+  //     return;
+  //   }
+  // }
 
   // Check and update state variables based on the provided logic
   if (audioSet) {

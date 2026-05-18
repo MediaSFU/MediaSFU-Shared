@@ -148,6 +148,21 @@ export const clickVideo = async ({ parameters }: ClickVideoOptions): Promise<voi
     checkPermission,
   } = parameters;
 
+  const resolvedMediaDevices =
+    typeof mediaDevices?.getUserMedia === "function"
+      ? mediaDevices
+      : globalThis.navigator?.mediaDevices;
+
+  if (typeof resolvedMediaDevices?.getUserMedia !== "function") {
+    showAlert?.({
+      message:
+        "Camera access is unavailable in this browser session. Please refresh and try again.",
+      type: "danger",
+      duration: 3000,
+    });
+    return;
+  }
+
   if (audioOnlyRoom) {
     showAlert?.({
       message: "You cannot turn on your camera in an audio-only event.",
@@ -173,8 +188,10 @@ export const clickVideo = async ({ parameters }: ClickVideoOptions): Promise<voi
 
     videoAlreadyOn = false;
     updateVideoAlreadyOn(videoAlreadyOn);
-    localStream!.getVideoTracks()[0].enabled = false;
-    updateLocalStream(localStream);
+    if (localStream && localStream.getVideoTracks().length > 0) {
+      localStream.getVideoTracks()[0].enabled = false;
+      updateLocalStream(localStream);
+    }
     await disconnectSendTransportVideo({ parameters });
   } else {
     if (adminRestrictSetting) {
@@ -191,7 +208,12 @@ export const clickVideo = async ({ parameters }: ClickVideoOptions): Promise<voi
     if (!videoAction && islevel !== "2" && !youAreCoHost) {
       response = await checkPermission({
         permissionType: "videoSetting",
-        audioSetting, videoSetting, screenshareSetting, chatSetting,
+        audioSetting,
+        videoSetting,
+        screenshareSetting,
+        chatSetting,
+        permissionConfig: parameters.permissionConfig,
+        participantLevel: islevel,
       });
     } else {
       response = 0;
@@ -299,13 +321,13 @@ export const clickVideo = async ({ parameters }: ClickVideoOptions): Promise<voi
         }
       }
 
-      await mediaDevices
+      await resolvedMediaDevices
         .getUserMedia(mediaConstraints)
         .then(async (stream) => {
           await streamSuccessVideo({ stream, parameters });
         })
         .catch(async () => {
-          await mediaDevices
+          await resolvedMediaDevices
             .getUserMedia(altMediaConstraints)
             .then(async (stream) => {
               await streamSuccessVideo({ stream, parameters });
@@ -316,7 +338,7 @@ export const clickVideo = async ({ parameters }: ClickVideoOptions): Promise<voi
                 video: { ...vidCons },
                 audio: false,
               };
-              await mediaDevices
+              await resolvedMediaDevices
               .getUserMedia(altMediaConstraints)
               .then(async (stream) => {
                 await streamSuccessVideo({ stream, parameters });

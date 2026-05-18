@@ -1,6 +1,10 @@
-import { ReorderStreamsType, ReorderStreamsParameters, EventType } from "../types/types";
+import { ReorderStreamsParameters, EventType } from "../types/types";
 
-export interface OnScreenChangesParameters extends ReorderStreamsParameters {
+type OpaqueReorderStreamsInvoker = {
+  bivarianceHack: (options: any) => Promise<void>;
+}["bivarianceHack"];
+
+export interface OnScreenChangesParameters extends ReorderStreamsParameters<any, any, any> {
   eventType: EventType;
   shareScreenStarted: boolean;
   shared: boolean;
@@ -10,18 +14,22 @@ export interface OnScreenChangesParameters extends ReorderStreamsParameters {
   updateItemPageLimit: (value: number) => void;
   updateMainHeightWidth: (value: number) => void;
 
-  //mediasfu functions
-  reorderStreams: ReorderStreamsType;
+  // mediasfu functions
+  reorderStreams: OpaqueReorderStreamsInvoker;
   [key: string]: any;
 }
 
-export interface OnScreenChangesOptions {
+export interface OnScreenChangesOptions<
+  TParameters extends OnScreenChangesParameters = OnScreenChangesParameters,
+> {
   changed?: boolean;
-  parameters: OnScreenChangesParameters;
+  parameters: TParameters;
 }
 
 // Export the type definition for the function
-export type OnScreenChangesType = (options: OnScreenChangesOptions) => Promise<void>;
+export type OnScreenChangesType = <
+  TParameters extends OnScreenChangesParameters = OnScreenChangesParameters,
+>(options: OnScreenChangesOptions<TParameters>) => Promise<void>;
 
 /**
  * Handles changes in screen events such as broadcast, chat, and conference.
@@ -62,13 +70,17 @@ export type OnScreenChangesType = (options: OnScreenChangesOptions) => Promise<v
  * ```
  */ 
 
-export async function onScreenChanges({ changed, parameters }: OnScreenChangesOptions): Promise<void> {
+export async function onScreenChanges<
+  TParameters extends OnScreenChangesParameters = OnScreenChangesParameters,
+>({ changed, parameters }: OnScreenChangesOptions<TParameters>): Promise<void> {
   try {
     // Destructure parameters
     let {
       eventType,
       shareScreenStarted,
       shared,
+      whiteboardStarted,
+      whiteboardEnded,
       addForBasic,
       updateMainHeightWidth,
       updateAddForBasic,
@@ -78,6 +90,7 @@ export async function onScreenChanges({ changed, parameters }: OnScreenChangesOp
       //mediasfu functions
       reorderStreams,
     } = parameters;
+    const screenFlowActive = shareScreenStarted || shared || (whiteboardStarted && !whiteboardEnded);
 
     // Remove element with id 'controlButtons'
     addForBasic = false;
@@ -89,9 +102,11 @@ export async function onScreenChanges({ changed, parameters }: OnScreenChangesOp
 
       itemPageLimit = eventType === "broadcast" ? 1 : 2;
       updateItemPageLimit(itemPageLimit);
-      updateMainHeightWidth(eventType === "broadcast" ? 100 : 0);
+      updateMainHeightWidth(screenFlowActive ? 84 : eventType === "broadcast" ? 100 : 0);
+    } else if (screenFlowActive) {
+      updateMainHeightWidth(84);
     } else {
-      if (eventType === "conference" && !(shareScreenStarted || shared)) {
+      if (eventType === "conference") {
         updateMainHeightWidth(0);
       }
     }

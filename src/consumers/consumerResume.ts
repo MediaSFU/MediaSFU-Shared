@@ -2,6 +2,7 @@
 // This is a React component in the original and not needed for the shared package
 
 import { Socket } from 'socket.io-client';
+import { createFrameworkConsumerContractError } from './frameworkConsumerContract';
 
 export interface ConsumerResumeParameters {
   [key: string]: any;
@@ -20,6 +21,5 @@ export interface ConsumerResumeOptions {
 export type ConsumerResumeType = (options: ConsumerResumeOptions) => Promise<void>;
 
 export const consumerResume: ConsumerResumeType = async () => {
-  // Stub implementation - actual logic handled in framework-specific packages
-  console.warn('consumerResume called on shared package - should be implemented in framework package');
+  throw createFrameworkConsumerContractError('consumerResume');
 };

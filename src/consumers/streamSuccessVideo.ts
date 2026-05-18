@@ -30,6 +30,7 @@ export interface StreamSuccessVideoParameters extends CreateSendTransportParamet
   keepBackground: boolean;
   appliedBackground: boolean;
   videoProducer: Producer | null;
+  removeSingleVideoEncoding?: boolean;
 
   // Update functions
   updateTransportCreatedVideo: (created: boolean) => void;
@@ -274,6 +275,10 @@ export const streamSuccessVideo = async ({
       let codec = device?.rtpCapabilities?.codecs?.filter(
         (codec: RtpCodecCapability) => codec.mimeType.toLowerCase() !== "video/vp9" && codec.kind === "video"
       ) || [];
+
+      if (parameters.removeSingleVideoEncoding && videoParamse.encodings && videoParamse.encodings.length <= 1) {
+        delete videoParamse.encodings;
+      }
 
       videoParams = {
         track: localStream.getVideoTracks()[0],

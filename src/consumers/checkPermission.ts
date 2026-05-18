@@ -1,9 +1,13 @@
+import { PermissionConfig } from '../methods/permissions/updatePermissionConfig';
+
 export interface CheckPermissionOptions {
   audioSetting: string;
   videoSetting: string;
   screenshareSetting: string;
   chatSetting: string;
   permissionType: 'audioSetting' | 'videoSetting' | 'screenshareSetting' | 'chatSetting';
+  permissionConfig?: PermissionConfig | null;
+  participantLevel?: string;
 }
 
 // Export the type definition for the function
@@ -39,8 +43,38 @@ export type CheckPermissionType = (options: CheckPermissionOptions) => Promise<n
  *   });
  */
 
-export async function checkPermission({ permissionType, audioSetting, videoSetting, screenshareSetting, chatSetting }: CheckPermissionOptions) {
+export async function checkPermission({
+  permissionType,
+  audioSetting,
+  videoSetting,
+  screenshareSetting,
+  chatSetting,
+  permissionConfig,
+  participantLevel,
+}: CheckPermissionOptions) {
   try {
+
+    const permissionTypeToCapability: Record<string, keyof import('../methods/permissions/updatePermissionConfig').PermissionCapabilities> = {
+      audioSetting: 'useMic',
+      videoSetting: 'useCamera',
+      screenshareSetting: 'useScreen',
+      chatSetting: 'useChat',
+    };
+
+    if (permissionConfig && participantLevel && participantLevel !== '2') {
+      const levelKey = `level${participantLevel}` as 'level0' | 'level1';
+      const levelConfig = permissionConfig[levelKey];
+
+      if (levelConfig) {
+        const capability = permissionTypeToCapability[permissionType];
+        if (capability) {
+          const configValue = levelConfig[capability];
+          if (configValue === 'allow') return 0;
+          if (configValue === 'approval') return 1;
+          return 2;
+        }
+      }
+    }
 
     // PermissionType is audioSetting, videoSetting, screenshareSetting, chatSetting
     // Perform a switch case to check for the permissionType and return the response

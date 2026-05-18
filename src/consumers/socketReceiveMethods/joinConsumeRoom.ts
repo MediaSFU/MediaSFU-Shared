@@ -120,6 +120,14 @@ export const joinConsumeRoom = async ({
 
       // Receive all piped transports
       await receiveAllPipedTransports({ nsock: remote_sock, parameters });
+
+      setTimeout(async () => {
+        try {
+          await receiveAllPipedTransports({ nsock: remote_sock, parameters });
+        } catch (error) {
+          console.log('[joinConsumeRoom] Retry receiveAllPipedTransports failed:', error);
+        }
+      }, 30000);
     }
 
     return data;

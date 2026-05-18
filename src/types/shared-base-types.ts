@@ -81,7 +81,7 @@ export interface AudioDecibels {
   averageLoudness: number;
 }
 
-export type ShowAlert = (options: { message: string; type: 'success' | 'danger'; duration?: number }) => void;
+export type ShowAlert = (options: { message: string; type: 'success' | 'danger' | 'info'; duration?: number }) => void;
 
 export interface CoHostResponsibility {
   name: string;
@@ -679,6 +679,12 @@ export interface CreateJoinRoomResult {
   success: boolean;
 }
 
+export interface PendingRequestStorage {
+  getItem: (key: string) => Promise<string | null>;
+  setItem: (key: string, value: string) => Promise<void>;
+  removeItem: (key: string) => Promise<void>;
+}
+
 export type CreateJoinRoomType = (options: {
   payload: CreateMediaSFURoomOptions | JoinMediaSFURoomOptions;
   apiUserName: string;
@@ -686,12 +692,17 @@ export type CreateJoinRoomType = (options: {
   localLink?: string;
 }) => Promise<CreateJoinRoomResult>;
 
-export type CreateRoomOnMediaSFUType = (options: {
+export interface CreateRoomOnMediaSFUOptions {
   payload: CreateMediaSFURoomOptions;
   apiUserName: string;
   apiKey: string;
   localLink?: string;
-}) => Promise<CreateJoinRoomResult>;
+  pendingRequestStorage?: PendingRequestStorage;
+}
+
+export type CreateRoomOnMediaSFUType = (
+  options: CreateRoomOnMediaSFUOptions,
+) => Promise<CreateJoinRoomResult>;
 
 export type JoinRoomOnMediaSFUType = (options: {
   payload: JoinMediaSFURoomOptions;

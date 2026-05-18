@@ -44,179 +44,107 @@
   <strong>Core Shared Library for MediaSFU SDKs</strong>
 </p>
 
----
 
-## 📦 About
+# mediasfu-shared
 
-`mediasfu-shared` is the universal shared library that powers all MediaSFU framework-specific SDKs (React, Vue, Angular, etc.). It provides the core WebRTC functionality, media handling, socket communication, and state management that enables real-time video conferencing, screen sharing, recording, and interactive features across all MediaSFU implementations.
+`mediasfu-shared` is the framework-agnostic MediaSFU runtime package. It exposes the shared room helpers, mediasoup/socket flows, state utilities, and TypeScript types used by the MediaSFU SDK family.
 
-This package contains framework-agnostic implementations of:
-- **Media Consumers** - WebRTC transport and stream management
-- **Core Methods** - Room creation, participant handling, recording controls
-- **Socket Management** - Real-time communication with MediaSFU servers
-- **Type Definitions** - Comprehensive TypeScript types for all MediaSFU features
-- **Utility Functions** - Helper methods for media processing and state management
+## When To Use This Package
 
-## 🎯 Key Features
+Use `mediasfu-shared` when you want to:
 
-- ✅ **Framework Agnostic** - Pure TypeScript/JavaScript implementation
-- ✅ **WebRTC Integration** - Full mediasoup-client support for advanced WebRTC features
-- ✅ **Type-Safe** - Complete TypeScript definitions for all APIs
-- ✅ **Real-Time Communication** - Socket.io integration for instant updates
-- ✅ **Modular Architecture** - Import only what you need for optimal bundle size
-- ✅ **Production Ready** - Battle-tested in MediaSFU's production environment
+- build your own browser client on top of MediaSFU primitives without adopting a framework-specific UI package
+- share MediaSFU room, media, and participant logic across React, Vue, Angular, Svelte, or plain TypeScript codebases
+- import low-level helpers such as `createRoomOnMediaSFU`, `joinRoomOnMediaSFU`, `connectSocket`, `SocketManager`, and the exported consumers, methods, and types entry points
 
-## 📥 Installation
+## Installation
 
 ```bash
-npm install mediasfu-shared
+npm install mediasfu-shared mediasoup-client socket.io-client
 ```
 
-### Peer Dependencies
+`mediasoup-client` and `socket.io-client` are peer dependencies, so install them in the host app.
 
-This package requires the following peer dependencies:
+## Backend Requirement
 
-```bash
-npm install socket.io-client mediasoup-client
-```
+The cloud room helpers in this package target `https://mediasfu.com/v1/rooms/` by default.
 
-## 🚀 Usage
+- Use MediaSFU Cloud when you want managed room creation, signaling, and media routing. Pass `apiUserName` and `apiKey`.
+- Use MediaSFU Open / Community Edition when you self-host. Pass a non-MediaSFU `localLink` such as `http://localhost:3000`.
 
-### Importing Core Functions
+## Quick Example
 
-```typescript
-import { 
+```ts
+import {
+  SocketManager,
   connectSocket,
-  joinRoomClient,
-  updateRoomParametersClient,
-  createDeviceClient,
-  SocketManager 
+  createRoomOnMediaSFU,
+  joinRoomOnMediaSFU,
 } from 'mediasfu-shared';
 
-// Initialize socket connection
+const createResult = await createRoomOnMediaSFU({
+  payload: {
+    action: 'create',
+    userName: 'Ada',
+    duration: 60,
+    capacity: 10,
+  },
+  apiUserName: 'your-api-username',
+  apiKey: 'your-64-character-api-key',
+});
+
+const joinResult = await joinRoomOnMediaSFU({
+  payload: {
+    action: 'join',
+    meetingID: 'room123',
+    userName: 'Ben',
+  },
+  apiUserName: 'your-api-username',
+  apiKey: 'your-64-character-api-key',
+});
+
 const socket = await connectSocket({
   apiUserName: 'your-api-username',
-  apiKey: 'your-api-key',
+  apiKey: 'your-64-character-api-key',
   apiToken: 'your-api-token',
-  link: 'https://mediasfu.com/socket'
+  link: 'https://mediasfu.com/socket',
 });
 
-// Create SocketManager instance
 const socketManager = new SocketManager({ socket });
+
+console.log(createResult.success, joinResult.success, socketManager.socket.connected);
 ```
 
-### Using Consumers
+## Import Paths
 
-```typescript
-import { 
-  consumerResume,
-  addVideosGrid,
-  prepopulateUserMedia 
-} from 'mediasfu-shared';
+- `mediasfu-shared` exposes the full public runtime surface.
+- `mediasfu-shared/consumers` is useful when you want consumer/grid helpers only.
+- `mediasfu-shared/methods` is useful when you want action utilities and room helpers.
+- `mediasfu-shared/types` is useful when you only need TypeScript contracts.
 
-// Resume a paused consumer
-await consumerResume({
-  id: 'consumer-id',
-  parameters: roomParameters,
-  socket: socketManager.socket
-});
+## Documentation
 
-// Add video streams to grid
-await addVideosGrid({
-  consumers: activeConsumers,
-  parameters: roomParameters
-});
+- Main docs: [https://mediasfu.com/documentation](https://mediasfu.com/documentation)
+- User guide: [https://mediasfu.com/user-guide](https://mediasfu.com/user-guide)
+- MediaSFU Open / CE: [https://github.com/MediaSFU/MediaSFUOpen](https://github.com/MediaSFU/MediaSFUOpen)
+
+Generate package-local API docs with:
+
+```bash
+npm run build-docs
 ```
 
-### Type Definitions
+## Related Packages
 
-```typescript
-import type { 
-  Participant,
-  Transport,
-  Stream,
-  EventType,
-  ShowAlert,
-  CoHostResponsibility,
-  Settings
-} from 'mediasfu-shared';
+- [mediasfu-reactjs](https://www.npmjs.com/package/mediasfu-reactjs)
+- [mediasfu-vue](https://www.npmjs.com/package/mediasfu-vue)
+- [mediasfu-angular](https://www.npmjs.com/package/mediasfu-angular)
 
-const participant: Participant = {
-  id: 'participant-123',
-  name: 'John Doe',
-  audioID: 'audio-stream-id',
-  videoID: 'video-stream-id',
-  islevel: '1'
-};
-```
+## Support
 
-## 🏗️ Package Structure
+- GitHub issues: [https://github.com/MediaSFU/MediaSFU-Shared/issues](https://github.com/MediaSFU/MediaSFU-Shared/issues)
+- Email: info@mediasfu.com
 
-```
-mediasfu-shared/
-├── consumers/          # WebRTC consumer management
-│   ├── addVideosGrid
-│   ├── consumerResume
-│   └── prepopulateUserMedia
-├── methods/           # Core functionality methods
-│   ├── breakoutRoomsMethods/
-│   ├── recordingMethods/
-│   ├── participantsMethods/
-│   ├── messageMethods/
-│   ├── mediaMethods/
-│   └── utils/
-├── producers/         # Producer client implementations
-├── sockets/          # Socket.io management
-├── types/            # TypeScript type definitions
-└── index.ts          # Main entry point
-```
+## License
 
-## 📚 Documentation
-
-For detailed documentation on specific methods and types, please visit:
-
-- **Main Documentation**: [https://mediasfu.com/documentation](https://mediasfu.com/documentation)
-- **API Reference**: [https://mediasfu.com/docs](https://mediasfu.com/docs)
-- **React SDK**: [mediasfu-reactjs](https://www.npmjs.com/package/mediasfu-reactjs)
-- **Vue SDK**: [mediasfu-vue](https://www.npmjs.com/package/mediasfu-vue)
-
-## 🔗 Related Packages
-
-`mediasfu-shared` is used by all MediaSFU framework-specific packages:
-
-- **[mediasfu-reactjs](https://www.npmjs.com/package/mediasfu-reactjs)** - React components and hooks
-- **[mediasfu-vue](https://www.npmjs.com/package/mediasfu-vue)** - Vue 3 components and composables
-- **[mediasfu-angular](https://www.npmjs.com/package/mediasfu-angular)** - Angular components and services
-
-## 🤝 Integration with MediaSFU Community Edition (CE)
-
-This package is designed to work seamlessly with [MediaSFU CE](https://github.com/MediaSFU/MediaSFUOpen), our open-source community edition server. MediaSFU CE provides:
-
-- Complete WebRTC SFU server implementation
-- Recording and streaming capabilities
-- Breakout rooms and advanced features
-- Free for self-hosting
-
-## 💬 Support
-
-Need help? We're here for you!
-
-- **GitHub Issues**: [Report bugs or request features](https://github.com/MediaSFU/MediaSFU-Shared/issues)
-- **Email Support**: info@mediasfu.com
-
-## 📄 License
-
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
-
----
-
-<p align="center">
-  Made with ❤️ by the <a href="https://mediasfu.com">MediaSFU</a> Team
-</p>
-
-<p align="center">
-  <a href="https://mediasfu.com">Website</a> •
-  <a href="https://twitter.com/media_sfu">Twitter</a> •
-  <a href="https://github.com/MediaSFU">GitHub</a> •
-  <a href="https://www.linkedin.com/company/mediasfu">LinkedIn</a>
-</p>
+MIT. See [LICENSE](LICENSE).

@@ -1,0 +1,55 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "name": "MediaSFU Shared",
+  "entryPoints": [
+    "src/index.ts"
+  ],
+  "entryPointStrategy": "expand",
+  "groupOrder": ["Consumers", "Methods", "Types", "Utils"],
+  "kindSortOrder": ["Class", "Function", "Interface", "TypeAlias", "Variable"],
+  "packageOptions": {
+    "entryPoints": ["src/index.ts"],
+    "groupOrder": ["Consumers", "Methods", "Types", "Utils"],
+    "kindSortOrder": ["Function", "Interface", "TypeAlias"],
+    "readme": "none"
+  },
+  "exclude": [
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "**/node_modules/**",
+    "**/dist/**"
+  ],
+  "out": "docs",
+  "sidebarLinks": {
+    "MediaSFU": "https://mediasfu.com"
+  },
+  "highlightLanguages": [
+    "bash",
+    "console",
+    "css",
+    "html",
+    "javascript",
+    "json",
+    "jsonc",
+    "json5",
+    "typescript"
+  ],
+  "theme": "default",
+  "plugin": ["typedoc-plugin-extras"],
+  "logLevel": "Error",
+  "hostedBaseUrl": "https://mediasfu.com/shared",
+  "useHostedBaseUrlForAbsoluteLinks": false,
+  "customFooterHtml": "&copy; 2026 <strong>MediaSFU</strong>",
+  "navigation": {
+    "includeCategories": true,
+    "includeGroups": true,
+    "includeFolders": true
+  },
+  "categorizeByGroup": true,
+  "hideGenerator": true,
+  "sort": ["source-order", "kind", "alphabetical"],
+  "customTitle": "MediaSFU Shared",
+  "customDescription": "MediaSFU shared framework-agnostic SDK layer",
+  "readme": "none",
+  "includeVersion": true
+}

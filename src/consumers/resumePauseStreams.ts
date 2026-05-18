@@ -1,24 +1,62 @@
 import { Participant, Transport, Stream } from "../types/types";
 
-export interface ResumePauseStreamsParameters {
-  participants: Participant[];
+interface ParticipantLike {
+  name: string;
+  islevel?: string | null;
+  videoID?: string | null;
+}
+
+interface ConsumerLike {
+  kind?: string;
+  resume: () => unknown;
+}
+
+interface SocketLike {
+  emit: (
+    event: string,
+    payload: { serverConsumerId: string },
+    callback?: ((payload: { resumed: boolean }) => void | Promise<unknown>)
+  ) => void;
+}
+
+interface TransportLike {
+  producerId?: string | null;
+  consumer: ConsumerLike;
+  socket_: SocketLike;
+  serverConsumerTransportId: string;
+}
+
+export interface ResumePauseStreamsParameters<
+  TParticipant extends ParticipantLike = Participant,
+  TTransport extends TransportLike = Transport,
+  TStream = Stream,
+> {
+  participants: TParticipant[];
   dispActiveNames: string[];
-  remoteScreenStream: Stream[];
-  consumerTransports: Transport[];
+  remoteScreenStream: TStream[];
+  consumerTransports: TTransport[];
   screenId?: string;
   islevel: string;
 
   // mediasfu functions
-  getUpdatedAllParams: () => ResumePauseStreamsParameters;
+  getUpdatedAllParams: () => ResumePauseStreamsParameters<TParticipant, TTransport, TStream>;
   [key: string]: any;
 }
 
-export interface ResumePauseStreamsOptions {
-  parameters: ResumePauseStreamsParameters;
+export interface ResumePauseStreamsOptions<
+  TParticipant extends ParticipantLike = Participant,
+  TTransport extends TransportLike = Transport,
+  TStream = Stream,
+> {
+  parameters: ResumePauseStreamsParameters<TParticipant, TTransport, TStream>;
 }
 
 // Export the type definition for the function
-export type ResumePauseStreamsType = (options: ResumePauseStreamsOptions) => Promise<void>;
+export type ResumePauseStreamsType = <
+  TParticipant extends ParticipantLike = Participant,
+  TTransport extends TransportLike = Transport,
+  TStream = Stream,
+>(options: ResumePauseStreamsOptions<TParticipant, TTransport, TStream>) => Promise<void>;
 
 /**
  * Resumes or pauses streams based on the provided parameters.
@@ -49,9 +87,13 @@ export type ResumePauseStreamsType = (options: ResumePauseStreamsOptions) => Pro
  * ```
  */
 
-export async function resumePauseStreams({
+export async function resumePauseStreams<
+  TParticipant extends ParticipantLike = Participant,
+  TTransport extends TransportLike = Transport,
+  TStream = Stream,
+>({
   parameters,
-}: ResumePauseStreamsOptions): Promise<void> {
+}: ResumePauseStreamsOptions<TParticipant, TTransport, TStream>): Promise<void> {
   try {
     // Destructure parameters
     const { participants, dispActiveNames, consumerTransports, screenId, islevel } = parameters;
@@ -85,6 +127,7 @@ export async function resumePauseStreams({
       // Get consumer transports with producerId in allVideoIDs
       const consumerTransportsToResume = consumerTransports.filter(
         (transport) =>
+          transport.producerId &&
           allVideoIDs.includes(transport.producerId) &&
           transport.consumer.kind !== "audio"
       );

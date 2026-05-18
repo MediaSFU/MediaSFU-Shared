@@ -1,24 +1,65 @@
 import { Stream, Participant, Transport, SleepType } from "../types/types";
 
-export interface ProcessConsumerTransportsParameters {
-  remoteScreenStream: Stream[];
-  oldAllStreams: (Stream | Participant)[];
-  newLimitedStreams: (Stream | Participant)[];
+interface ProducerIdCarrier {
+  producerId?: string | null;
+}
+
+const getProducerId = (value: unknown): string | null | undefined => {
+  return (value as ProducerIdCarrier | null | undefined)?.producerId;
+};
+
+interface ConsumerLike {
+  paused?: boolean;
+  kind?: string;
+  pause: () => unknown;
+  resume: () => unknown;
+}
+
+interface SocketLike {
+  emit: (
+    event: string,
+    payload: { serverConsumerId: string },
+    callback?: ((payload?: { resumed: boolean }) => void | Promise<unknown>)
+  ) => void;
+}
+
+interface TransportLike {
+  producerId?: string | null;
+  consumer?: ConsumerLike;
+  socket_: SocketLike;
+  serverConsumerTransportId: string;
+}
+
+export interface ProcessConsumerTransportsParameters<
+  TStreamEntry = Stream,
+  TMediaEntry = Stream | Participant,
+> {
+  remoteScreenStream: TStreamEntry[];
+  oldAllStreams: TMediaEntry[];
+  newLimitedStreams: TMediaEntry[];
 
   // mediasfu functions
   sleep: SleepType;
-  getUpdatedAllParams: () => ProcessConsumerTransportsParameters;
+  getUpdatedAllParams: () => ProcessConsumerTransportsParameters<TStreamEntry, TMediaEntry>;
   [key: string]: any;
 }
 
-export interface ProcessConsumerTransportsOptions {
-  consumerTransports: Transport[];
-  lStreams_: (Stream | Participant)[];
-  parameters: ProcessConsumerTransportsParameters;
+export interface ProcessConsumerTransportsOptions<
+  TTransport extends TransportLike = Transport,
+  TStreamEntry = Stream,
+  TMediaEntry = Stream | Participant,
+> {
+  consumerTransports: TTransport[];
+  lStreams_: TMediaEntry[];
+  parameters: ProcessConsumerTransportsParameters<TStreamEntry, TMediaEntry>;
 }
 
 // Export the type definition for the function
-export type ProcessConsumerTransportsType = (options: ProcessConsumerTransportsOptions) => Promise<void>;
+export type ProcessConsumerTransportsType = <
+  TTransport extends TransportLike = Transport,
+  TStreamEntry = Stream,
+  TMediaEntry = Stream | Participant,
+>(options: ProcessConsumerTransportsOptions<TTransport, TStreamEntry, TMediaEntry>) => Promise<void>;
 
 /**
  * Processes consumer transports by pausing and resuming them based on certain conditions.
@@ -57,11 +98,15 @@ export type ProcessConsumerTransportsType = (options: ProcessConsumerTransportsO
  * ```
  */
 
-export async function processConsumerTransports({
+export async function processConsumerTransports<
+  TTransport extends TransportLike = Transport,
+  TStreamEntry = Stream,
+  TMediaEntry = Stream | Participant,
+>({
   consumerTransports,
   lStreams_,
   parameters,
-}: ProcessConsumerTransportsOptions): Promise<void> {
+}: ProcessConsumerTransportsOptions<TTransport, TStreamEntry, TMediaEntry>): Promise<void> {
   try {
     // Destructure parameters and get updated values
     parameters = parameters.getUpdatedAllParams();
@@ -74,14 +119,14 @@ export async function processConsumerTransports({
     } = parameters;
 
     // Function to check if the producerId is valid in the given stream arrays
-    function isValidProducerId(producerId: string, ...streamArrays: (Stream | Participant)[][]): boolean {
+    function isValidProducerId(producerId: string | null | undefined, ...streamArrays: unknown[][]): boolean {
       return (
         producerId !== null &&
         producerId !== "" &&
         streamArrays.some((streamArray) => {
           return (
             streamArray.length > 0 &&
-            streamArray.some((stream) => stream?.producerId === producerId)
+            streamArray.some((stream) => getProducerId(stream) === producerId)
           );
         })
       );
@@ -98,7 +143,7 @@ export async function processConsumerTransports({
           newLimitedStreams
         ) &&
         transport.consumer?.paused === true &&
-        transport.consumer.kind !== "audio"
+        transport.consumer?.kind !== "audio"
     );
 
     // Get unpaused consumer transports that are not audio
@@ -108,15 +153,15 @@ export async function processConsumerTransports({
         transport.producerId !== null &&
         transport.producerId !== "" &&
         !lStreams_.some(
-          (stream) => stream.producerId === transport.producerId
+          (stream) => getProducerId(stream) === transport.producerId
         ) &&
         transport.consumer &&
-        transport.consumer.kind &&
+        transport.consumer?.kind &&
         transport.consumer.paused !== true &&
         transport.consumer.kind !== "audio" &&
-        !remoteScreenStream.some((stream) => stream.producerId === transport.producerId) &&
-        !oldAllStreams.some((stream) => stream.producerId === transport.producerId) &&
-        !newLimitedStreams.some((stream) => stream.producerId === transport.producerId)
+        !remoteScreenStream.some((stream) => getProducerId(stream) === transport.producerId) &&
+        !oldAllStreams.some((stream) => getProducerId(stream) === transport.producerId) &&
+        !newLimitedStreams.some((stream) => getProducerId(stream) === transport.producerId)
     );
 
     // Pause consumer transports after a short delay
@@ -124,7 +169,7 @@ export async function processConsumerTransports({
 
     // Emit consumer.pause() for each filtered transport (not audio)
     for (const transport of consumerTransportsToPause) {
-     transport.consumer.pause();
+     transport.consumer?.pause();
        transport.socket_.emit(
         "consumer-pause",
         { serverConsumerId: transport.serverConsumerTransportId },
@@ -139,9 +184,9 @@ export async function processConsumerTransports({
       transport.socket_.emit(
         "consumer-resume",
         { serverConsumerId: transport.serverConsumerTransportId },
-        async ({ resumed }: { resumed: boolean }) => {
+        async ({ resumed }: { resumed: boolean } = { resumed: false }) => {
           if (resumed) {
-            transport.consumer.resume();
+            transport.consumer?.resume();
           }
         }
       );

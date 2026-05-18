@@ -1,13 +1,41 @@
 import { Stream, Participant } from "../types/types";
 
-export interface MixStreamsOptions {
-  alVideoStreams: (Stream | Participant)[];
-  non_alVideoStreams: Participant[];
-  ref_participants: (Stream | Participant)[];
+interface MixStreamLike {
+  producerId?: string | null;
+  muted?: boolean | null;
+}
+
+interface MixParticipantLike {
+  videoID?: string | null;
+  muted?: boolean | null;
+}
+
+const getProducerId = (value: unknown): string | null | undefined => {
+  return (value as MixStreamLike | null | undefined)?.producerId;
+};
+
+const getVideoId = (value: unknown): string | null | undefined => {
+  return (value as MixParticipantLike | null | undefined)?.videoID;
+};
+
+const getMuted = (value: unknown): boolean | null | undefined => {
+  return (value as (MixStreamLike & MixParticipantLike) | null | undefined)?.muted;
+};
+
+export interface MixStreamsOptions<
+  TStream extends MixStreamLike = Stream,
+  TParticipant extends MixParticipantLike = Participant,
+> {
+  alVideoStreams: (TStream | TParticipant)[];
+  non_alVideoStreams: TParticipant[];
+  ref_participants: (TStream | TParticipant)[];
 }
 
 // Export the type definition for the function
-export type MixStreamsType = (options: MixStreamsOptions) => Promise<(Stream | Participant)[]>;
+export type MixStreamsType = <
+  TStream extends MixStreamLike = Stream,
+  TParticipant extends MixParticipantLike = Participant,
+>(options: MixStreamsOptions<TStream, TParticipant>) => Promise<(TStream | TParticipant)[]>;
 
 /**
  * Mixes video and audio streams and participants based on specified parameters.
@@ -30,37 +58,40 @@ export type MixStreamsType = (options: MixStreamsOptions) => Promise<(Stream | P
  */
 
 
-export async function mixStreams({
+export async function mixStreams<
+  TStream extends MixStreamLike = Stream,
+  TParticipant extends MixParticipantLike = Participant,
+>({
   alVideoStreams,
   non_alVideoStreams,
   ref_participants,
-}: MixStreamsOptions): Promise<(Stream | Participant)[]> {
+}: MixStreamsOptions<TStream, TParticipant>): Promise<(TStream | TParticipant)[]> {
   try {
 
-    const mixedStreams: (Stream | Participant)[] = [];
+    const mixedStreams: (TStream | TParticipant)[] = [];
 
     // Find "youyou" or "youyouyou" stream
     const youyouStream = alVideoStreams.find(
-      (obj) => obj.producerId === "youyou" || obj.producerId === "youyouyou"
+      (obj) => getProducerId(obj) === "youyou" || getProducerId(obj) === "youyouyou"
     );
 
     let remainingAlVideoStreams = alVideoStreams.filter(
-      (obj) => obj.producerId !== "youyou" && obj.producerId !== "youyouyou"
+      (obj) => getProducerId(obj) !== "youyou" && getProducerId(obj) !== "youyouyou"
     );
 
     // Separate unmuted and muted streams
     const unmutedAlVideoStreams = remainingAlVideoStreams.filter((obj) => {
       const participant = ref_participants.find(
-        (p) => p.videoID === obj.producerId
+        (p) => getVideoId(p) === getProducerId(obj)
       );
-      return !obj.muted && participant && participant.muted === false;
+      return !getMuted(obj) && participant && getMuted(participant) === false;
     });
 
     const mutedAlVideoStreams = remainingAlVideoStreams.filter((obj) => {
       const participant = ref_participants.find(
-        (p) => p.videoID === obj.producerId
+        (p) => getVideoId(p) === getProducerId(obj)
       );
-      return obj.muted || (participant && participant.muted === true);
+      return !!getMuted(obj) || (participant && getMuted(participant) === true);
     });
 
     const nonAlVideoStreams = [...non_alVideoStreams]; // Create a copy of non_alVideoStreams

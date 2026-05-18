@@ -1,7 +1,7 @@
 {
   "name": "mediasfu-shared",
-  "version": "1.0.1",
-  "description": "Framework-agnostic shared logic for MediaSFU - works with React, Vue, Angular, Svelte, and any JavaScript framework",
+  "version": "1.0.3",
+  "description": "Framework-agnostic MediaSFU WebRTC runtime for room creation, joining, mediasoup signaling, sockets, media state, translation, and reusable SDK types",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -36,19 +36,35 @@
   ],
   "scripts": {
     "build": "tsc && vite build",
+    "build-docs": "typedoc",
     "dev": "vite build --watch",
+    "test:staging:smoke": "npm run build && node ./scripts/staging-room-smoke-test.cjs",
     "type-check": "tsc --noEmit"
   },
   "keywords": [
     "mediasfu",
-    "shared",
     "webrtc",
+    "webRTC",
+    "mediasoup",
+    "sfu",
     "video-conferencing",
-    "breakout-rooms",
+    "video-call",
+    "audio-call",
+    "socket.io",
+    "real-time-communication",
+    "real-time-media",
+    "room-management",
     "screen-sharing",
     "recording",
+    "live-streaming",
+    "webinar",
+    "broadcasting",
+    "whiteboard",
+    "live-subtitles",
+    "translation",
     "framework-agnostic",
-    "typescript"
+    "typescript",
+    "mediasfu-shared"
   ],
   "author": "MediaSFU",
   "license": "MIT",
@@ -71,6 +87,8 @@
   "devDependencies": {
     "mediasoup-client": "^3.16.0",
     "socket.io-client": "^4.8.0",
+    "typedoc": "^0.28.14",
+    "typedoc-plugin-extras": "^4.0.1",
     "typescript": "^5.9.3",
     "vite": "^7.1.9",
     "vite-plugin-dts": "^4.3.0"
