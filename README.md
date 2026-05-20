@@ -1,51 +1,6 @@
-<p align="center">
-  <img src="https://www.mediasfu.com/logo192.png" width="100" alt="MediaSFU Logo">
-</p>
+# mediasfu-shared · [mediasfu-shared on npm](https://www.npmjs.com/package/mediasfu-shared)
 
-<p align="center">
-  <a href="https://twitter.com/media_sfu">
-    <img src="https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white" alt="Twitter" />
-  </a>
-  <a href="https://www.mediasfu.com/forums">
-    <img src="https://img.shields.io/badge/Community-Forum-blue?style=for-the-badge&logo=discourse&logoColor=white" alt="Community Forum" />
-  </a>
-  <a href="https://github.com/MediaSFU">
-    <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="Github" />
-  </a>
-  <a href="https://www.mediasfu.com/">
-    <img src="https://img.shields.io/badge/Website-4285F4?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Website" />
-  </a>
-  <a href="https://www.youtube.com/channel/UCELghZRPKMgjih5qrmXLtqw">
-    <img src="https://img.shields.io/badge/YouTube-FF0000?style=for-the-badge&logo=youtube&logoColor=white" alt="Youtube" />
-  </a>
-</p>
-
-<p align="center">
-  <a href="https://opensource.org/licenses/MIT">
-    <img src="https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square" alt="License: MIT" />
-  </a>
-  <a href="https://mediasfu.com">
-    <img src="https://img.shields.io/badge/Built%20with-MediaSFU-blue?style=flat-square" alt="Built with MediaSFU" />
-  </a>
-  <a href="https://www.typescriptlang.org">
-    <img src="https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript" />
-  </a>
-  <a href="https://www.npmjs.com/package/mediasfu-shared">
-    <img src="https://img.shields.io/npm/v/mediasfu-shared.svg?style=flat-square" alt="npm version" />
-  </a>
-  <a href="https://www.npmjs.com/package/mediasfu-shared">
-    <img src="https://img.shields.io/npm/dm/mediasfu-shared.svg?style=flat-square" alt="npm downloads" />
-  </a>
-</p>
-
-<h1 align="center">mediasfu-shared</h1>
-
-<p align="center">
-  <strong>Core Shared Library for MediaSFU SDKs</strong>
-</p>
-
-
-# mediasfu-shared
+**mediasfu-shared** is the framework-agnostic WebRTC runtime at the core of the MediaSFU SDK family. It provides shared room helpers, mediasoup signaling, socket management, media state utilities, and TypeScript types for React, Vue, Angular, Svelte, and plain TypeScript. Install with `npm install mediasfu-shared`.
 
 `mediasfu-shared` is the framework-agnostic MediaSFU runtime package. It exposes the shared room helpers, mediasoup/socket flows, state utilities, and TypeScript types used by the MediaSFU SDK family.
 
@@ -136,9 +91,12 @@ npm run build-docs
 
 ## Related Packages
 
-- [mediasfu-reactjs](https://www.npmjs.com/package/mediasfu-reactjs)
-- [mediasfu-vue](https://www.npmjs.com/package/mediasfu-vue)
-- [mediasfu-angular](https://www.npmjs.com/package/mediasfu-angular)
+| Package | Framework | npm |
+|---------|-----------|-----|
+| [mediasfu-reactjs](https://github.com/MediaSFU/MediaSFU-ReactJS) | React 18/19 | [`npm install mediasfu-reactjs`](https://www.npmjs.com/package/mediasfu-reactjs) |
+| [mediasfu-vue](https://github.com/MediaSFU/MediaSFU-Vue) | Vue 3 / Composition API | [`npm install mediasfu-vue`](https://www.npmjs.com/package/mediasfu-vue) |
+| [mediasfu-angular](https://github.com/MediaSFU/MediaSFU-Angular) | Angular 17/18/19 | [`npm install mediasfu-angular`](https://www.npmjs.com/package/mediasfu-angular) |
+| [mediasfu-reactnative](https://www.npmjs.com/package/mediasfu-reactnative) | React Native | [`npm install mediasfu-reactnative`](https://www.npmjs.com/package/mediasfu-reactnative) |
 
 ## Support
 

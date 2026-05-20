@@ -1,2 +1,9 @@
 node_modules
+<<<<<<< HEAD
+docs
+.DS_Store
+._*
+__MACOSX/
+=======
 docs/
+>>>>>>> 6c7243200df593e404622655c7a6786cad5f250f
