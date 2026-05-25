@@ -1,6 +1,6 @@
 {
   "name": "mediasfu-shared",
-  "version": "1.0.4",
+  "version": "1.0.6",
   "description": "mediasfu-shared – framework-agnostic WebRTC runtime for MediaSFU. Room helpers, mediasoup signaling, socket management, media state, and TypeScript types for React, Vue, Angular, Svelte, and plain TS.",
   "main": "dist/index.cjs",
   "module": "dist/index.js",

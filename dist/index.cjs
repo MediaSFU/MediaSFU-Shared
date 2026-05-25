@@ -1721,6 +1721,21 @@ const connectSendTransportVideo = async ({
     throw error;
   }
 };
+const waitForReadyDevice = async (parameters, attempts = 20, delayMs = 100) => {
+  let resolvedDevice = parameters.getUpdatedAllParams().device ?? parameters.device;
+  for (let attempt = 0; !resolvedDevice && attempt < attempts; attempt += 1) {
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
+    resolvedDevice = parameters.getUpdatedAllParams().device ?? parameters.device;
+  }
+  return resolvedDevice;
+};
+const notifyDeviceNotReady = (parameters) => {
+  parameters.showAlert?.({
+    message: "Media device is still initializing. Please try screen sharing again in a moment.",
+    type: "danger",
+    duration: 3e3
+  });
+};
 const createLocalSendTransport = async ({
   option,
   parameters
@@ -1738,6 +1753,10 @@ const createLocalSendTransport = async ({
       updateLocalTransportCreated,
       connectSendTransport: connectSendTransport2
     } = parameters;
+    const updatedParams = parameters.getUpdatedAllParams();
+    device = updatedParams.device ?? device;
+    socket = updatedParams.socket ?? socket;
+    localSocket = updatedParams.localSocket ?? localSocket;
     if (!localSocket || !localSocket.id || socket.id === localSocket.id) {
       return;
     }
@@ -1749,7 +1768,12 @@ const createLocalSendTransport = async ({
           console.error("Error in local createWebRtcTransport:", params.error);
           return;
         }
-        localProducerTransport = await device.createSendTransport(params);
+        const resolvedDevice = await waitForReadyDevice(parameters) ?? device;
+        if (!resolvedDevice) {
+          notifyDeviceNotReady(parameters);
+          return;
+        }
+        localProducerTransport = await resolvedDevice.createSendTransport(params);
         if (updateLocalProducerTransport) {
           updateLocalProducerTransport(localProducerTransport);
         }
@@ -1824,6 +1848,13 @@ const createSendTransport = async ({
     const updatedParams = parameters.getUpdatedAllParams();
     device = updatedParams.device;
     socket = updatedParams.socket;
+    if (!device) {
+      device = await waitForReadyDevice(parameters);
+    }
+    if (!device) {
+      notifyDeviceNotReady(parameters);
+      return;
+    }
     try {
       await createLocalSendTransport({ option, parameters });
     } catch (error) {
@@ -1837,7 +1868,12 @@ const createSendTransport = async ({
           console.error("Error in createWebRtcTransport:", params.error);
           return;
         }
-        producerTransport = await device.createSendTransport(params);
+        const resolvedDevice = await waitForReadyDevice(parameters) ?? device;
+        if (!resolvedDevice) {
+          notifyDeviceNotReady(parameters);
+          return;
+        }
+        producerTransport = await resolvedDevice.createSendTransport(params);
         updateProducerTransport(producerTransport);
         producerTransport.on(
           "connect",
@@ -6368,6 +6404,7 @@ const updateRoomParametersClient = ({ parameters }) => {
   }
 };
 const DEFAULT_MEDIA_SFU_ROOM_API_URL = "https://mediasfu.com/v1/rooms/";
+const getDefaultMediaSFURoomApiUrl = () => DEFAULT_MEDIA_SFU_ROOM_API_URL;
 const normalizeManagedRoomApi = (normalizedLink) => {
   if (normalizedLink.includes("/v1/rooms")) {
     return `${normalizedLink.replace(/\/$/, "")}/`;
@@ -6377,7 +6414,7 @@ const normalizeManagedRoomApi = (normalizedLink) => {
 const resolveMediaSFURoomApi = (localLink, action) => {
   const normalizedLink = localLink?.trim();
   if (!normalizedLink) {
-    return DEFAULT_MEDIA_SFU_ROOM_API_URL;
+    return getDefaultMediaSFURoomApiUrl();
   }
   if (normalizedLink.includes("mediasfu.com")) {
     return normalizeManagedRoomApi(normalizedLink);
@@ -7917,6 +7954,9 @@ const sendMessage = async ({
   chatSetting
 }) => {
   let chatValue = false;
+  const normalizedReceivers = (receivers ?? []).filter(
+    (receiver) => typeof receiver === "string" && receiver.trim().length > 0
+  );
   if (messagesLength > 100 && roomName.startsWith("d") || messagesLength > 500 && roomName.startsWith("s") || messagesLength > 1e5 && roomName.startsWith("p")) {
     showAlert?.({
       message: "You have reached the maximum number of messages allowed.",
@@ -7933,7 +7973,7 @@ const sendMessage = async ({
     });
     return;
   }
-  if (receivers.length < 1 && group === false) {
+  if (normalizedReceivers.length < 1 && group === false && islevel === "2") {
     showAlert?.({
       message: "Please select a message to reply to",
       type: "danger",
@@ -7943,7 +7983,7 @@ const sendMessage = async ({
   }
   const messageObject = {
     sender: sender ? sender : member,
-    receivers,
+    receivers: normalizedReceivers,
     message,
     timestamp: (/* @__PURE__ */ new Date()).toLocaleTimeString(),
     group: group !== void 0 && group !== null ? group : false
@@ -10100,13 +10140,112 @@ const TTS_SUPPORT_BY_LANGUAGE = {
   ca: "good",
   auto: "n/a"
 };
+const LANGUAGE_NAMES_EN = {
+  en: "English",
+  es: "Spanish",
+  fr: "French",
+  de: "German",
+  it: "Italian",
+  pt: "Portuguese",
+  nl: "Dutch",
+  ru: "Russian",
+  zh: "Chinese",
+  ja: "Japanese",
+  ko: "Korean",
+  ar: "Arabic",
+  hi: "Hindi",
+  bn: "Bengali",
+  pa: "Punjabi",
+  te: "Telugu",
+  mr: "Marathi",
+  ta: "Tamil",
+  ur: "Urdu",
+  gu: "Gujarati",
+  kn: "Kannada",
+  ml: "Malayalam",
+  ne: "Nepali",
+  si: "Sinhala",
+  tr: "Turkish",
+  pl: "Polish",
+  vi: "Vietnamese",
+  th: "Thai",
+  id: "Indonesian",
+  ms: "Malay",
+  tl: "Filipino",
+  km: "Khmer",
+  lo: "Lao",
+  my: "Burmese",
+  sw: "Swahili",
+  yo: "Yoruba",
+  ha: "Hausa",
+  ig: "Igbo",
+  zu: "Zulu",
+  xh: "Xhosa",
+  af: "Afrikaans",
+  st: "Sesotho",
+  tn: "Tswana",
+  sn: "Shona",
+  am: "Amharic",
+  so: "Somali",
+  rw: "Kinyarwanda",
+  mg: "Malagasy",
+  ny: "Chichewa",
+  ee: "Ewe",
+  tw: "Twi",
+  gaa: "Ga",
+  he: "Hebrew",
+  fa: "Persian",
+  ps: "Pashto",
+  ku: "Kurdish",
+  uk: "Ukrainian",
+  el: "Greek",
+  cs: "Czech",
+  ro: "Romanian",
+  hu: "Hungarian",
+  sv: "Swedish",
+  da: "Danish",
+  no: "Norwegian",
+  fi: "Finnish",
+  sk: "Slovak",
+  bg: "Bulgarian",
+  hr: "Croatian",
+  et: "Estonian",
+  lt: "Lithuanian",
+  lv: "Latvian",
+  sl: "Slovenian",
+  sr: "Serbian",
+  bs: "Bosnian",
+  mk: "Macedonian",
+  is: "Icelandic",
+  ga: "Irish",
+  cy: "Welsh",
+  mt: "Maltese",
+  lb: "Luxembourgish",
+  sq: "Albanian",
+  be: "Belarusian",
+  ka: "Georgian",
+  hy: "Armenian",
+  az: "Azerbaijani",
+  eu: "Basque",
+  gl: "Galician",
+  ca: "Catalan",
+  la: "Latin",
+  eo: "Esperanto",
+  kk: "Kazakh",
+  uz: "Uzbek",
+  tg: "Tajik",
+  ky: "Kyrgyz",
+  tk: "Turkmen",
+  mn: "Mongolian"
+};
 const getDisplayName = (code, locale, fallback) => {
   try {
     const displayNames = new Intl.DisplayNames([locale], { type: "language" });
-    return displayNames.of(code) || fallback;
+    const result = displayNames.of(code);
+    if (result) return result;
   } catch {
-    return fallback;
   }
+  return LANGUAGE_NAMES_EN[code] ?? fallback;
 };
 const normalizeLanguageCode = (code) => {
   if (!code || typeof code !== "string") {
@@ -10143,6 +10282,58 @@ const getLanguageMetadata = (code) => {
 };
 const getSupportedLanguages = (displayLocale = "en") => {
   return SUPPORTED_LANGUAGE_CODES.map((code) => {
+    const metadata = getLanguageMetadata(code);
+    return {
+      code,
+      name: getLanguageName(code, displayLocale),
+      nativeName: metadata.nativeName,
+      region: metadata.region,
+      ttsSupport: metadata.ttsSupport
+    };
+  }).sort((left, right) => left.name.localeCompare(right.name));
+};
+const COMMON_LANGUAGE_CODES = [
+  "en",
+  "es",
+  "fr",
+  "de",
+  "it",
+  "pt",
+  "nl",
+  "ru",
+  "zh",
+  "ja",
+  "ko",
+  "ar",
+  "hi",
+  "bn",
+  "tr",
+  "pl",
+  "vi",
+  "th",
+  "id",
+  "ms",
+  "sw",
+  "yo",
+  "ha",
+  "ig",
+  "zu",
+  "am",
+  "tw",
+  "he",
+  "fa",
+  "uk",
+  "el",
+  "cs",
+  "ro",
+  "hu",
+  "sv",
+  "da",
+  "no",
+  "fi"
+];
+const getCommonLanguages = (displayLocale = "en") => {
+  return COMMON_LANGUAGE_CODES.map((code) => {
     const metadata = getLanguageMetadata(code);
     return {
       code,
@@ -12893,6 +13084,7 @@ const launchConfigureWhiteboard = ({
 }) => {
   updateIsConfigureWhiteboardModalVisible(!isConfigureWhiteboardModalVisible);
 };
+exports.COMMON_LANGUAGE_CODES = COMMON_LANGUAGE_CODES;
 exports.MediaStream = MediaStream$1;
 exports.MediaStreamTrack = MediaStreamTrack;
 exports.QnHDCons = QnHDCons;
@@ -12980,6 +13172,7 @@ exports.generateRandomRequestList = generateRandomRequestList;
 exports.generateRandomWaitingRoomList = generateRandomWaitingRoomList;
 exports.getActiveTranslationConsumers = getActiveTranslationConsumers;
 exports.getAvailableVoices = getAvailableVoices;
+exports.getCommonLanguages = getCommonLanguages;
 exports.getDomains = getDomains;
 exports.getEstimate = getEstimate;
 exports.getLanguageMetadata = getLanguageMetadata;

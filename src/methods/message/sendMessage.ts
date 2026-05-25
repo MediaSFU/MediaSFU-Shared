@@ -85,6 +85,9 @@ export const sendMessage = async ({
   chatSetting,
 }: SendMessageOptions): Promise<void> => {
   let chatValue = false;
+  const normalizedReceivers = (receivers ?? []).filter(
+    (receiver): receiver is string => typeof receiver === "string" && receiver.trim().length > 0,
+  );
 
   // Check message count limit based on room type prefix
   if (
@@ -110,8 +113,9 @@ export const sendMessage = async ({
     return;
   }
 
-  // Check if receivers is valid
-  if (receivers.length < 1 && group === false) {
+  // Hosts need an explicit recipient. Attendees can open a direct thread to the host
+  // without first replying to an existing message.
+  if (normalizedReceivers.length < 1 && group === false && islevel === "2") {
     showAlert?.({
       message: "Please select a message to reply to",
       type: "danger",
@@ -123,7 +127,7 @@ export const sendMessage = async ({
   // Create message object
   const messageObject: Message = {
     sender: sender ? sender : member,
-    receivers: receivers,
+    receivers: normalizedReceivers,
     message: message,
     timestamp: new Date().toLocaleTimeString(),
     group: group !== undefined && group !== null ? group : false,

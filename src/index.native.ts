@@ -1,7 +1,3 @@
-// Re-export all types
-export * from './types/types';
-
-// Export all consumers
 export * from './consumers/autoAdjust';
 export * from './consumers/calculateRowsAndColumns';
 export * from './consumers/changeVids';
@@ -63,7 +59,7 @@ export * from './consumers/translationConsumerSwitch';
 export * from './consumers/trigger';
 export * from './consumers/updateMiniCardsGrid';
 export * from './consumers/updateParticipantAudioDecibels';
-// Export all methods
+
 export * from './methods/background/launchBackground';
 export * from './methods/breakoutRooms/breakoutRoomUpdated';
 export * from './methods/breakoutRooms/handleStartBreakout';
@@ -211,15 +207,14 @@ export * from './methods/whiteboard/handleStartWhiteboard';
 export * from './methods/whiteboard/handleStopWhiteboard';
 export * from './methods/whiteboard/launchConfigureWhiteboard';
 export * from './methods/whiteboard/captureCanvasStream';
-// ProducerClient exports
-export * from './ProducerClient/producerClientEmits/createDeviceClient';
+
 export * from './ProducerClient/producerClientEmits/joinRoomClient';
 export * from './ProducerClient/producerClientEmits/updateRoomParametersClient';
-// Producers exports
+
 export * from './producers/producerEmits/joinConRoom';
 export * from './producers/producerEmits/joinLocalRoom';
 export * from './producers/producerEmits/joinRoom';
-// Socket exports
+
 export * from './sockets/SocketManager';
-// Stream method exports (clickVideo)
+
 export * from './methods/stream/clickVideo';

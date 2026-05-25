@@ -1673,6 +1673,14 @@ export declare interface CoHostResponsibility {
 }
 
 /**
+ * Curated list of the most widely-supported language codes for real-time translation.
+ * This set covers the languages supported by major STT/TTS/translation providers
+ * (Google, Azure, Deepgram, OpenAI, DeepL, etc.) and is the default shown in UI pickers.
+ * Use getSupportedLanguages() if you need the full extended list.
+ */
+export declare const COMMON_LANGUAGE_CODES: string[];
+
+/**
  * Compares the current active names with the previous active names and triggers an action if there are changes.
  *
  * @param {CompareActiveNamesOptions} options - The options for comparing active names.
@@ -2584,7 +2592,7 @@ export declare interface ControlMediaHostTrackLike {
 
 export declare type ControlMediaHostType<TOnScreenChangesParameters = unknown, TStopShareScreenParameters = unknown, TDisconnectSendTransportVideoParameters = unknown, TDisconnectSendTransportAudioParameters = unknown, TDisconnectSendTransportScreenParameters = unknown, TAllParameters extends TOnScreenChangesParameters & TStopShareScreenParameters & TDisconnectSendTransportVideoParameters & TDisconnectSendTransportAudioParameters & TDisconnectSendTransportScreenParameters = TOnScreenChangesParameters & TStopShareScreenParameters & TDisconnectSendTransportVideoParameters & TDisconnectSendTransportAudioParameters & TDisconnectSendTransportScreenParameters, TMediaStream extends ControlMediaHostMediaStreamLike = MediaStream> = (options: ControlMediaHostOptions<TOnScreenChangesParameters, TStopShareScreenParameters, TDisconnectSendTransportVideoParameters, TDisconnectSendTransportAudioParameters, TDisconnectSendTransportScreenParameters, TAllParameters, TMediaStream>) => Promise<void>;
 
-export declare interface ControlMediaOptions {
+declare interface ControlMediaOptions {
     data: ControlMediaData;
     showAlert?: ShowAlert;
     clickAudio?: () => void;
@@ -2592,6 +2600,8 @@ export declare interface ControlMediaOptions {
     audioAlreadyOn?: boolean;
     videoAlreadyOn?: boolean;
 }
+export { ControlMediaOptions }
+export { ControlMediaOptions as PanelistControlMediaOptions }
 
 declare interface ControlMediaOptions_2 {
     participantId: string;
@@ -2607,7 +2617,9 @@ declare interface ControlMediaOptions_2 {
     roomName: string;
 }
 
-export declare type ControlMediaType = (options: ControlMediaOptions) => Promise<void>;
+declare type ControlMediaType = (options: ControlMediaOptions) => Promise<void>;
+export { ControlMediaType }
+export { ControlMediaType as PanelistControlMediaType }
 
 export declare type ControlsPosition = 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight';
 
@@ -3713,6 +3725,12 @@ export declare const getAvailableVoices: (langCode: string, provider?: TTSProvid
     male: VoiceOption[];
     female: VoiceOption[];
 };
+
+/**
+ * Returns the curated list of commonly-supported languages for translation UI pickers.
+ * Sorted alphabetically by display name.
+ */
+export declare const getCommonLanguages: (displayLocale?: string) => LanguageOption[];
 
 /**
  * Resolves newly announced consuming domains to connection targets and connects missing ones.

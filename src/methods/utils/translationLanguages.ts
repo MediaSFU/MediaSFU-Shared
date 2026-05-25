@@ -105,13 +105,45 @@ const TTS_SUPPORT_BY_LANGUAGE: Record<string, TTSSupport> = {
   auto: 'n/a',
 };
 
+/** Static English language names used as a fallback when Intl.DisplayNames is
+ *  unavailable or returns an empty string (e.g. older Hermes on Android). */
+const LANGUAGE_NAMES_EN: Record<string, string> = {
+  en: 'English', es: 'Spanish', fr: 'French', de: 'German', it: 'Italian',
+  pt: 'Portuguese', nl: 'Dutch', ru: 'Russian', zh: 'Chinese', ja: 'Japanese',
+  ko: 'Korean', ar: 'Arabic', hi: 'Hindi', bn: 'Bengali', pa: 'Punjabi',
+  te: 'Telugu', mr: 'Marathi', ta: 'Tamil', ur: 'Urdu', gu: 'Gujarati',
+  kn: 'Kannada', ml: 'Malayalam', ne: 'Nepali', si: 'Sinhala',
+  tr: 'Turkish', pl: 'Polish', vi: 'Vietnamese', th: 'Thai',
+  id: 'Indonesian', ms: 'Malay', tl: 'Filipino', km: 'Khmer',
+  lo: 'Lao', my: 'Burmese',
+  sw: 'Swahili', yo: 'Yoruba', ha: 'Hausa', ig: 'Igbo', zu: 'Zulu',
+  xh: 'Xhosa', af: 'Afrikaans', st: 'Sesotho', tn: 'Tswana', sn: 'Shona',
+  am: 'Amharic', so: 'Somali', rw: 'Kinyarwanda', mg: 'Malagasy',
+  ny: 'Chichewa', ee: 'Ewe', tw: 'Twi', gaa: 'Ga',
+  he: 'Hebrew', fa: 'Persian', ps: 'Pashto', ku: 'Kurdish',
+  uk: 'Ukrainian', el: 'Greek', cs: 'Czech', ro: 'Romanian',
+  hu: 'Hungarian', sv: 'Swedish', da: 'Danish', no: 'Norwegian',
+  fi: 'Finnish', sk: 'Slovak', bg: 'Bulgarian', hr: 'Croatian',
+  et: 'Estonian', lt: 'Lithuanian', lv: 'Latvian', sl: 'Slovenian',
+  sr: 'Serbian', bs: 'Bosnian', mk: 'Macedonian', is: 'Icelandic',
+  ga: 'Irish', cy: 'Welsh', mt: 'Maltese', lb: 'Luxembourgish',
+  sq: 'Albanian', be: 'Belarusian',
+  ka: 'Georgian', hy: 'Armenian', az: 'Azerbaijani',
+  eu: 'Basque', gl: 'Galician', ca: 'Catalan', la: 'Latin', eo: 'Esperanto',
+  kk: 'Kazakh', uz: 'Uzbek', tg: 'Tajik', ky: 'Kyrgyz', tk: 'Turkmen',
+  mn: 'Mongolian',
+};
+
 const getDisplayName = (code: string, locale: string, fallback: string) => {
   try {
     const displayNames = new Intl.DisplayNames([locale], { type: 'language' });
-    return displayNames.of(code) || fallback;
+    const result = displayNames.of(code);
+    if (result) return result;
   } catch {
-    return fallback;
+    // Intl.DisplayNames unavailable on this runtime (e.g. older Hermes)
   }
+  // Fall back to the static English map, then the uppercase-code fallback.
+  return LANGUAGE_NAMES_EN[code] ?? fallback;
 };
 
 export const normalizeLanguageCode = (code: string): string => {
@@ -158,6 +190,36 @@ export const getLanguageMetadata = (code: string): LanguageMetadata => {
 
 export const getSupportedLanguages = (displayLocale = 'en'): LanguageOption[] => {
   return SUPPORTED_LANGUAGE_CODES.map((code) => {
+    const metadata = getLanguageMetadata(code);
+    return {
+      code,
+      name: getLanguageName(code, displayLocale),
+      nativeName: metadata.nativeName,
+      region: metadata.region,
+      ttsSupport: metadata.ttsSupport,
+    };
+  }).sort((left, right) => left.name.localeCompare(right.name));
+};
+
+/**
+ * Curated list of the most widely-supported language codes for real-time translation.
+ * This set covers the languages supported by major STT/TTS/translation providers
+ * (Google, Azure, Deepgram, OpenAI, DeepL, etc.) and is the default shown in UI pickers.
+ * Use getSupportedLanguages() if you need the full extended list.
+ */
+export const COMMON_LANGUAGE_CODES: string[] = [
+  'en', 'es', 'fr', 'de', 'it', 'pt', 'nl', 'ru', 'zh', 'ja', 'ko', 'ar',
+  'hi', 'bn', 'tr', 'pl', 'vi', 'th', 'id', 'ms',
+  'sw', 'yo', 'ha', 'ig', 'zu', 'am', 'tw',
+  'he', 'fa', 'uk', 'el', 'cs', 'ro', 'hu', 'sv', 'da', 'no', 'fi',
+];
+
+/**
+ * Returns the curated list of commonly-supported languages for translation UI pickers.
+ * Sorted alphabetically by display name.
+ */
+export const getCommonLanguages = (displayLocale = 'en'): LanguageOption[] => {
+  return COMMON_LANGUAGE_CODES.map((code) => {
     const metadata = getLanguageMetadata(code);
     return {
       code,

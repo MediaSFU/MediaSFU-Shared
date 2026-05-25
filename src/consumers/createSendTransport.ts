@@ -34,6 +34,29 @@ export interface CreateSendTransportOptions {
 // Export the type definition for the function
 export type CreateSendTransportType = (options: CreateSendTransportOptions) => Promise<void>;
 
+const waitForReadyDevice = async (
+  parameters: CreateSendTransportParameters,
+  attempts = 20,
+  delayMs = 100,
+): Promise<Device | null> => {
+  let resolvedDevice = parameters.getUpdatedAllParams().device ?? parameters.device;
+
+  for (let attempt = 0; !resolvedDevice && attempt < attempts; attempt += 1) {
+    await new Promise((resolve) => setTimeout(resolve, delayMs));
+    resolvedDevice = parameters.getUpdatedAllParams().device ?? parameters.device;
+  }
+
+  return resolvedDevice;
+};
+
+const notifyDeviceNotReady = (parameters: CreateSendTransportParameters): void => {
+  parameters.showAlert?.({
+    message: 'Media device is still initializing. Please try screen sharing again in a moment.',
+    type: 'danger',
+    duration: 3000,
+  });
+};
+
 const createLocalSendTransport = async ({
   option,
   parameters,
@@ -53,6 +76,11 @@ const createLocalSendTransport = async ({
       connectSendTransport,
     } = parameters;
 
+    const updatedParams = parameters.getUpdatedAllParams();
+    device = updatedParams.device ?? device;
+    socket = updatedParams.socket ?? socket;
+    localSocket = updatedParams.localSocket ?? localSocket;
+
 
     if (!localSocket || !localSocket.id || socket.id === localSocket.id) {
       return;
@@ -67,8 +95,14 @@ const createLocalSendTransport = async ({
           return;
         }
 
+        const resolvedDevice = (await waitForReadyDevice(parameters)) ?? device;
+        if (!resolvedDevice) {
+          notifyDeviceNotReady(parameters);
+          return;
+        }
+
         // Create local send transport
-        localProducerTransport = await device!.createSendTransport(params);
+        localProducerTransport = await resolvedDevice.createSendTransport(params);
         if (updateLocalProducerTransport) {
           updateLocalProducerTransport(localProducerTransport);
         }
@@ -212,6 +246,15 @@ export const createSendTransport: CreateSendTransportType = async ({
     device = updatedParams.device;
     socket = updatedParams.socket;
 
+    if (!device) {
+      device = await waitForReadyDevice(parameters);
+    }
+
+    if (!device) {
+      notifyDeviceNotReady(parameters);
+      return;
+    }
+
     try {
       // Handle local transport creation first
       await createLocalSendTransport({option, parameters});
@@ -230,8 +273,14 @@ export const createSendTransport: CreateSendTransportType = async ({
           return;
         }
 
+        const resolvedDevice = (await waitForReadyDevice(parameters)) ?? device;
+        if (!resolvedDevice) {
+          notifyDeviceNotReady(parameters);
+          return;
+        }
+
         // Create a WebRTC send transport
-        producerTransport = await device!.createSendTransport(params);
+        producerTransport = await resolvedDevice.createSendTransport(params);
         updateProducerTransport(producerTransport);
 
         // Handle 'connect' event
