@@ -23,6 +23,7 @@ export interface CreateSendTransportParameters extends ConnectSendTransportParam
   // mediasfu functions
   connectSendTransport: ConnectSendTransportType;
   getUpdatedAllParams: () => CreateSendTransportParameters;
+  getCurrentParams?: () => any;
   [key: string]: any;
 }
 
@@ -39,11 +40,14 @@ const waitForReadyDevice = async (
   attempts = 20,
   delayMs = 100,
 ): Promise<Device | null> => {
-  let resolvedDevice = parameters.getUpdatedAllParams().device ?? parameters.device;
+  const readDevice = () => parameters.getCurrentParams
+    ? parameters.getCurrentParams().device
+    : parameters.device;
+  let resolvedDevice = readDevice();
 
   for (let attempt = 0; !resolvedDevice && attempt < attempts; attempt += 1) {
     await new Promise((resolve) => setTimeout(resolve, delayMs));
-    resolvedDevice = parameters.getUpdatedAllParams().device ?? parameters.device;
+    resolvedDevice = readDevice();
   }
 
   return resolvedDevice;
@@ -68,7 +72,6 @@ const createLocalSendTransport = async ({
       socket,
       localSocket,
       device,
-      localProducerTransport,
       localTransportCreated,
       updateLocalProducerTransport,
       updateLocalTransportCreated,
@@ -76,8 +79,8 @@ const createLocalSendTransport = async ({
       connectSendTransport,
     } = parameters;
 
-    const updatedParams = parameters.getUpdatedAllParams();
-    device = updatedParams.device ?? device;
+    const updatedParams = parameters.getCurrentParams?.() ?? parameters;
+    device = updatedParams.device;
     socket = updatedParams.socket ?? socket;
     localSocket = updatedParams.localSocket ?? localSocket;
 
@@ -95,20 +98,23 @@ const createLocalSendTransport = async ({
           return;
         }
 
-        const resolvedDevice = (await waitForReadyDevice(parameters)) ?? device;
+        const resolvedDevice: Device | null = parameters.getCurrentParams
+          ? (parameters.getCurrentParams().device as Device | null)
+          : (device ?? null);
         if (!resolvedDevice) {
-          notifyDeviceNotReady(parameters);
+          // The acknowledgement may arrive after teardown. At that point the
+          // current bag deliberately has no device; silently abandon it.
           return;
         }
 
         // Create local send transport
-        localProducerTransport = await resolvedDevice.createSendTransport(params);
+        const createdLocalTransport = await resolvedDevice.createSendTransport(params);
         if (updateLocalProducerTransport) {
-          updateLocalProducerTransport(localProducerTransport);
+          updateLocalProducerTransport(createdLocalTransport);
         }
 
         // Handle local transport events
-        localProducerTransport.on(
+        createdLocalTransport.on(
           "connect",
           async ({ dtlsParameters }: { dtlsParameters: DtlsParameters }, callback: () => void, errback: (error: Error) => void) => {
             try {
@@ -120,7 +126,7 @@ const createLocalSendTransport = async ({
           }
         );
 
-        localProducerTransport.on(
+        createdLocalTransport.on(
           "produce",
           async (
             parameters: { kind: string; rtpParameters: any; appData: any },
@@ -145,12 +151,10 @@ const createLocalSendTransport = async ({
           }
         );
 
-        localProducerTransport.on("connectionstatechange", (state: string) => {
+        createdLocalTransport.on("connectionstatechange", (state: string) => {
           if (state === "failed") {
             console.error("Local transport connection failed.");
-            if (localProducerTransport) {
-              localProducerTransport.close();
-            }
+            createdLocalTransport.close();
           }
         });
 
@@ -162,7 +166,7 @@ const createLocalSendTransport = async ({
         await connectSendTransport({
           targetOption: "local",
           option,
-          parameters: { ...parameters, localProducerTransport: localProducerTransport },
+          parameters: { ...parameters, localProducerTransport: createdLocalTransport },
         });
       }
     );
@@ -234,7 +238,6 @@ export const createSendTransport: CreateSendTransportType = async ({
       member,
       socket,
       device,
-      producerTransport,
       transportCreated,
       updateProducerTransport,
       updateTransportCreated,
@@ -242,7 +245,7 @@ export const createSendTransport: CreateSendTransportType = async ({
     } = parameters;
 
     // Get updated device and socket parameters
-    const updatedParams = parameters.getUpdatedAllParams();
+    const updatedParams = parameters.getCurrentParams?.() ?? parameters;
     device = updatedParams.device;
     socket = updatedParams.socket;
 
@@ -273,18 +276,20 @@ export const createSendTransport: CreateSendTransportType = async ({
           return;
         }
 
-        const resolvedDevice = (await waitForReadyDevice(parameters)) ?? device;
+        const resolvedDevice: Device | null = parameters.getCurrentParams
+          ? (parameters.getCurrentParams().device as Device | null)
+          : (device ?? null);
         if (!resolvedDevice) {
-          notifyDeviceNotReady(parameters);
+          // Late acknowledgement after teardown; no transport should survive it.
           return;
         }
 
         // Create a WebRTC send transport
-        producerTransport = await resolvedDevice.createSendTransport(params);
-        updateProducerTransport(producerTransport);
+        const createdProducerTransport = await resolvedDevice.createSendTransport(params);
+        updateProducerTransport(createdProducerTransport);
 
         // Handle 'connect' event
-        producerTransport.on(
+        createdProducerTransport.on(
           "connect",
           async ({ dtlsParameters }: { dtlsParameters: DtlsParameters }, callback: () => void, errback: (error: Error) => void) => {
             try {
@@ -297,7 +302,7 @@ export const createSendTransport: CreateSendTransportType = async ({
         );
 
         // Handle 'produce' event
-        producerTransport.on(
+        createdProducerTransport.on(
           "produce",
           async (
             parameters: { kind: string; rtpParameters: any; appData: any },
@@ -325,7 +330,7 @@ export const createSendTransport: CreateSendTransportType = async ({
         );
 
         // Handle 'connectionstatechange' event
-        producerTransport.on("connectionstatechange", async (state: string) => {
+        createdProducerTransport.on("connectionstatechange", async (state: string) => {
           switch (state) {
             case "connecting":
               break;
@@ -333,7 +338,7 @@ export const createSendTransport: CreateSendTransportType = async ({
               break;
             case "failed":
               console.log("Transport connection failed.");
-              producerTransport!.close();
+              createdProducerTransport.close();
               break;
             default:
               break;
@@ -342,13 +347,13 @@ export const createSendTransport: CreateSendTransportType = async ({
 
         // Update transport creation state
         transportCreated = true;
-        parameters = parameters.getUpdatedAllParams();
+        parameters = parameters.getCurrentParams?.() ?? parameters;
         await connectSendTransport({
           targetOption: "remote",
           option,
           parameters: {
             ...parameters,
-            producerTransport,
+            producerTransport: createdProducerTransport,
           },
         });
         updateTransportCreated(transportCreated);

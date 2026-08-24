@@ -1,8 +1,14 @@
-# mediasfu-shared · [mediasfu-shared on npm](https://www.npmjs.com/package/mediasfu-shared)
+# mediasfu-shared — framework-neutral MediaSFU engine
 
 **mediasfu-shared** is the framework-agnostic WebRTC runtime at the core of the MediaSFU SDK family. It provides shared room helpers, mediasoup signaling, socket management, media state utilities, and TypeScript types for React, Vue, Angular, Svelte, and plain TypeScript. Install with `npm install mediasfu-shared`.
 
-`mediasfu-shared` is the framework-agnostic MediaSFU runtime package. It exposes the shared room helpers, mediasoup/socket flows, state utilities, and TypeScript types used by the MediaSFU SDK family.
+<p align="center">
+  <a href="https://www.mediasfu.com/quick-usage">
+    <img src="https://raw.githubusercontent.com/MediaSFU/MediaSFU-Shared/main/public/readme/mediasfu-platform-capabilities.webp" width="1100" alt="MediaSFU real-time product capabilities including meetings, live broadcasts, classrooms, calling, recording, agents, and live commerce" />
+  </a>
+</p>
+
+This package exposes framework-neutral room, media, participant, playback, and headless helpers. It does not render a room or provide a framework state controller. Choose a framework SDK when you want prebuilt UI, `ModernMediasfuGeneric`, UI overrides, or a framework-native headless hook or service.
 
 ## When To Use This Package
 
@@ -20,55 +26,87 @@ npm install mediasfu-shared mediasoup-client socket.io-client
 
 `mediasoup-client` and `socket.io-client` are peer dependencies, so install them in the host app.
 
-## Backend Requirement
+## Backend requirement and credential boundary
 
-The cloud room helpers in this package target `https://mediasfu.com/v1/rooms/` by default.
+The Cloud room helpers target `https://mediasfu.com/v1/rooms/` by default.
 
-- Use MediaSFU Cloud when you want managed room creation, signaling, and media routing. Pass `apiUserName` and `apiKey`.
-- Use MediaSFU Open / Community Edition when you self-host. Pass a non-MediaSFU `localLink` such as `http://localhost:3000`.
+- Use **MediaSFU Cloud** when you want managed room creation, signaling, and media routing.
+- Use **MediaSFU Open** when you want your own locally or privately running MediaSFU media server. You install and operate [MediaSFU Open](https://github.com/MediaSFU/MediaSFUOpen), then configure its reachable URL.
 
-## Quick Example
+In production, create and join rooms through your authenticated backend so the MediaSFU API username and key never enter a browser or mobile bundle. Direct credentials are suitable only for an ignored, private local-development environment.
+
+## Server-side room bootstrap
+
+The following shape belongs in a trusted server process. Validate and authorize the caller, load credentials from server-side environment configuration, and return only the client-safe room/session fields your application needs.
 
 ```ts
 import {
-  SocketManager,
-  connectSocket,
   createRoomOnMediaSFU,
-  joinRoomOnMediaSFU,
 } from 'mediasfu-shared';
 
-const createResult = await createRoomOnMediaSFU({
-  payload: {
-    action: 'create',
-    userName: 'Ada',
-    duration: 60,
-    capacity: 10,
-  },
-  apiUserName: 'your-api-username',
-  apiKey: 'your-64-character-api-key',
-});
-
-const joinResult = await joinRoomOnMediaSFU({
-  payload: {
-    action: 'join',
-    meetingID: 'room123',
-    userName: 'Ben',
-  },
-  apiUserName: 'your-api-username',
-  apiKey: 'your-64-character-api-key',
-});
-
-const socket = await connectSocket({
-  apiUserName: 'your-api-username',
-  apiKey: 'your-64-character-api-key',
-  apiToken: 'your-api-token',
-  link: 'https://mediasfu.com/socket',
-});
-
-const socketManager = new SocketManager({ socket });
-
-console.log(createResult.success, joinResult.success, socketManager.socket.connected);
+export async function createRoomForAuthenticatedUser(userName: string) {
+  return createRoomOnMediaSFU({
+    payload: {
+      action: 'create',
+      userName,
+      duration: 60,
+      capacity: 10,
+    },
+    apiUserName: process.env.MEDIASFU_API_USERNAME ?? '',
+    apiKey: process.env.MEDIASFU_API_KEY ?? '',
+  });
+}
 ```
+
+## Headless state and actions
+
+`mediasfu-shared` exports the framework-independent headless helpers used by the
+React Native, Expo, Vue, and Angular adapters. The package does not mount a room
+component by itself: pass it the newest parameter bag published by your chosen
+framework SDK.
+
+```ts
+import {
+  getCurrentParams,
+  getRoomReadiness,
+  getLocalVideoStream,
+  listParticipantMediaStates,
+  runMediaControl,
+  type HeadlessParameters,
+} from 'mediasfu-shared';
+
+let parameters: HeadlessParameters = {};
+
+export function acceptPublishedParameters(next: HeadlessParameters) {
+  parameters = next;
+}
+
+export function readRoom() {
+  const current = getCurrentParams({ parameters });
+  return {
+    readiness: getRoomReadiness({ parameters: current }),
+    localVideo: getLocalVideoStream({ parameters: current }),
+    participants: listParticipantMediaStates({ parameters: current }),
+  };
+}
+
+export async function toggleMicrophone() {
+  return runMediaControl({ parameters, control: 'clickAudio' });
+}
+```
+
+Always replace the stored bag when the framework publishes a new one. Do not
+hold an earlier snapshot: the SDK reassigns fields as room state changes.
+`getCurrentParams()` is a pure read. `getUpdatedAllParams()` republishes and
+must not be used by render functions, computed values, or polling timers.
+
+The headless barrel also exports media-stream resolution, participant state,
+permissions, moderation, recording/polls/whiteboard/breakout controls, session
+extras, playback/viewer capabilities, and media-production helpers. The native
+entry omits the DOM-only virtual-background pipeline; use the native SDK's
+platform implementation instead.
+
+For lifecycle ownership, media resolution, independent audio rendering, publication scheduling, and teardown guidance, read [Building a Headless MediaSFU Wrapper](HEADLESS_GUIDE.md).
 
 ## Import Paths
 
@@ -79,8 +117,10 @@ console.log(createResult.success, joinResult.success, socketManager.socket.conne
 
 ## Documentation
 
-- Main docs: [https://mediasfu.com/documentation](https://mediasfu.com/documentation)
-- User guide: [https://mediasfu.com/user-guide](https://mediasfu.com/user-guide)
+- Shared/headless guide: [HEADLESS_GUIDE.md](HEADLESS_GUIDE.md)
+- Main developer docs: [https://mediasfu.com/documentation](https://mediasfu.com/documentation)
+- API Sandbox: [https://mediasfu.com/sandbox](https://mediasfu.com/sandbox)
+- Secure backend proxy guide: [https://mediasfu.com/docs/usage/secure-backend-proxy/](https://mediasfu.com/docs/usage/secure-backend-proxy/)
 - MediaSFU Open / CE: [https://github.com/MediaSFU/MediaSFUOpen](https://github.com/MediaSFU/MediaSFUOpen)
 
 Generate package-local API docs with:
@@ -102,6 +142,17 @@ npm run build-docs
 
 - GitHub issues: [https://github.com/MediaSFU/MediaSFU-Shared/issues](https://github.com/MediaSFU/MediaSFU-Shared/issues)
 - Email: info@mediasfu.com
+
+## Host leave and rejoin
+
+Host exits still end the room by default. To leave while keeping the room, timer, and other participants active, pass `endRoomOnHostExit: false`:
+
+```ts
+await confirmExit({ socket, member, roomName, endRoomOnHostExit: false });
+await leaveRoom({ parameters, endRoomOnHostExit: false });
+```
+
+The host can later rejoin with the normal room credentials. Never expose production API credentials in a client application; use your backend room proxy outside local development.
 
 ## License
 

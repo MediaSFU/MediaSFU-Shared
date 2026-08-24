@@ -1,3 +1,4 @@
+export * from './types/types';
 export * from './consumers/autoAdjust';
 export * from './consumers/calculateRowsAndColumns';
 export * from './consumers/changeVids';
@@ -218,3 +219,25 @@ export * from './producers/producerEmits/joinRoom';
 export * from './sockets/SocketManager';
 
 export * from './methods/stream/clickVideo';
+
+// Native headless exports deliberately omit virtualBackground because native
+// runtimes do not provide the browser canvas-backed captureStream() pipeline.
+export * from './methods/utils/headless/headlessTypes';
+export * from './methods/utils/headless/getRoomReadiness';
+export * from './methods/utils/headless/getMediaStreams';
+export * from './methods/utils/headless/getCurrentParams';
+export * from './methods/utils/headless/roomActions';
+export * from './methods/utils/headless/participantState';
+export * from './methods/utils/headless/mediaPermissions';
+export * from './methods/utils/headless/moderation';
+export * from './methods/utils/headless/sessionFeatures';
+export * from './methods/utils/headless/sessionExtras';
+export * from './methods/utils/headless/sessionControls';
+// WHEP works through a compatible native WebRTC implementation. HLS requires a
+// platform player and reports a clear unsupported error when none is supplied.
+export * from './methods/utils/headless/playback';
+export * from './methods/utils/headless/viewerSession';
+export * from './methods/utils/headless/mediaProduction';
+export * from './methods/utils/getParticipantMedia';
+
+export * from './ProducerClient/producerClientEmits/createDeviceClient';

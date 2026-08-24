@@ -14,6 +14,7 @@ export interface ConnectSendTransportScreenParameters {
   updateLocalProducerTransport?: (localTransport: Transport | null) => void;
 
   getUpdatedAllParams: () => ConnectSendTransportScreenParameters;
+  getCurrentParams?: () => any;
   [key: string]: any; // Extendable for additional parameters
 }
 
@@ -128,7 +129,9 @@ export const connectSendTransportScreen: ConnectSendTransportScreenType = async 
     } = parameters;
 
     // Fetch updated device information
-    device = parameters.getUpdatedAllParams().device;
+    device = parameters.getCurrentParams
+      ? parameters.getCurrentParams().device
+      : parameters.device;
 
     // Retrieve screen share parameters
     params = screenParams;

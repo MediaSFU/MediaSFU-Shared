@@ -2,21 +2,38 @@ import { defineConfig } from 'vite';
 import { resolve } from 'path';
 import dts from 'vite-plugin-dts';
 
+/**
+ * Two entries, not one.
+ *
+ * `src/index.native.ts` existed for a long time but was never built, so React
+ * Native and Expo — which import bare 'mediasfu-shared' — silently received the
+ * web build. It is now a real entry, routed to by the "react-native" field and
+ * export condition in package.json.
+ *
+ * The difference that matters today: the web entry exports `virtualBackground`,
+ * whose pipeline needs an offscreen canvas and `captureStream()`. The native
+ * entry omits it.
+ */
 export default defineConfig({
   plugins: [
     dts({
       insertTypesEntry: true,
-      rollupTypes: true,
+      // rollupTypes bundles every declaration into one file, which cannot
+      // represent two entries with different surfaces.
+      rollupTypes: false,
     }),
   ],
   build: {
     lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
+      entry: {
+        index: resolve(__dirname, 'src/index.ts'),
+        'index.native': resolve(__dirname, 'src/index.native.ts'),
+      },
       name: 'MediaSFUShared',
       formats: ['es', 'cjs'],
-      fileName: (format) => {
+      fileName: (format, entryName) => {
         const ext = format === 'es' ? 'js' : 'cjs';
-        return `index.${ext}`;
+        return `${entryName}.${ext}`;
       },
     },
     rollupOptions: {

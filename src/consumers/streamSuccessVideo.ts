@@ -31,6 +31,7 @@ export interface StreamSuccessVideoParameters extends CreateSendTransportParamet
   appliedBackground: boolean;
   videoProducer: Producer | null;
   removeSingleVideoEncoding?: boolean;
+  useNativeCodecSelection?: boolean;
 
   // Update functions
   updateTransportCreatedVideo: (created: boolean) => void;
@@ -67,6 +68,30 @@ export interface StreamSuccessVideoOptions {
 
 // Export the type definition for the function
 export type StreamSuccessVideoType = (options: StreamSuccessVideoOptions) => Promise<void>;
+
+const auxiliaryVideoCodecs = new Set([
+  'video/rtx',
+  'video/red',
+  'video/ulpfec',
+  'video/flexfec-03',
+]);
+
+export function selectVideoProducerCodec({
+  device,
+  useNativeCodecSelection = false,
+}: {
+  device: Pick<Device, 'rtpCapabilities'> | null;
+  useNativeCodecSelection?: boolean;
+}): RtpCodecCapability | undefined {
+  if (useNativeCodecSelection) return undefined;
+
+  return device?.rtpCapabilities?.codecs?.find((codec: RtpCodecCapability) => {
+    const mimeType = codec.mimeType.toLowerCase();
+    return codec.kind === 'video' &&
+      mimeType !== 'video/vp9' &&
+      !auxiliaryVideoCodecs.has(mimeType);
+  });
+}
 
 
 /**
@@ -272,9 +297,14 @@ export const streamSuccessVideo = async ({
         videoParamse = { ...params };
       }
 
-      let codec = device?.rtpCapabilities?.codecs?.filter(
-        (codec: RtpCodecCapability) => codec.mimeType.toLowerCase() !== "video/vp9" && codec.kind === "video"
-      ) || [];
+      const useNativeCodecSelection =
+        parameters.useNativeCodecSelection ??
+        parameters.removeSingleVideoEncoding ??
+        false;
+      const codec = selectVideoProducerCodec({
+        device,
+        useNativeCodecSelection,
+      });
 
       if (parameters.removeSingleVideoEncoding && videoParamse.encodings && videoParamse.encodings.length <= 1) {
         delete videoParamse.encodings;
@@ -283,7 +313,7 @@ export const streamSuccessVideo = async ({
       videoParams = {
         track: localStream.getVideoTracks()[0],
         ...videoParamse,
-        codec: codec[0],
+        ...(codec ? { codec } : {}),
       };
       updateVideoParams(videoParams);
 
@@ -375,4 +405,3 @@ export const streamSuccessVideo = async ({
     } catch { /* Handle error */}
   }
 };
-

@@ -223,3 +223,8 @@ export * from './producers/producerEmits/joinRoom';
 export * from './sockets/SocketManager';
 // Stream method exports (clickVideo)
 export * from './methods/stream/clickVideo';
+
+// Framework-neutral headless helper suite. The web entry includes
+// virtualBackground, which requires an offscreen canvas and captureStream().
+export * from './methods/utils/headless';
+export * from './methods/utils/getParticipantMedia';
