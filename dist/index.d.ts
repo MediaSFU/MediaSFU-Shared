@@ -188,4 +188,5 @@ export * from './sockets/SocketManager';
 export * from './methods/stream/clickVideo';
 export * from './methods/utils/headless';
 export * from './methods/utils/getParticipantMedia';
+export * from './methods/utils/virtualBackgroundCompositor';
 //# sourceMappingURL=index.d.ts.map

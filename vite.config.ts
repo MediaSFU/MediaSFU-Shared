@@ -28,6 +28,12 @@ export default defineConfig({
       entry: {
         index: resolve(__dirname, 'src/index.ts'),
         'index.native': resolve(__dirname, 'src/index.native.ts'),
+        'consumers/index': resolve(__dirname, 'src/consumers/index.ts'),
+        'methods/index': resolve(__dirname, 'src/methods/index.ts'),
+        'types/index': resolve(__dirname, 'src/types/index.ts'),
+        'consumers/index': resolve(__dirname, 'src/consumers/index.ts'),
+        'methods/index': resolve(__dirname, 'src/methods/index.ts'),
+        'types/index': resolve(__dirname, 'src/types/index.ts'),
       },
       name: 'MediaSFUShared',
       formats: ['es', 'cjs'],

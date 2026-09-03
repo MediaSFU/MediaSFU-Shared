@@ -1,7 +1,7 @@
  
 
 import { Socket } from "socket.io-client";
-import type { ProducerOptions } from 'mediasoup-client/lib/types';
+import type { ProducerOptions } from 'mediasoup-client/types';
 import { Participant, PrepopulateUserMediaParameters, ShowAlert, CreateSendTransportParameters, ConnectSendTransportAudioParameters, ResumeSendTransportAudioParameters, PrepopulateUserMediaType, CreateSendTransportType, ConnectSendTransportAudioType, ResumeSendTransportAudioType } from "../types/types";
 export interface StreamSuccessAudioParameters extends CreateSendTransportParameters, ConnectSendTransportAudioParameters, ResumeSendTransportAudioParameters, PrepopulateUserMediaParameters {
   socket: Socket;
@@ -294,4 +294,3 @@ export const streamSuccessAudio = async ({
     }
   }
 };
-

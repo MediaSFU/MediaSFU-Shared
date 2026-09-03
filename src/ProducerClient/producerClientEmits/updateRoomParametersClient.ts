@@ -1,5 +1,5 @@
 /* eslint-disable eqeqeq */
-import { RtpCapabilities } from 'mediasoup-client/lib/types';
+import { RtpCapabilities } from 'mediasoup-client/types';
 import {
   QnHDCons,
   sdCons,

@@ -1,6 +1,6 @@
 import { Socket } from "socket.io-client";
 import { PrepopulateUserMediaType, PrepopulateUserMediaParameters } from "../types/types";
-import type { Producer } from 'mediasoup-client/lib/types';
+import type { Producer } from 'mediasoup-client/types';
 
 export interface DisconnectSendTransportAudioParameters extends PrepopulateUserMediaParameters {
   audioProducer: Producer | null;

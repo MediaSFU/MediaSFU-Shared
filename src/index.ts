@@ -228,3 +228,5 @@ export * from './methods/stream/clickVideo';
 // virtualBackground, which requires an offscreen canvas and captureStream().
 export * from './methods/utils/headless';
 export * from './methods/utils/getParticipantMedia';
+// Shared web compositor used by headless virtual-background processing.
+export * from './methods/utils/virtualBackgroundCompositor';

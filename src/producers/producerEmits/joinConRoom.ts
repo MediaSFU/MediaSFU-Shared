@@ -1,6 +1,6 @@
 import { Socket } from "socket.io-client";
 import { validateAlphanumeric } from "../../methods/utils/validateAlphanumeric"; // Import the validateAlphanumeric function from the validateAlphanumeric file
-import type { RtpCapabilities } from "mediasoup-client/lib/types";
+import type { RtpCapabilities } from "mediasoup-client/types";
 
 export interface JoinConRoomOptions {
   socket: Socket;

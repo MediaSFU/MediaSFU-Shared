@@ -1,4 +1,4 @@
-import type { Device, Producer, ProducerOptions, RtpCodecCapability } from 'mediasoup-client/lib/types';
+import type { Device, Producer, ProducerOptions, RtpCodecCapability } from 'mediasoup-client/types';
 import { Socket } from "socket.io-client";
 import { ConnectSendTransportVideoParameters, Participant, ShowAlert, CreateSendTransportParameters, ReorderStreamsParameters, SleepType, CreateSendTransportType, ConnectSendTransportVideoType, ReorderStreamsType, HParamsType, VParamsType } from "../types/types";
 

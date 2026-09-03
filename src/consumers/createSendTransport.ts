@@ -1,4 +1,4 @@
-import type { Device, Transport, DtlsParameters } from 'mediasoup-client/lib/types';
+import type { Device, Transport, DtlsParameters } from 'mediasoup-client/types';
 import { Socket } from "socket.io-client";
 import {
   ConnectSendTransportParameters,

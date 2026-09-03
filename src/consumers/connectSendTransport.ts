@@ -1,4 +1,4 @@
-import type { ProducerOptions } from 'mediasoup-client/lib/types';
+import type { ProducerOptions } from 'mediasoup-client/types';
 import { ConnectSendTransportAudioType, ConnectSendTransportVideoType, ConnectSendTransportScreenType, ConnectSendTransportAudioParameters, ConnectSendTransportVideoParameters, ConnectSendTransportScreenParameters } from '../types/types';
 export interface ConnectSendTransportParameters extends ConnectSendTransportAudioParameters, ConnectSendTransportVideoParameters, ConnectSendTransportScreenParameters {
   audioParams: ProducerOptions 

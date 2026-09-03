@@ -1,6 +1,6 @@
 
 
-import type { Producer, ProducerCodecOptions, ProducerOptions } from 'mediasoup-client/lib/types';
+import type { Producer, ProducerCodecOptions, ProducerOptions } from 'mediasoup-client/types';
 import { Socket } from "socket.io-client";
 import { PrepopulateUserMediaParameters, PrepopulateUserMediaType, CreateSendTransportParameters, CreateSendTransportType, ConnectSendTransportAudioParameters, ConnectSendTransportAudioType, SleepType } from "../types/types";
 
@@ -312,4 +312,3 @@ export const streamSuccessAudioSwitch = async ({
     }
   }
 };
-

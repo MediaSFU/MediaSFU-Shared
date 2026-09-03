@@ -3,6 +3,7 @@ import { HeadlessOptions } from './headlessTypes';
 import { getCurrentParams } from './getCurrentParams';
 import { getLocalVideoStream } from './getMediaStreams';
 import { HeadlessActionResult } from './roomActions';
+import { compositeVirtualBackgroundFrame } from '../virtualBackgroundCompositor';
 
 const MEDIAPIPE_CDN = 'https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation';
 
@@ -15,7 +16,8 @@ const MEDIAPIPE_CDN = 'https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentati
 interface BackgroundSession {
   stop: () => void;
   stream: MediaStream;
-  sourceTrack: MediaStreamTrack | null;
+  /** A live raw-camera clone that can be returned to the producer on clear. */
+  restoreTrack: MediaStreamTrack | null;
 }
 let session: BackgroundSession | null = null;
 
@@ -71,8 +73,8 @@ export type ApplyVirtualBackgroundType = (
  * without mounting the modal off-screen and simulating a click.
  *
  * This runs the same MediaPipe pipeline the modal uses — identical compositing:
- * draw the segmentation mask, `source-out` fill with the background pattern,
- * then `destination-atop` the camera frame — against an offscreen video and
+ * draw the segmentation mask, retain the person with `source-in`, then paint
+ * the replacement behind them with `destination-over` — against an offscreen video and
  * canvas it creates and owns.
  *
  * It also keeps the SDK's own state honest (`virtualStream`, `processedStream`,
@@ -115,21 +117,32 @@ export async function applyVirtualBackground({
     return { ok: false, error: 'Turn your camera on before applying a background.', stream: null };
   }
 
-  // Replacing an existing session must not leave the old loop running.
-  if (session) { session.stop(); session = null; }
-
+  const previousSession = session;
+  let candidateStop: (() => void) | null = null;
   try {
     const settings = sourceTrack.getSettings ? sourceTrack.getSettings() : {};
     const width = Number(settings.width) || 640;
     const height = Number(settings.height) || 360;
 
     const backgroundImage = typeof image === 'string' ? await loadImage(image) : image;
+    const producer = publish ? (live.videoProducer || live.localVideoProducer) : null;
+
+    // mediasoup Producers normally own their track (`stopTracks: true`). Their
+    // replaceTrack operation therefore stops the old raw track. Keep MediaPipe
+    // on an isolated clone and retain a second live clone for a clean clear.
+    const processingTrack = sourceTrack.clone?.();
+    if (!processingTrack) throw new Error('This camera cannot create the isolated track required for a virtual background.');
+    const restoreTrack = producer ? sourceTrack.clone?.() : sourceTrack;
+    if (!restoreTrack) {
+      processingTrack.stop();
+      throw new Error('This camera cannot preserve a track for restoring the original view.');
+    }
 
     const video = document.createElement('video');
     video.autoplay = true;
     video.muted = true;
     video.playsInline = true;
-    video.srcObject = new MediaStream([sourceTrack]);
+    video.srcObject = new MediaStream([processingTrack]);
     await video.play().catch(() => {});
 
     const canvas = document.createElement('canvas');
@@ -149,18 +162,14 @@ export async function applyVirtualBackground({
     segmentation.onResults((results: any) => {
       try {
         if (!canvas.width || !canvas.height) return;
-        ctx.save();
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.drawImage(results.segmentationMask, 0, 0, canvas.width, canvas.height);
-        ctx.globalCompositeOperation = 'source-out';
-        if (backgroundImage) {
-          const pattern = ctx.createPattern(backgroundImage as CanvasImageSource, 'repeat');
-          ctx.fillStyle = pattern || 'transparent';
-          ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
-        ctx.globalCompositeOperation = 'destination-atop';
-        ctx.drawImage(results.image, 0, 0, canvas.width, canvas.height);
-        ctx.restore();
+        compositeVirtualBackgroundFrame({
+          ctx,
+          segmentationMask: results.segmentationMask,
+          sourceImage: results.image,
+          backgroundImage: backgroundImage as CanvasImageSource | null,
+          width: canvas.width,
+          height: canvas.height,
+        });
       } catch {
         // A dropped frame must never kill the loop.
       }
@@ -190,29 +199,35 @@ export async function applyVirtualBackground({
       window.cancelAnimationFrame(frameHandle);
       try { segmentation.close(); } catch { /* already closed */ }
       processed.getTracks().forEach((track) => track.stop());
+      processingTrack.stop();
       video.srcObject = null;
     };
-    session = { stop, stream: processed, sourceTrack };
+    candidateStop = stop;
 
-    // Keep the SDK's own view of the world correct, so getLocalVideoStream and
-    // getVirtualBackgroundState stay accurate without the caller intervening.
-    live.updateVirtualStream?.(processed);
-    live.updateProcessedStream?.(processed);
-    live.updateKeepBackground?.(true);
-
-    if (publish) {
-      const producer = live.videoProducer || live.localVideoProducer;
+    if (producer) {
       const track = processed.getVideoTracks()[0];
       if (producer && typeof producer.replaceTrack === 'function' && track) {
         // replaceTrack avoids renegotiation, so remote viewers see the
         // background appear without the call visibly reconnecting.
         await producer.replaceTrack({ track });
       }
+      if (camera?.removeTrack && camera?.addTrack && restoreTrack !== sourceTrack) {
+        camera.removeTrack(sourceTrack);
+        camera.addTrack(restoreTrack);
+        if (sourceTrack.readyState === 'live') sourceTrack.stop();
+      }
     }
+
+    previousSession?.stop();
+    session = { stop, stream: processed, restoreTrack };
+    candidateStop = null;
+    live.updateVirtualStream?.(processed);
+    live.updateProcessedStream?.(processed);
+    live.updateKeepBackground?.(true);
 
     return { ok: true, error: '', stream: processed };
   } catch (error: any) {
-    if (session) { session.stop(); session = null; }
+    candidateStop?.();
     return {
       ok: false,
       error: error?.message || 'The virtual background could not be applied.',
@@ -243,7 +258,7 @@ export async function clearVirtualBackground({
   }
   try {
     const producer = live.videoProducer || live.localVideoProducer;
-    const original = active.sourceTrack;
+    const original = active.restoreTrack;
     if (producer && typeof producer.replaceTrack === 'function'
       && original && original.readyState === 'live') {
       await producer.replaceTrack({ track: original });

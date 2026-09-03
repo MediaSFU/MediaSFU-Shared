@@ -1,7 +1,7 @@
 import { Socket } from 'socket.io-client';
 import { signalNewConsumerTransport } from '../signalNewConsumerTransport';
 import { ReorderStreamsParameters, ReorderStreamsType, SignalNewConsumerTransportParameters, ConnectRecvTransportParameters, ConnectRecvTransportType, ShowAlert } from '../../types/types';
-import type { Device } from 'mediasoup-client/lib/types';
+import type { Device } from 'mediasoup-client/types';
 
 export interface TranslationMeta {
   speakerId: string;

@@ -1,4 +1,4 @@
-import type { Transport, Producer, ProducerOptions } from 'mediasoup-client/lib/types';
+import type { Transport, Producer, ProducerOptions } from 'mediasoup-client/types';
 
 export interface ConnectSendTransportAudioParameters {
   audioProducer: Producer | null;

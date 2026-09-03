@@ -1,5 +1,5 @@
 import { joinConRoom } from '../../producers/producerEmits/joinConRoom';
-import type { Device, RtpCapabilities } from 'mediasoup-client/lib/types';
+import type { Device, RtpCapabilities } from 'mediasoup-client/types';
 import { Socket } from 'socket.io-client';
 import { ReceiveAllPipedTransportsParameters, ReceiveAllPipedTransportsType, CreateDeviceClientType } from '../../types/types';
 

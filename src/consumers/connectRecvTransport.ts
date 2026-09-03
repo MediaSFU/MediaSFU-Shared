@@ -1,6 +1,6 @@
 import { Socket } from "socket.io-client";
 import { ConsumerResumeType, ConsumerResumeParameters, Transport as TransportType, Participant } from "../types/types";
-import type { Consumer, Device, Transport } from "mediasoup-client/lib/types";
+import type { Consumer, Device, Transport } from "mediasoup-client/types";
 
 interface SpeakerTranslationState {
   speakerId: string;

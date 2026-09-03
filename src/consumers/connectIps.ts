@@ -3,7 +3,7 @@ import { connectSocket } from "../../src/sockets/SocketManager";
 import { newPipeProducer } from "./socketReceiveMethods/newPipeProducer";
 import { producerClosed } from "./socketReceiveMethods/producerClosed";
 import { joinConsumeRoom } from "./socketReceiveMethods/joinConsumeRoom";
-import type { Device } from 'mediasoup-client/lib/types';
+import type { Device } from 'mediasoup-client/types';
 import {
   ReorderStreamsParameters, ReorderStreamsType, NewPipeProducerParameters, NewPipeProducerType, ProducerClosedType,
   ProducerClosedParameters, JoinConsumeRoomType, JoinConsumeRoomParameters, ConsumeSocket

@@ -1,6 +1,6 @@
 import { Socket } from 'socket.io-client';
-import type { Consumer, DtlsParameters, IceCandidate, IceParameters, ProducerCodecOptions, RtpCapabilities } from 'mediasoup-client/lib/types';
-import type { RtpEncodingParameters } from 'mediasoup-client/lib/types';
+import type { Consumer, DtlsParameters, IceCandidate, IceParameters, ProducerCodecOptions, RtpCapabilities } from 'mediasoup-client/types';
+import type { RtpEncodingParameters } from 'mediasoup-client/types';
 
 export interface Participant {
   id?: string;
@@ -760,4 +760,3 @@ export type MessageParticipantsType = (options: any) => void;
 export type RemoveParticipantsType = (options: any) => Promise<void>;
 
 // Consumer types - import from consumer-types file
-

@@ -1,4 +1,4 @@
-import type { Device, Producer, ProducerOptions, Transport } from 'mediasoup-client/lib/types';
+import type { Device, Producer, ProducerOptions, Transport } from 'mediasoup-client/types';
 
 export interface ConnectSendTransportVideoParameters {
   videoProducer: Producer | null;

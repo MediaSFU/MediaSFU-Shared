@@ -1,5 +1,5 @@
 import * as mediasoupClient from "mediasoup-client";
-import type { RtpCapabilities, Device } from 'mediasoup-client/lib/types';
+import type { RtpCapabilities, Device } from 'mediasoup-client/types';
 
 export interface CreateDeviceClientOptions {
   rtpCapabilities: RtpCapabilities | null;
@@ -63,6 +63,5 @@ export const createDeviceClient = async ({
   }
 
 };
-
 
 

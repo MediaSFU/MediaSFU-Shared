@@ -106,6 +106,23 @@ extras, playback/viewer capabilities, and media-production helpers. The native
 entry omits the DOM-only virtual-background pipeline; use the native SDK's
 platform implementation instead.
 
+### Browser virtual backgrounds
+
+For a browser headless wrapper, apply a background after the camera is live and
+keep rendering the stream returned by the SDK's current parameter bag:
+
+```ts
+import { applyVirtualBackground, clearVirtualBackground } from 'mediasfu-shared';
+
+await applyVirtualBackground({ parameters, image: '/backgrounds/studio.jpg' });
+// On removal, the producer is restored to the raw camera track.
+await clearVirtualBackground({ parameters });
+```
+
+The helper uses the same segmentation/compositing contract as the React modal,
+isolates processing tracks, and updates `virtualStream`/`processedStream` for
+the self-view. Native builds intentionally omit this browser-only pipeline.
+
 For lifecycle ownership, media resolution, independent audio rendering, publication scheduling, and teardown guidance, read [Building a Headless MediaSFU Wrapper](HEADLESS_GUIDE.md).
 
 ## Import Paths

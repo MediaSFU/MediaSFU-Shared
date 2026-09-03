@@ -1,7 +1,7 @@
 import { Socket } from "socket.io-client";
 import { ReorderStreamsParameters, ReorderStreamsType, ConnectRecvTransportType,
    ConnectRecvTransportParameters, CreateWebRTCTransportResponse } from "../types/types";
-import type { Device, DtlsParameters  } from 'mediasoup-client/lib/types';
+import type { Device, DtlsParameters  } from 'mediasoup-client/types';
 
 export interface SignalNewConsumerTransportParameters extends ReorderStreamsParameters, ConnectRecvTransportParameters {
   device: Device | null;
@@ -176,4 +176,3 @@ export const signalNewConsumerTransport = async ({
     return;
   }
 };
-
