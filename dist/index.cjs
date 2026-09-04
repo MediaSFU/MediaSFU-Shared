@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-const joinLocalRoom = require("./joinLocalRoom-BdM1msQt.cjs");
-const updateParticipantAudioDecibels = require("./updateParticipantAudioDecibels-DPmHiy3K.cjs");
+const joinLocalRoom = require("./joinLocalRoom-BJBDvTYh.cjs");
+const updateParticipantAudioDecibels = require("./updateParticipantAudioDecibels-bZ6R8WHj.cjs");
 const joinRoomOnMediaSFU = require("./joinRoomOnMediaSFU-CC8RVJgr.cjs");
 const translationConsumerSwitch = require("./translationConsumerSwitch-C20MfNNq.cjs");
-const getParticipantMedia = require("./getParticipantMedia-CdcYqcbD.cjs");
+const getParticipantMedia = require("./getParticipantMedia-DC_Nca8S.cjs");
 const methods_index = require("./methods/index.cjs");
 const validateAlphanumeric = require("./validateAlphanumeric-DKn5BsUP.cjs");
 var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
