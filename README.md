@@ -135,6 +135,7 @@ For lifecycle ownership, media resolution, independent audio rendering, publicat
 ## Documentation
 
 - Shared/headless guide: [HEADLESS_GUIDE.md](HEADLESS_GUIDE.md)
+- Changelog: [CHANGELOG.md](CHANGELOG.md)
 - Main developer docs: [https://mediasfu.com/documentation](https://mediasfu.com/documentation)
 - API Sandbox: [https://mediasfu.com/sandbox](https://mediasfu.com/sandbox)
 - Secure backend proxy guide: [https://mediasfu.com/docs/usage/secure-backend-proxy/](https://mediasfu.com/docs/usage/secure-backend-proxy/)
@@ -146,6 +147,16 @@ Generate package-local API docs with:
 npm run build-docs
 ```
 
+## Working examples
+
+These starters pair a framework SDK built on `mediasfu-shared` with a backend that
+keeps API credentials server-side:
+
+- [Familiar Calls](https://github.com/MediaSFU/mediasfu-familiar-calls) — chat-style audio and video calling across React, Angular, Vue, React Native, Expo, and Flutter.
+- [Live Auction](https://github.com/MediaSFU/mediasfu-live-auction) — host and bidder views, timed lots, and live media.
+- [Watch Together](https://github.com/MediaSFU/mediasfu-watch-together) — a watch party with a realtime conversation floor and HLS audience.
+- [Interactive Classroom](https://github.com/MediaSFU/mediasfu-interactive-classroom) — React teacher and learner views with headless, hybrid, and standard UI.
+
 ## Related Packages
 
 | Package | Framework | npm |
@@ -153,7 +164,20 @@ npm run build-docs
 | [mediasfu-reactjs](https://github.com/MediaSFU/MediaSFU-ReactJS) | React 18/19 | [`npm install mediasfu-reactjs`](https://www.npmjs.com/package/mediasfu-reactjs) |
 | [mediasfu-vue](https://github.com/MediaSFU/MediaSFU-Vue) | Vue 3 / Composition API | [`npm install mediasfu-vue`](https://www.npmjs.com/package/mediasfu-vue) |
 | [mediasfu-angular](https://github.com/MediaSFU/MediaSFU-Angular) | Angular 17/18/19 | [`npm install mediasfu-angular`](https://www.npmjs.com/package/mediasfu-angular) |
-| [mediasfu-reactnative](https://www.npmjs.com/package/mediasfu-reactnative) | React Native | [`npm install mediasfu-reactnative`](https://www.npmjs.com/package/mediasfu-reactnative) |
+| [mediasfu-reactnative](https://github.com/MediaSFU/MediaSFU-ReactNative) | React Native | [`npm install mediasfu-reactnative`](https://www.npmjs.com/package/mediasfu-reactnative) |
+| [mediasfu-reactnative-expo](https://github.com/MediaSFU/MediaSFU-ReactNative-Expo) | Expo | [`npm install mediasfu-reactnative-expo`](https://www.npmjs.com/package/mediasfu-reactnative-expo) |
+
+## Troubleshooting
+
+| What you see | Likely cause | What to do |
+|---|---|---|
+| "Unable to connect. Check your credentials and try again." | The room service rejected the credentials, or your create/join backend returned an error. | Check the API username and key on your server, and make sure your create/join adapters pass the room service's response through. For MediaSFU Open, confirm that `localLink` points to a server the client can reach. |
+| The camera or microphone never starts | A browser page is not a secure context, or a device permission was denied. | On the web, serve the app over HTTPS (or `localhost` during development). On iOS and Android, declare camera and microphone permissions and grant access in the device settings. |
+| "You must turn on your video before you can start recording" | The recording is set to capture video while your camera is off. | Turn the camera on first, or switch the recording to audio only. The same applies to audio recordings and the microphone. |
+| "You can only re-configure recording after pausing it" | Recording settings are locked while a recording is running. | Pause the recording, change the settings, then resume. |
+| "You cannot turn off your camera while recording video…" | Turning the camera off would interrupt the recording. | Pause or stop the recording first. |
+| A message ending in "Access denied by host." | The host has restricted that action for participants. | Ask the host to change the participant's permissions. |
+| "Screen share is not allowed when whiteboard is active" | Screen sharing and the whiteboard cannot run at the same time. | Close the whiteboard, then start screen sharing. |
 
 ## Support
 

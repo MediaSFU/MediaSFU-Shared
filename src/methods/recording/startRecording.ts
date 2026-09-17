@@ -222,7 +222,13 @@ export const startRecording: StartRecordingType = async ({
           updateRecordPaused(recordPaused)
 
           if (action === 'startRecord') {
-            await rePort({ parameters: parameters.getUpdatedAllParams() })
+            // restart: force an immediate updateScreenClient. Without it,
+            // rePort only emits when activeNames or screenStates differ from
+            // their previous values — and nothing has changed at the moment a
+            // recording starts, so the recorder got no layout until something
+            // later did (a speaker change, a join, a share). Resume already
+            // forced it; start now matches.
+            await rePort({ restart: true, parameters: parameters.getUpdatedAllParams() })
             await recordStartTimer({ parameters })
           } else {
             updateRecordResumed(true)
