@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-const joinLocalRoom = require("./joinLocalRoom-BJBDvTYh.cjs");
-const updateParticipantAudioDecibels = require("./updateParticipantAudioDecibels-bZ6R8WHj.cjs");
+const joinLocalRoom = require("./joinLocalRoom-Cii5D5IG.cjs");
+const updateParticipantAudioDecibels = require("./updateParticipantAudioDecibels-QZyahisU.cjs");
 const joinRoomOnMediaSFU = require("./joinRoomOnMediaSFU-CC8RVJgr.cjs");
 const translationConsumerSwitch = require("./translationConsumerSwitch-C20MfNNq.cjs");
-const getParticipantMedia = require("./getParticipantMedia-BH3d_-Q1.cjs");
+const getParticipantMedia = require("./getParticipantMedia-AwwtMCTz.cjs");
 const methods_index = require("./methods/index.cjs");
 const validateAlphanumeric = require("./validateAlphanumeric-DKn5BsUP.cjs");
 var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
@@ -2284,6 +2284,11 @@ function requireSelfie_segmentation() {
   return selfie_segmentation;
 }
 var selfie_segmentationExports = /* @__PURE__ */ requireSelfie_segmentation();
+const VIRTUAL_BACKGROUND_BLUR = "blur";
+const DEFAULT_BACKGROUND_BLUR_PIXELS = 16;
+function isVirtualBackgroundBlur(value) {
+  return value === VIRTUAL_BACKGROUND_BLUR;
+}
 function compositeVirtualBackgroundFrame({
   ctx,
   segmentationMask,
@@ -2309,7 +2314,14 @@ function compositeVirtualBackgroundFrame({
       ctx.fillRect(0, 0, width, height);
     } else if (blurFallbackPixels > 0) {
       ctx.filter = `blur(${blurFallbackPixels}px)`;
-      ctx.drawImage(sourceImage, 0, 0, width, height);
+      const bleed = Math.max(2, blurFallbackPixels * 2);
+      ctx.drawImage(
+        sourceImage,
+        -bleed,
+        -bleed,
+        width + bleed * 2,
+        height + bleed * 2
+      );
     }
   } finally {
     ctx.filter = previousFilter || "none";
@@ -2334,7 +2346,8 @@ async function applyVirtualBackground({
   frameRate = 30,
   modelSelection = 1,
   publish = true,
-  assetPath = MEDIAPIPE_CDN
+  assetPath = MEDIAPIPE_CDN,
+  blurPixels = 0
 }) {
   const live = getParticipantMedia.getCurrentParams({ parameters });
   if (live.audioOnlyRoom) {
@@ -2354,7 +2367,8 @@ async function applyVirtualBackground({
     const settings = sourceTrack.getSettings ? sourceTrack.getSettings() : {};
     const width = Number(settings.width) || 640;
     const height = Number(settings.height) || 360;
-    const backgroundImage = typeof image === "string" ? await loadImage(image) : image;
+    const resolvedBlurPixels = Math.max(0, Number(blurPixels) || 0);
+    const backgroundImage = resolvedBlurPixels > 0 ? null : typeof image === "string" ? await loadImage(image) : image;
     const producer = publish ? live.videoProducer || live.localVideoProducer : null;
     const processingTrack = sourceTrack.clone?.();
     if (!processingTrack) throw new Error("This camera cannot create the isolated track required for a virtual background.");
@@ -2390,7 +2404,8 @@ async function applyVirtualBackground({
           sourceImage: results.image,
           backgroundImage,
           width: canvas.width,
-          height: canvas.height
+          height: canvas.height,
+          blurFallbackPixels: resolvedBlurPixels
         });
       } catch {
       }
@@ -2451,6 +2466,16 @@ async function applyVirtualBackground({
       stream: null
     };
   }
+}
+function applyBackgroundBlur({
+  blurPixels = DEFAULT_BACKGROUND_BLUR_PIXELS,
+  ...options
+}) {
+  return applyVirtualBackground({
+    ...options,
+    image: null,
+    blurPixels
+  });
 }
 async function clearVirtualBackground({
   parameters
@@ -2822,8 +2847,12 @@ exports.userWaiting = methods_index.userWaiting;
 exports.validateWelcomeAlphanumeric = methods_index.validateWelcomeAlphanumeric;
 exports.validateWelcomeInputs = methods_index.validateWelcomeInputs;
 exports.validateAlphanumeric = validateAlphanumeric.validateAlphanumeric;
+exports.DEFAULT_BACKGROUND_BLUR_PIXELS = DEFAULT_BACKGROUND_BLUR_PIXELS;
+exports.VIRTUAL_BACKGROUND_BLUR = VIRTUAL_BACKGROUND_BLUR;
+exports.applyBackgroundBlur = applyBackgroundBlur;
 exports.applyVirtualBackground = applyVirtualBackground;
 exports.clearVirtualBackground = clearVirtualBackground;
 exports.compositeVirtualBackgroundFrame = compositeVirtualBackgroundFrame;
+exports.isVirtualBackgroundBlur = isVirtualBackgroundBlur;
 exports.isVirtualBackgroundRunning = isVirtualBackgroundRunning;
 //# sourceMappingURL=index.cjs.map

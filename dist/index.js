@@ -1,9 +1,9 @@
-import { a, b, d, c, e, f, j, m, p, u } from "./joinLocalRoom-7ibqv7zZ.js";
-import { Y, Z, a as a2, _, $, b as b2, W, d as d2, e as e2, f as f2, g, h, aa, i, j as j2, k, l, m as m2, a8, c as c2, a0, n, o, p as p2, q, a9, r, s, a1, a2 as a22, a3, t, X, T, v, U, w, x, y, V, C, G, z, A, a4, B, D, E, F, a5, N, H, I, J, K, L, M, O, P, Q, R, S, u as u2, a6, a7 } from "./updateParticipantAudioDecibels-C_MygF6q.js";
+import { a, b, d, c, e, f, j, m, p, u } from "./joinLocalRoom-Bu3gz27d.js";
+import { Y, Z, a as a2, _, $, b as b2, W, d as d2, e as e2, f as f2, g, h, aa, i, j as j2, k, l, m as m2, a8, c as c2, a0, n, o, p as p2, q, a9, r, s, a1, a2 as a22, a3, t, X, T, v, U, w, x, y, V, C, G, z, A, a4, B, D, E, F, a5, N, H, I, J, K, L, M, O, P, Q, R, S, u as u2, a6, a7 } from "./updateParticipantAudioDecibels-CnEXJBmc.js";
 import { Q as Q2, u as u3, m as m3, A as A2, f as f3, e as e3, a as a10, c as c3, b as b3, d as d3, l as l2, y as y2, p as p3, D as D2, g as g2, k as k2, x as x2, o as o2, C as C2, h as h2, j as j3, q as q2, z as z2, r as r2, E as E2, F as F2, s as s2, i as i2, w as w2, n as n2, B as B2, t as t2, v as v2 } from "./joinRoomOnMediaSFU-y6vJ1OBo.js";
 import { b as b4, d as d4, c as c4, f as f4, e as e4, k as k3, j as j4, h as h3, i as i3, p as p4, a as a11, r as r3, g as g3, s as s3, l as l3 } from "./translationConsumerSwitch-zKuS5wgH.js";
-import { _ as getCurrentParams, W as getLocalVideoStream } from "./getParticipantMedia-CGqnSb93.js";
-import { aD, aR, w as w3, x as x3, f as f5, y as y3, aP, ar, aU, aS, ab, at, aI, a4 as a42, Z as Z2, au, aV, aL, az, X as X2, aG, a7 as a72, N as N2, a8 as a82, b0, a2 as a23, aM, aQ, aq, aO, aw, av, ai, V as V2, U as U2, T as T2, Y as Y2, a6 as a62, aN, ax, aA, an, q as q3, t as t3, h as h4, Q as Q3, a as a12, R as R2, u as u4, l as l4, b as b5, c as c5, S as S2, g as g4, d as d5, i as i4, j as j5, k as k4, n as n3, v as v3, z as z3, H as H2, J as J2, O as O2, $ as $2, a5 as a52, a3 as a32, o as o3, m as m4, e as e5, ad, aa as aa2, p as p5, ak, aY, a_, aZ, aW, aT, aF, A as A3, B as B3, C as C3, D as D3, ae, r as r4, a$, ag, I as I2, P as P2, af, al, a1 as a13, a0 as a02, s as s4, aC, ah, a9 as a92, aB, aK, ay, E as E3, aj, ao, aE, ac, aX, F as F3, am, ap, K as K2, aH, aJ, L as L2, M as M2, G as G2, as } from "./getParticipantMedia-CGqnSb93.js";
+import { _ as getCurrentParams, W as getLocalVideoStream } from "./getParticipantMedia-CyaOk2oD.js";
+import { aD, aR, w as w3, x as x3, f as f5, y as y3, aP, ar, aU, aS, ab, at, aI, a4 as a42, Z as Z2, au, aV, aL, az, X as X2, aG, a7 as a72, N as N2, a8 as a82, b0, a2 as a23, aM, aQ, aq, aO, aw, av, ai, V as V2, U as U2, T as T2, Y as Y2, a6 as a62, aN, ax, aA, an, q as q3, t as t3, h as h4, Q as Q3, a as a12, R as R2, u as u4, l as l4, b as b5, c as c5, S as S2, g as g4, d as d5, i as i4, j as j5, k as k4, n as n3, v as v3, z as z3, H as H2, J as J2, O as O2, $ as $2, a5 as a52, a3 as a32, o as o3, m as m4, e as e5, ad, aa as aa2, p as p5, ak, aY, a_, aZ, aW, aT, aF, A as A3, B as B3, C as C3, D as D3, ae, r as r4, a$, ag, I as I2, P as P2, af, al, a1 as a13, a0 as a02, s as s4, aC, ah, a9 as a92, aB, aK, ay, E as E3, aj, ao, aE, ac, aX, F as F3, am, ap, K as K2, aH, aJ, L as L2, M as M2, G as G2, as } from "./getParticipantMedia-CyaOk2oD.js";
 import { COMMON_LANGUAGE_CODES, MediaStream as MediaStream2, MediaStreamTrack, RTCView, SUPPORTED_LANGUAGE_CODES, SoundPlayer, TTS_PROVIDERS, addPanelist, addedAsPanelist, allMembers, allMembersRest, allWaitingRoomMembers, banParticipant, bulkUpdateParticipantPermissions, clickChat, controlMediaHost, createLiveSubtitle, createResponseJoinRoom, createRoomOnMediaSFU, disconnect, disconnectUserSelf, fetchLanguagesViaSocket, fetchVoicesViaSocket, focusPanelists, formatNumber, generateRandomMessages, generateRandomParticipants, generateRandomPolls, generateRandomRequestList, generateRandomWaitingRoomList, getAvailableVoices, getCommonLanguages, getDomains, getLanguageMetadata, getLanguageName, getLanguageNativeName, getOverlayPosition, getSubtitleForSpeaker, getSupportedLanguages, handleCreateRoom, handleJoinRoom, handleWelcomeRequest, initialValuesState, isLanguageSupported, isSubtitleExpired, launchPanelists, launchPermissions, mediaDevices, meetingEnded, meetingStillThere, meetingTimeRemaining, normalizeLanguageCode, panelistControlMedia, panelistFocusChanged, panelistsUpdated, participantRequested, permissionConfigUpdated, permissionUpdated, personJoined, pollUpdated, producerMediaClosed, producerMediaPaused, producerMediaResumed, pruneExpiredSubtitles, reInitiateRecording, receiveMessage, recordingNotice, registerGlobals, removePanelist, removedFromPanelists, roomRecordParams, screenProducerId, sleep, startMeetingProgressTimer, startRecords, stoppedRecording, translationChannelsAvailable, translationConfigUpdated, translationError, translationLanguageSet, translationMemberState, translationProducerClosed, translationProducerReady, translationRoomConfig, translationSpeakerOutputChanged, translationSubscribed, translationTranscript, translationUnsubscribed, unfocusPanelists, updateConsumingDomains, updateLiveSubtitlesFromTranscript, updateMediaSettings, updatePanelists, updateParticipantPermission, updatePermissionConfig, updatedCoHost, userWaiting, validateWelcomeAlphanumeric, validateWelcomeInputs } from "./methods/index.js";
 import { v as v4 } from "./validateAlphanumeric-Dk1JB80W.js";
 var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
@@ -2283,6 +2283,11 @@ function requireSelfie_segmentation() {
   return selfie_segmentation;
 }
 var selfie_segmentationExports = /* @__PURE__ */ requireSelfie_segmentation();
+const VIRTUAL_BACKGROUND_BLUR = "blur";
+const DEFAULT_BACKGROUND_BLUR_PIXELS = 16;
+function isVirtualBackgroundBlur(value) {
+  return value === VIRTUAL_BACKGROUND_BLUR;
+}
 function compositeVirtualBackgroundFrame({
   ctx,
   segmentationMask,
@@ -2308,7 +2313,14 @@ function compositeVirtualBackgroundFrame({
       ctx.fillRect(0, 0, width, height);
     } else if (blurFallbackPixels > 0) {
       ctx.filter = `blur(${blurFallbackPixels}px)`;
-      ctx.drawImage(sourceImage, 0, 0, width, height);
+      const bleed = Math.max(2, blurFallbackPixels * 2);
+      ctx.drawImage(
+        sourceImage,
+        -bleed,
+        -bleed,
+        width + bleed * 2,
+        height + bleed * 2
+      );
     }
   } finally {
     ctx.filter = previousFilter || "none";
@@ -2333,7 +2345,8 @@ async function applyVirtualBackground({
   frameRate = 30,
   modelSelection = 1,
   publish = true,
-  assetPath = MEDIAPIPE_CDN
+  assetPath = MEDIAPIPE_CDN,
+  blurPixels = 0
 }) {
   const live = getCurrentParams({ parameters });
   if (live.audioOnlyRoom) {
@@ -2353,7 +2366,8 @@ async function applyVirtualBackground({
     const settings = sourceTrack.getSettings ? sourceTrack.getSettings() : {};
     const width = Number(settings.width) || 640;
     const height = Number(settings.height) || 360;
-    const backgroundImage = typeof image === "string" ? await loadImage(image) : image;
+    const resolvedBlurPixels = Math.max(0, Number(blurPixels) || 0);
+    const backgroundImage = resolvedBlurPixels > 0 ? null : typeof image === "string" ? await loadImage(image) : image;
     const producer = publish ? live.videoProducer || live.localVideoProducer : null;
     const processingTrack = sourceTrack.clone?.();
     if (!processingTrack) throw new Error("This camera cannot create the isolated track required for a virtual background.");
@@ -2389,7 +2403,8 @@ async function applyVirtualBackground({
           sourceImage: results.image,
           backgroundImage,
           width: canvas.width,
-          height: canvas.height
+          height: canvas.height,
+          blurFallbackPixels: resolvedBlurPixels
         });
       } catch {
       }
@@ -2451,6 +2466,16 @@ async function applyVirtualBackground({
     };
   }
 }
+function applyBackgroundBlur({
+  blurPixels = DEFAULT_BACKGROUND_BLUR_PIXELS,
+  ...options
+}) {
+  return applyVirtualBackground({
+    ...options,
+    image: null,
+    blurPixels
+  });
+}
 async function clearVirtualBackground({
   parameters
 }) {
@@ -2481,6 +2506,7 @@ function isVirtualBackgroundRunning() {
 }
 export {
   COMMON_LANGUAGE_CODES,
+  DEFAULT_BACKGROUND_BLUR_PIXELS,
   MediaStream2 as MediaStream,
   MediaStreamTrack,
   Q2 as QnHDCons,
@@ -2491,6 +2517,7 @@ export {
   SUPPORTED_LANGUAGE_CODES,
   SoundPlayer,
   TTS_PROVIDERS,
+  VIRTUAL_BACKGROUND_BLUR,
   f3 as aParams,
   addPanelist,
   a as addVideosGrid,
@@ -2498,6 +2525,7 @@ export {
   allMembers,
   allMembersRest,
   allWaitingRoomMembers,
+  applyBackgroundBlur,
   applyVirtualBackground,
   aD as assignParticipantToBreakoutRoom,
   aR as attachPlayback,
@@ -2644,6 +2672,7 @@ export {
   isLanguageSupported,
   i3 as isSpeakerInMyBreakoutRoom,
   isSubtitleExpired,
+  isVirtualBackgroundBlur,
   isVirtualBackgroundRunning,
   X as joinConRoom,
   T as joinConsumeRoom,

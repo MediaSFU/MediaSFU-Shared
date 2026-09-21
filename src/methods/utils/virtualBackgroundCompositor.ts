@@ -10,6 +10,14 @@ export interface CompositeVirtualBackgroundFrameOptions {
   blurFallbackPixels?: number;
 }
 
+/** Stable room-state value used by every web UI surface for background blur. */
+export const VIRTUAL_BACKGROUND_BLUR = 'blur';
+export const DEFAULT_BACKGROUND_BLUR_PIXELS = 16;
+
+export function isVirtualBackgroundBlur(value: unknown): boolean {
+  return value === VIRTUAL_BACKGROUND_BLUR;
+}
+
 /**
  * Paint the segmented person over a replacement background.
  *
@@ -43,7 +51,16 @@ export function compositeVirtualBackgroundFrame({
       ctx.fillRect(0, 0, width, height);
     } else if (blurFallbackPixels > 0) {
       ctx.filter = `blur(${blurFallbackPixels}px)`;
-      ctx.drawImage(sourceImage, 0, 0, width, height);
+      // Draw beyond the visible bounds so the blur kernel does not expose a
+      // transparent/black fringe around the processed frame.
+      const bleed = Math.max(2, blurFallbackPixels * 2);
+      ctx.drawImage(
+        sourceImage,
+        -bleed,
+        -bleed,
+        width + bleed * 2,
+        height + bleed * 2,
+      );
     }
   } finally {
     ctx.filter = previousFilter || 'none';

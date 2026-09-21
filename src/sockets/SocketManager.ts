@@ -80,6 +80,9 @@ export type ConnectLocalSocketType = (options: ConnectLocalSocketOptions) => Pro
  * ```
  */
 
+/** How long to wait for `connection-success` before giving up. */
+const CONNECT_TIMEOUT_MS = 12000;
+
 async function connectSocket(
   { apiUserName, apiKey, apiToken, link }: ConnectSocketOptions,
 ): Promise<Socket> {
@@ -132,8 +135,24 @@ async function connectSocket(
       });
     }
 
-    // Handle socket connection events
-    socket.on('connection-success', ({ socketId }: { socketId: string }) => {
+    // Dispose failed handshakes immediately. Otherwise Socket.IO continues
+    // reconnecting a client that was never handed to the room lifecycle.
+    let settled = false;
+    let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
+    const cleanupHandshake = () => {
+      if (timeoutHandle) clearTimeout(timeoutHandle);
+      socket.off('connection-success', handleConnectionSuccess);
+      socket.off('connect_error', handleConnectError);
+      socket.off('disconnect', handleDisconnectBeforeReady);
+    };
+    const settle = (action: () => void) => {
+      if (settled) return;
+      settled = true;
+      cleanupHandshake();
+      action();
+    };
+
+    const handleConnectionSuccess = ({ socketId }: { socketId: string }) => {
       //check if link contains mediasfu.com and contains more than one c
       let conn = 'media';
       try {
@@ -145,12 +164,40 @@ async function connectSocket(
       }
 
       console.log(`Connected to ${conn} socket with ID: ${socketId}`);
-      resolve(socket);
-    });
+      settle(() => resolve(socket));
+    };
 
-    socket.on('connect_error', (error: Error) => {
-      reject(new Error('Error connecting to media socket: ' + error.message));
-    });
+    const handleConnectError = (error: Error) => {
+      settle(() => {
+        socket.disconnect();
+        reject(new Error('Error connecting to media socket: ' + error.message));
+      });
+    };
+
+    const handleDisconnectBeforeReady = (reason: string) => {
+      settle(() =>
+        reject(
+          new Error(
+            'Media socket closed before the room was ready (' + reason + ').'
+          )
+        )
+      );
+    };
+
+    socket.on('connection-success', handleConnectionSuccess);
+    socket.on('connect_error', handleConnectError);
+    socket.on('disconnect', handleDisconnectBeforeReady);
+
+    timeoutHandle = setTimeout(() => {
+      settle(() => {
+        try {
+          socket.disconnect();
+        } catch {
+          // Nothing useful to do here.
+        }
+        reject(new Error('Timed out connecting to media socket.'));
+      });
+    }, CONNECT_TIMEOUT_MS);
   });
 }
 

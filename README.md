@@ -147,16 +147,6 @@ Generate package-local API docs with:
 npm run build-docs
 ```
 
-## Working examples
-
-These starters pair a framework SDK built on `mediasfu-shared` with a backend that
-keeps API credentials server-side:
-
-- [Familiar Calls](https://github.com/MediaSFU/mediasfu-familiar-calls) — chat-style audio and video calling across React, Angular, Vue, React Native, Expo, and Flutter.
-- [Live Auction](https://github.com/MediaSFU/mediasfu-live-auction) — host and bidder views, timed lots, and live media.
-- [Watch Together](https://github.com/MediaSFU/mediasfu-watch-together) — a watch party with a realtime conversation floor and HLS audience.
-- [Interactive Classroom](https://github.com/MediaSFU/mediasfu-interactive-classroom) — React teacher and learner views with headless, hybrid, and standard UI.
-
 ## Related Packages
 
 | Package | Framework | npm |
