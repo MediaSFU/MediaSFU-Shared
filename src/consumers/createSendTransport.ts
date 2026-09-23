@@ -1,4 +1,5 @@
 import type { Device, Transport, DtlsParameters } from 'mediasoup-client/types';
+import { attachTransportRecovery, clearFailedSendState } from './transportRecovery';
 import { Socket } from "socket.io-client";
 import {
   ConnectSendTransportParameters,
@@ -151,12 +152,8 @@ const createLocalSendTransport = async ({
           }
         );
 
-        createdLocalTransport.on("connectionstatechange", (state: string) => {
-          if (state === "failed") {
-            console.error("Local transport connection failed.");
-            createdLocalTransport.close();
-          }
-        });
+        attachTransportRecovery(createdLocalTransport, localSocket, () =>
+          clearFailedSendState(parameters, createdLocalTransport, true));
 
         // Mark local transport as created
         localTransportCreated = true;
@@ -330,20 +327,8 @@ export const createSendTransport: CreateSendTransportType = async ({
         );
 
         // Handle 'connectionstatechange' event
-        createdProducerTransport.on("connectionstatechange", async (state: string) => {
-          switch (state) {
-            case "connecting":
-              break;
-            case "connected":
-              break;
-            case "failed":
-              console.log("Transport connection failed.");
-              createdProducerTransport.close();
-              break;
-            default:
-              break;
-          }
-        });
+        attachTransportRecovery(createdProducerTransport, socket, () =>
+          clearFailedSendState(parameters, createdProducerTransport));
 
         // Update transport creation state
         transportCreated = true;

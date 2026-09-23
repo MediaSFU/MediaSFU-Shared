@@ -14,7 +14,10 @@ export interface SwitchAudioParameters extends SwitchUserAudioParameters {
   [key: string]: any
 }
 
+import { AudioProcessingOptions, applyAudioProcessing } from '../../consumers/audioProcessing';
+
 export interface SwitchAudioOptions {
+  audioProcessing?: AudioProcessingOptions;
   audioPreference: string
   parameters: SwitchAudioParameters
 }
@@ -47,6 +50,7 @@ export type SwitchAudioType = (options: SwitchAudioOptions) => Promise<void>
 
 export const switchAudio = async ({
   audioPreference,
+  audioProcessing,
   parameters
 }: SwitchAudioOptions): Promise<void> => {
   let {
@@ -67,7 +71,12 @@ export const switchAudio = async ({
     updateUserDefaultAudioInputDevice(userDefaultAudioInputDevice)
 
     if (defAudioID) {
-      await switchUserAudio({ audioPreference, parameters })
+      await switchUserAudio({ audioPreference, parameters, audioProcessing })
     }
+  } else if (audioProcessing !== undefined) {
+    const track = parameters.localStreamAudio?.getAudioTracks?.()[0]
+      ?? parameters.localStream?.getAudioTracks?.()[0]
+      ?? parameters.audioProducer?.track;
+    if (track) await applyAudioProcessing(track, audioProcessing);
   }
 }

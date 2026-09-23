@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
-const joinLocalRoom = require("./joinLocalRoom-Cii5D5IG.cjs");
-const updateParticipantAudioDecibels = require("./updateParticipantAudioDecibels-QZyahisU.cjs");
-const joinRoomOnMediaSFU = require("./joinRoomOnMediaSFU-CC8RVJgr.cjs");
-const translationConsumerSwitch = require("./translationConsumerSwitch-C20MfNNq.cjs");
-const getParticipantMedia = require("./getParticipantMedia-AwwtMCTz.cjs");
+const joinLocalRoom = require("./joinLocalRoom-DNJ2zb8W.cjs");
+const updateParticipantAudioDecibels = require("./updateParticipantAudioDecibels-BJ2PxJJD.cjs");
+const joinRoomOnMediaSFU = require("./joinRoomOnMediaSFU-D2C7q1GK.cjs");
+const translationConsumerSwitch = require("./translationConsumerSwitch-BAsQUpH6.cjs");
+const getParticipantMedia = require("./getParticipantMedia-CP4hE5Rg.cjs");
 const methods_index = require("./methods/index.cjs");
-const validateAlphanumeric = require("./validateAlphanumeric-DKn5BsUP.cjs");
+const audioProcessing = require("./audioProcessing-BpbrdCk-.cjs");
 var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
 var selfie_segmentation = {};
 var hasRequiredSelfie_segmentation;
@@ -2329,6 +2329,78 @@ function compositeVirtualBackgroundFrame({
     ctx.restore();
   }
 }
+const activeLoops = /* @__PURE__ */ new WeakMap();
+const activeFrames = /* @__PURE__ */ new WeakMap();
+function startVirtualBackgroundFrameLoop({ owner, processFrame, shouldContinue, keepProcessingWhenHidden = true }) {
+  activeLoops.get(owner)?.();
+  let stopped = false;
+  let inFlight = false;
+  let animationFrameId = null;
+  let timeoutId = null;
+  const cancelScheduledFrame = () => {
+    if (animationFrameId !== null) cancelAnimationFrame(animationFrameId);
+    if (timeoutId !== null) clearTimeout(timeoutId);
+    animationFrameId = null;
+    timeoutId = null;
+  };
+  const stop = () => {
+    if (stopped) return;
+    stopped = true;
+    cancelScheduledFrame();
+    document.removeEventListener("visibilitychange", onVisibilityChange);
+    if (activeLoops.get(owner) === stop) activeLoops.delete(owner);
+  };
+  const schedule = () => {
+    if (stopped || inFlight) return;
+    if (!shouldContinue()) {
+      stop();
+      return;
+    }
+    if (document.hidden && keepProcessingWhenHidden) timeoutId = setTimeout(() => {
+      void runFrame();
+    }, 1e3);
+    else animationFrameId = requestAnimationFrame(() => {
+      void runFrame();
+    });
+  };
+  const runFrame = async () => {
+    animationFrameId = null;
+    timeoutId = null;
+    if (stopped || inFlight) return;
+    if (!shouldContinue()) {
+      stop();
+      return;
+    }
+    inFlight = true;
+    try {
+      const previousFrame = activeFrames.get(owner);
+      if (previousFrame) await previousFrame.catch(() => void 0);
+      if (stopped || !shouldContinue()) {
+        stop();
+        return;
+      }
+      const currentFrame = Promise.resolve(processFrame());
+      activeFrames.set(owner, currentFrame);
+      try {
+        await currentFrame;
+      } finally {
+        if (activeFrames.get(owner) === currentFrame) activeFrames.delete(owner);
+      }
+    } catch {
+    } finally {
+      inFlight = false;
+      schedule();
+    }
+  };
+  const onVisibilityChange = () => {
+    cancelScheduledFrame();
+    schedule();
+  };
+  activeLoops.set(owner, stop);
+  document.addEventListener("visibilitychange", onVisibilityChange);
+  void runFrame();
+  return stop;
+}
 const MEDIAPIPE_CDN = "https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation";
 let session = null;
 function loadImage(src) {
@@ -2347,7 +2419,8 @@ async function applyVirtualBackground({
   modelSelection = 1,
   publish = true,
   assetPath = MEDIAPIPE_CDN,
-  blurPixels = 0
+  blurPixels = 0,
+  keepProcessingWhenHidden = true
 }) {
   const live = getParticipantMedia.getCurrentParams({ parameters });
   if (live.audioOnlyRoom) {
@@ -2411,26 +2484,27 @@ async function applyVirtualBackground({
       }
     });
     let stopped = false;
-    let frameHandle = 0;
-    const pump = async () => {
-      if (stopped) return;
-      try {
-        if (video.readyState >= 2) await segmentation.send({ image: video });
-      } catch {
-      }
-      frameHandle = window.requestAnimationFrame(() => {
-        void pump();
-      });
-    };
-    void pump();
-    const processed = canvas.captureStream(frameRate);
+    const stopFrameLoop = startVirtualBackgroundFrameLoop({
+      owner: segmentation,
+      keepProcessingWhenHidden,
+      shouldContinue: () => !stopped && processingTrack.readyState === "live",
+      processFrame: () => video.readyState >= 2 ? segmentation.send({ image: video }) : void 0
+    });
+    let processed;
+    try {
+      processed = canvas.captureStream(frameRate);
+    } catch (error) {
+      stopFrameLoop();
+      throw error;
+    }
     if (!processed?.getVideoTracks?.().length) {
+      stopFrameLoop();
       throw new Error("The processed background stream produced no video track.");
     }
     const stop = () => {
       if (stopped) return;
       stopped = true;
-      window.cancelAnimationFrame(frameHandle);
+      stopFrameLoop();
       try {
         segmentation.close();
       } catch {
@@ -2625,6 +2699,7 @@ exports.isSpeakerInMyBreakoutRoom = translationConsumerSwitch.isSpeakerInMyBreak
 exports.pauseOriginalProducer = translationConsumerSwitch.pauseOriginalProducer;
 exports.resolveHostVideoStream = translationConsumerSwitch.resolveHostVideoStream;
 exports.resolveMainHostRenderMode = translationConsumerSwitch.resolveMainHostRenderMode;
+exports.resolveSidePanelForceFullDisplay = translationConsumerSwitch.resolveSidePanelForceFullDisplay;
 exports.resumeOriginalProducer = translationConsumerSwitch.resumeOriginalProducer;
 exports.stopConsumingTranslation = translationConsumerSwitch.stopConsumingTranslation;
 exports.syncTranslationStateAfterBreakoutChange = translationConsumerSwitch.syncTranslationStateAfterBreakoutChange;
@@ -2846,7 +2921,7 @@ exports.updatedCoHost = methods_index.updatedCoHost;
 exports.userWaiting = methods_index.userWaiting;
 exports.validateWelcomeAlphanumeric = methods_index.validateWelcomeAlphanumeric;
 exports.validateWelcomeInputs = methods_index.validateWelcomeInputs;
-exports.validateAlphanumeric = validateAlphanumeric.validateAlphanumeric;
+exports.validateAlphanumeric = audioProcessing.validateAlphanumeric;
 exports.DEFAULT_BACKGROUND_BLUR_PIXELS = DEFAULT_BACKGROUND_BLUR_PIXELS;
 exports.VIRTUAL_BACKGROUND_BLUR = VIRTUAL_BACKGROUND_BLUR;
 exports.applyBackgroundBlur = applyBackgroundBlur;
@@ -2855,4 +2930,5 @@ exports.clearVirtualBackground = clearVirtualBackground;
 exports.compositeVirtualBackgroundFrame = compositeVirtualBackgroundFrame;
 exports.isVirtualBackgroundBlur = isVirtualBackgroundBlur;
 exports.isVirtualBackgroundRunning = isVirtualBackgroundRunning;
+exports.startVirtualBackgroundFrameLoop = startVirtualBackgroundFrameLoop;
 //# sourceMappingURL=index.cjs.map

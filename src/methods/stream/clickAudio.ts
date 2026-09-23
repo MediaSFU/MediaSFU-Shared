@@ -72,7 +72,10 @@ export interface ClickAudioParameters
   [key: string]: any;
 }
 
+import { AudioProcessingOptions, audioProcessingConstraints, applyAudioProcessing } from '../../consumers/audioProcessing';
+
 export interface ClickAudioOptions {
+  audioProcessing?: AudioProcessingOptions;
   parameters: ClickAudioParameters;
 }
 
@@ -88,7 +91,7 @@ export type ClickAudioType = (options: ClickAudioOptions) => Promise<void>;
  * @param options Function options containing the full runtime parameter bag.
  * @returns A promise that resolves after the microphone action has been processed.
  */
-export const clickAudio = async ({ parameters }: ClickAudioOptions): Promise<void> => {
+export const clickAudio = async ({ parameters, audioProcessing }: ClickAudioOptions): Promise<void> => {
   let {
     checkMediaPermission,
     hasAudioPermission,
@@ -307,6 +310,7 @@ export const clickAudio = async ({ parameters }: ClickAudioOptions): Promise<voi
 
       case 0:
         if (audioPaused) {
+          await applyAudioProcessing(localStream!.getAudioTracks()[0], audioProcessing);
           if (localStream && localStream.getAudioTracks().length > 0) {
             localStream.getAudioTracks()[0].enabled = true;
           }
@@ -355,9 +359,13 @@ export const clickAudio = async ({ parameters }: ClickAudioOptions): Promise<voi
             }
           }
 
-          const mediaConstraints = userDefaultAudioInputDevice
-            ? { audio: { deviceId: userDefaultAudioInputDevice }, video: false }
-            : { audio: true, video: false };
+          const processing = audioProcessingConstraints(audioProcessing);
+          const mediaConstraints = {
+            audio: userDefaultAudioInputDevice || Object.keys(processing).length
+              ? { ...(userDefaultAudioInputDevice ? { deviceId: userDefaultAudioInputDevice } : {}), ...processing }
+              : true,
+            video: false,
+          };
 
           try {
             const stream = await mediaDevices.getUserMedia(mediaConstraints);

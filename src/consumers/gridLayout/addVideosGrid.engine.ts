@@ -14,6 +14,19 @@ export interface AddVideosGridPlan<T> {
   altEntries: GridPlanEntry<T>[];
 }
 
+/** A lone side-panel tile must remain fully visible during screen sharing. */
+export function resolveSidePanelForceFullDisplay({
+  forceFullDisplay,
+  screenShareActive,
+  itemCount,
+}: {
+  forceFullDisplay: boolean;
+  screenShareActive: boolean;
+  itemCount: number;
+}): boolean {
+  return forceFullDisplay && !(screenShareActive && itemCount < 2);
+}
+
 /**
  * Pure planning engine for addVideosGrid.
  * Produces deterministic main/alt stream iteration plans without rendering concerns.

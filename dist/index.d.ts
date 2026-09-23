@@ -113,6 +113,7 @@ export * from './methods/stream/switchAudio';
 export * from './methods/stream/switchVideo';
 export * from './methods/stream/switchVideoAlt';
 export * from './methods/stream/clickAudio';
+export type { AudioProcessingOptions } from './consumers/audioProcessing';
 export * from './methods/stream/clickChat';
 export * from './methods/stream/clickScreenShare';
 export * from './methods/utils/liveSubtitle';
@@ -189,4 +190,5 @@ export * from './methods/stream/clickVideo';
 export * from './methods/utils/headless';
 export * from './methods/utils/getParticipantMedia';
 export * from './methods/utils/virtualBackgroundCompositor';
+export * from './methods/utils/virtualBackgroundFrameLoop';
 //# sourceMappingURL=index.d.ts.map

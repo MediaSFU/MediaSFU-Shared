@@ -1,11 +1,11 @@
-import { a, b, d, c, e, f, j, m, p, u } from "./joinLocalRoom-Bu3gz27d.js";
-import { Y, Z, a as a2, _, $, b as b2, W, d as d2, e as e2, f as f2, g, h, aa, i, j as j2, k, l, m as m2, a8, c as c2, a0, n, o, p as p2, q, a9, r, s, a1, a2 as a22, a3, t, X, T, v, U, w, x, y, V, C, G, z, A, a4, B, D, E, F, a5, N, H, I, J, K, L, M, O, P, Q, R, S, u as u2, a6, a7 } from "./updateParticipantAudioDecibels-CnEXJBmc.js";
-import { Q as Q2, u as u3, m as m3, A as A2, f as f3, e as e3, a as a10, c as c3, b as b3, d as d3, l as l2, y as y2, p as p3, D as D2, g as g2, k as k2, x as x2, o as o2, C as C2, h as h2, j as j3, q as q2, z as z2, r as r2, E as E2, F as F2, s as s2, i as i2, w as w2, n as n2, B as B2, t as t2, v as v2 } from "./joinRoomOnMediaSFU-y6vJ1OBo.js";
-import { b as b4, d as d4, c as c4, f as f4, e as e4, k as k3, j as j4, h as h3, i as i3, p as p4, a as a11, r as r3, g as g3, s as s3, l as l3 } from "./translationConsumerSwitch-zKuS5wgH.js";
-import { _ as getCurrentParams, W as getLocalVideoStream } from "./getParticipantMedia-CyaOk2oD.js";
-import { aD, aR, w as w3, x as x3, f as f5, y as y3, aP, ar, aU, aS, ab, at, aI, a4 as a42, Z as Z2, au, aV, aL, az, X as X2, aG, a7 as a72, N as N2, a8 as a82, b0, a2 as a23, aM, aQ, aq, aO, aw, av, ai, V as V2, U as U2, T as T2, Y as Y2, a6 as a62, aN, ax, aA, an, q as q3, t as t3, h as h4, Q as Q3, a as a12, R as R2, u as u4, l as l4, b as b5, c as c5, S as S2, g as g4, d as d5, i as i4, j as j5, k as k4, n as n3, v as v3, z as z3, H as H2, J as J2, O as O2, $ as $2, a5 as a52, a3 as a32, o as o3, m as m4, e as e5, ad, aa as aa2, p as p5, ak, aY, a_, aZ, aW, aT, aF, A as A3, B as B3, C as C3, D as D3, ae, r as r4, a$, ag, I as I2, P as P2, af, al, a1 as a13, a0 as a02, s as s4, aC, ah, a9 as a92, aB, aK, ay, E as E3, aj, ao, aE, ac, aX, F as F3, am, ap, K as K2, aH, aJ, L as L2, M as M2, G as G2, as } from "./getParticipantMedia-CyaOk2oD.js";
+import { a, b, d, c, e, f, j, m, p, u } from "./joinLocalRoom-Cx1y3Ojj.js";
+import { Y, Z, a as a2, _, $, b as b2, W, d as d2, e as e2, f as f2, g, h, aa, i, j as j2, k, l, m as m2, a8, c as c2, a0, n, o, p as p2, q, a9, r, s, a1, a2 as a22, a3, t, X, T, v, U, w, x, y, V, C, G, z, A, a4, B, D, E, F, a5, N, H, I, J, K, L, M, O, P, Q, R, S, u as u2, a6, a7 } from "./updateParticipantAudioDecibels-DiJ_LFfH.js";
+import { Q as Q2, u as u3, m as m3, A as A2, f as f3, e as e3, a as a10, c as c3, b as b3, d as d3, l as l2, y as y2, p as p3, D as D2, g as g2, k as k2, x as x2, o as o2, C as C2, h as h2, j as j3, q as q2, z as z2, r as r2, E as E2, F as F2, s as s2, i as i2, w as w2, n as n2, B as B2, t as t2, v as v2 } from "./joinRoomOnMediaSFU-BnAWLciF.js";
+import { b as b4, e as e4, d as d4, g as g3, f as f4, l as l3, k as k3, j as j4, i as i3, p as p4, c as c4, a as a11, r as r3, h as h3, s as s3, m as m4 } from "./translationConsumerSwitch-BUODiT6o.js";
+import { _ as getCurrentParams, W as getLocalVideoStream } from "./getParticipantMedia-CvXdDj03.js";
+import { aD, aR, w as w3, x as x3, f as f5, y as y3, aP, ar, aU, aS, ab, at, aI, a4 as a42, Z as Z2, au, aV, aL, az, X as X2, aG, a7 as a72, N as N2, a8 as a82, b0, a2 as a23, aM, aQ, aq, aO, aw, av, ai, V as V2, U as U2, T as T2, Y as Y2, a6 as a62, aN, ax, aA, an, q as q3, t as t3, h as h4, Q as Q3, a as a12, R as R2, u as u4, l as l4, b as b5, c as c5, S as S2, g as g4, d as d5, i as i4, j as j5, k as k4, n as n3, v as v3, z as z3, H as H2, J as J2, O as O2, $ as $2, a5 as a52, a3 as a32, o as o3, m as m5, e as e5, ad, aa as aa2, p as p5, ak, aY, a_, aZ, aW, aT, aF, A as A3, B as B3, C as C3, D as D3, ae, r as r4, a$, ag, I as I2, P as P2, af, al, a1 as a13, a0 as a02, s as s4, aC, ah, a9 as a92, aB, aK, ay, E as E3, aj, ao, aE, ac, aX, F as F3, am, ap, K as K2, aH, aJ, L as L2, M as M2, G as G2, as } from "./getParticipantMedia-CvXdDj03.js";
 import { COMMON_LANGUAGE_CODES, MediaStream as MediaStream2, MediaStreamTrack, RTCView, SUPPORTED_LANGUAGE_CODES, SoundPlayer, TTS_PROVIDERS, addPanelist, addedAsPanelist, allMembers, allMembersRest, allWaitingRoomMembers, banParticipant, bulkUpdateParticipantPermissions, clickChat, controlMediaHost, createLiveSubtitle, createResponseJoinRoom, createRoomOnMediaSFU, disconnect, disconnectUserSelf, fetchLanguagesViaSocket, fetchVoicesViaSocket, focusPanelists, formatNumber, generateRandomMessages, generateRandomParticipants, generateRandomPolls, generateRandomRequestList, generateRandomWaitingRoomList, getAvailableVoices, getCommonLanguages, getDomains, getLanguageMetadata, getLanguageName, getLanguageNativeName, getOverlayPosition, getSubtitleForSpeaker, getSupportedLanguages, handleCreateRoom, handleJoinRoom, handleWelcomeRequest, initialValuesState, isLanguageSupported, isSubtitleExpired, launchPanelists, launchPermissions, mediaDevices, meetingEnded, meetingStillThere, meetingTimeRemaining, normalizeLanguageCode, panelistControlMedia, panelistFocusChanged, panelistsUpdated, participantRequested, permissionConfigUpdated, permissionUpdated, personJoined, pollUpdated, producerMediaClosed, producerMediaPaused, producerMediaResumed, pruneExpiredSubtitles, reInitiateRecording, receiveMessage, recordingNotice, registerGlobals, removePanelist, removedFromPanelists, roomRecordParams, screenProducerId, sleep, startMeetingProgressTimer, startRecords, stoppedRecording, translationChannelsAvailable, translationConfigUpdated, translationError, translationLanguageSet, translationMemberState, translationProducerClosed, translationProducerReady, translationRoomConfig, translationSpeakerOutputChanged, translationSubscribed, translationTranscript, translationUnsubscribed, unfocusPanelists, updateConsumingDomains, updateLiveSubtitlesFromTranscript, updateMediaSettings, updatePanelists, updateParticipantPermission, updatePermissionConfig, updatedCoHost, userWaiting, validateWelcomeAlphanumeric, validateWelcomeInputs } from "./methods/index.js";
-import { v as v4 } from "./validateAlphanumeric-Dk1JB80W.js";
+import { v as v4 } from "./audioProcessing-0z5KlcmO.js";
 var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
 var selfie_segmentation = {};
 var hasRequiredSelfie_segmentation;
@@ -304,8 +304,8 @@ function requireSelfie_segmentation() {
       };
       b6.prototype.l = function() {
         function f6(l5) {
-          return function(m5) {
-            k5 || (k5 = true, l5.call(h5, m5));
+          return function(m6) {
+            k5 || (k5 = true, l5.call(h5, m6));
           };
         }
         var h5 = this, k5 = false;
@@ -394,15 +394,15 @@ function requireSelfie_segmentation() {
             try {
               l5(p6(q4));
             } catch (t4) {
-              m5(t4);
+              m6(t4);
             }
           } : n4;
         }
-        var l5, m5, r5 = new b6(function(p6, n4) {
+        var l5, m6, r5 = new b6(function(p6, n4) {
           l5 = p6;
-          m5 = n4;
+          m6 = n4;
         });
-        this.T(k5(f6, l5), k5(h5, m5));
+        this.T(k5(f6, l5), k5(h5, m6));
         return r5;
       };
       b6.prototype.catch = function(f6) {
@@ -433,12 +433,12 @@ function requireSelfie_segmentation() {
       };
       b6.race = function(f6) {
         return new b6(function(h5, k5) {
-          for (var l5 = A4(f6), m5 = l5.next(); !m5.done; m5 = l5.next()) d6(m5.value).T(h5, k5);
+          for (var l5 = A4(f6), m6 = l5.next(); !m6.done; m6 = l5.next()) d6(m6.value).T(h5, k5);
         });
       };
       b6.all = function(f6) {
         var h5 = A4(f6), k5 = h5.next();
-        return k5.done ? d6([]) : new b6(function(l5, m5) {
+        return k5.done ? d6([]) : new b6(function(l5, m6) {
           function r5(q4) {
             return function(t4) {
               p6[q4] = t4;
@@ -448,7 +448,7 @@ function requireSelfie_segmentation() {
           }
           var p6 = [], n4 = 0;
           do
-            p6.push(void 0), n4++, d6(k5.value).T(r5(p6.length - 1), m5), k5 = h5.next();
+            p6.push(void 0), n4++, d6(k5.value).T(r5(p6.length - 1), m6), k5 = h5.next();
           while (!k5.done);
         });
       };
@@ -560,8 +560,8 @@ function requireSelfie_segmentation() {
     function Ga(a14, b6) {
       function c6(k5) {
         for (; d6 < a14.length; ) {
-          var l5 = a14.charAt(d6++), m5 = Ea[l5];
-          if (null != m5) return m5;
+          var l5 = a14.charAt(d6++), m6 = Ea[l5];
+          if (null != m6) return m6;
           if (!/^[\s\xa0]*$/.test(l5)) throw Error("Unknown base64 encoding at char: " + l5);
         }
         return k5;
@@ -945,7 +945,7 @@ function requireSelfie_segmentation() {
         f6 = !!(Q4(h5) & 2);
         var l5 = h5;
         !e6 && f6 && (h5 = Array.prototype.slice.call(h5));
-        for (var m5 = f6, r5 = 0; r5 < h5.length; r5++) {
+        for (var m6 = f6, r5 = 0; r5 < h5.length; r5++) {
           var p6 = h5[r5];
           var n4 = b6, q4 = false;
           q4 = void 0 === q4 ? false : q4;
@@ -957,15 +957,15 @@ function requireSelfie_segmentation() {
             k5 && (t4 |= 16);
             t4 != q4 && R3(n4, t4);
             n4 = t4;
-            m5 = m5 || !!(2 & n4);
+            m6 = m6 || !!(2 & n4);
             g5.push(p6);
           }
         }
         a14.h[c6] = g5;
         k5 = Q4(h5);
         b6 = k5 | 33;
-        b6 = m5 ? b6 & -9 : b6 | 8;
-        k5 != b6 && (m5 = h5, Object.isFrozen(m5) && (m5 = Array.prototype.slice.call(m5)), R3(m5, b6), h5 = m5);
+        b6 = m6 ? b6 & -9 : b6 | 8;
+        k5 != b6 && (m6 = h5, Object.isFrozen(m6) && (m6 = Array.prototype.slice.call(m6)), R3(m6, b6), h5 = m6);
         l5 !== h5 && Kb(
           a14,
           c6,
@@ -1144,13 +1144,13 @@ function requireSelfie_segmentation() {
         if (e6) if (128 & l5) d6 = 0;
         else {
           if (0 < a14.length) {
-            var m5 = a14[a14.length - 1];
-            if (Eb(m5) && "g" in m5) {
+            var m6 = a14[a14.length - 1];
+            if (Eb(m6) && "g" in m6) {
               d6 = 0;
               l5 |= 128;
-              delete m5.g;
+              delete m6.g;
               var r5 = true, p6;
-              for (p6 in m5) {
+              for (p6 in m6) {
                 r5 = false;
                 break;
               }
@@ -1205,12 +1205,12 @@ function requireSelfie_segmentation() {
         for (e6 in c6) {
           var g5 = c6[e6], f6 = g5.ra;
           f6 || (d6.J = g5.xa || g5.oa.W, g5.ia ? (d6.aa = cc(g5.ia), f6 = /* @__PURE__ */ (function(h5) {
-            return function(k5, l5, m5) {
-              return h5.J(k5, l5, m5, h5.aa);
+            return function(k5, l5, m6) {
+              return h5.J(k5, l5, m6, h5.aa);
             };
           })(d6)) : g5.ka ? (d6.Z = dc(g5.da.P, g5.ka), f6 = /* @__PURE__ */ (function(h5) {
-            return function(k5, l5, m5) {
-              return h5.J(k5, l5, m5, h5.Z);
+            return function(k5, l5, m6) {
+              return h5.J(k5, l5, m6, h5.Z);
             };
           })(d6)) : f6 = d6.J, g5.ra = f6);
           f6(b6, a14, g5.da);
@@ -1324,8 +1324,8 @@ function requireSelfie_segmentation() {
     }
     function vc(a14, b6, c6, d6, e6, g5) {
       var f6 = dc(d6, g5), h5 = c6.W;
-      a14.push(b6, function(k5, l5, m5) {
-        return h5(k5, l5, m5, d6, f6);
+      a14.push(b6, function(k5, l5, m6) {
+        return h5(k5, l5, m6, d6, f6);
       });
     }
     function qc(a14) {
@@ -1347,14 +1347,14 @@ function requireSelfie_segmentation() {
     }
     function yc(a14, b6, c6, d6, e6) {
       var g5 = c6.U, f6 = gc(d6), h5 = hc(d6).P;
-      a14[b6] = function(k5, l5, m5) {
-        return g5(k5, l5, m5, h5, f6, e6);
+      a14[b6] = function(k5, l5, m6) {
+        return g5(k5, l5, m6, h5, f6, e6);
       };
     }
     function zc(a14, b6, c6, d6, e6, g5, f6) {
       var h5 = c6.U, k5 = fc(d6, e6, g5);
-      a14[b6] = function(l5, m5, r5) {
-        return h5(l5, m5, r5, d6, k5, f6);
+      a14[b6] = function(l5, m6, r5) {
+        return h5(l5, m6, r5, d6, k5, f6);
       };
     }
     function hc(a14) {
@@ -1501,7 +1501,7 @@ function requireSelfie_segmentation() {
         h5 = e6;
         d6 = h5 + d6;
         e6 = [];
-        for (var k5 = null, l5, m5; h5 < d6; ) l5 = a14[h5++], 128 > l5 ? e6.push(l5) : 224 > l5 ? h5 >= d6 ? K3() : (m5 = a14[h5++], 194 > l5 || 128 !== (m5 & 192) ? (h5--, K3()) : e6.push((l5 & 31) << 6 | m5 & 63)) : 240 > l5 ? h5 >= d6 - 1 ? K3() : (m5 = a14[h5++], 128 !== (m5 & 192) || 224 === l5 && 160 > m5 || 237 === l5 && 160 <= m5 || 128 !== ((g5 = a14[h5++]) & 192) ? (h5--, K3()) : e6.push((l5 & 15) << 12 | (m5 & 63) << 6 | g5 & 63)) : 244 >= l5 ? h5 >= d6 - 2 ? K3() : (m5 = a14[h5++], 128 !== (m5 & 192) || 0 !== (l5 << 28) + (m5 - 144) >> 30 || 128 !== ((g5 = a14[h5++]) & 192) || 128 !== ((f6 = a14[h5++]) & 192) ? (h5--, K3()) : (l5 = (l5 & 7) << 18 | (m5 & 63) << 12 | (g5 & 63) << 6 | f6 & 63, l5 -= 65536, e6.push((l5 >> 10 & 1023) + 55296, (l5 & 1023) + 56320))) : K3(), 8192 <= e6.length && (k5 = ab2(k5, e6), e6.length = 0);
+        for (var k5 = null, l5, m6; h5 < d6; ) l5 = a14[h5++], 128 > l5 ? e6.push(l5) : 224 > l5 ? h5 >= d6 ? K3() : (m6 = a14[h5++], 194 > l5 || 128 !== (m6 & 192) ? (h5--, K3()) : e6.push((l5 & 31) << 6 | m6 & 63)) : 240 > l5 ? h5 >= d6 - 1 ? K3() : (m6 = a14[h5++], 128 !== (m6 & 192) || 224 === l5 && 160 > m6 || 237 === l5 && 160 <= m6 || 128 !== ((g5 = a14[h5++]) & 192) ? (h5--, K3()) : e6.push((l5 & 15) << 12 | (m6 & 63) << 6 | g5 & 63)) : 244 >= l5 ? h5 >= d6 - 2 ? K3() : (m6 = a14[h5++], 128 !== (m6 & 192) || 0 !== (l5 << 28) + (m6 - 144) >> 30 || 128 !== ((g5 = a14[h5++]) & 192) || 128 !== ((f6 = a14[h5++]) & 192) ? (h5--, K3()) : (l5 = (l5 & 7) << 18 | (m6 & 63) << 12 | (g5 & 63) << 6 | f6 & 63, l5 -= 65536, e6.push((l5 >> 10 & 1023) + 55296, (l5 & 1023) + 56320))) : K3(), 8192 <= e6.length && (k5 = ab2(k5, e6), e6.length = 0);
         h5 = ab2(k5, e6);
       }
       U3(b6, c6, h5);
@@ -1812,7 +1812,7 @@ function requireSelfie_segmentation() {
       return Promise.resolve();
     };
     function fd(a14) {
-      var b6, c6, d6, e6, g5, f6, h5, k5, l5, m5, r5;
+      var b6, c6, d6, e6, g5, f6, h5, k5, l5, m6, r5;
       return E4(function(p6) {
         switch (p6.h) {
           case 1:
@@ -1844,7 +1844,7 @@ function requireSelfie_segmentation() {
                 t4.i = w4.i;
                 w4.h = 0;
               });
-            }), m5 = (function() {
+            }), m6 = (function() {
               return E4(function(n4) {
                 a14.h.graph && a14.h.graph.url ? n4 = D4(
                   n4,
@@ -1853,7 +1853,7 @@ function requireSelfie_segmentation() {
                 ) : (n4.h = 0, n4 = void 0);
                 return n4;
               });
-            })(), D4(p6, Promise.all([l5, k5, m5]), 7);
+            })(), D4(p6, Promise.all([l5, k5, m6]), 7);
             if ("function" !== typeof importScripts) throw Error("solutions can only be loaded on a web page or in a web worker");
             d6 = b6.filter(function(n4) {
               return void 0 === n4.simd || n4.simd && c6 || !n4.simd && !c6;
@@ -1926,11 +1926,11 @@ function requireSelfie_segmentation() {
           var k5 = b6[h5];
           void 0 !== k5 && (k5.onChange && (g5.X = k5.onChange, g5.Y = a14[h5], d6.push(/* @__PURE__ */ (function(l5) {
             return function() {
-              var m5;
+              var m6;
               return E4(function(r5) {
                 if (1 == r5.h) return D4(r5, l5.X(l5.Y), 2);
-                m5 = r5.i;
-                true === m5 && (c6.u = true);
+                m6 = r5.i;
+                true === m6 && (c6.u = true);
                 r5.h = 0;
               });
             };
@@ -2009,7 +2009,7 @@ function requireSelfie_segmentation() {
       this.j && this.j.clearOverriddenFiles();
     };
     x4.send = function(a14, b6) {
-      var c6 = this, d6, e6, g5, f6, h5, k5, l5, m5, r5;
+      var c6 = this, d6, e6, g5, f6, h5, k5, l5, m6, r5;
       return E4(function(p6) {
         switch (p6.h) {
           case 1:
@@ -2088,14 +2088,14 @@ function requireSelfie_segmentation() {
                 }
               }
               l5 = q4;
-              m5 = k5.stream;
+              m6 = k5.stream;
               switch (k5.type) {
                 case "video":
-                  e6.pushTexture2d(Object.assign({}, l5, { stream: m5, timestamp: d6 }));
+                  e6.pushTexture2d(Object.assign({}, l5, { stream: m6, timestamp: d6 }));
                   break;
                 case "detections":
                   r5 = l5;
-                  r5.stream = m5;
+                  r5.stream = m6;
                   r5.timestamp = d6;
                   e6.pushDetectionList(r5);
                   break;
@@ -2111,7 +2111,7 @@ function requireSelfie_segmentation() {
       });
     };
     function kd(a14, b6, c6) {
-      var d6, e6, g5, f6, h5, k5, l5, m5, r5, p6, n4, q4, t4, w4;
+      var d6, e6, g5, f6, h5, k5, l5, m6, r5, p6, n4, q4, t4, w4;
       return E4(function(v5) {
         switch (v5.h) {
           case 1:
@@ -2128,9 +2128,9 @@ function requireSelfie_segmentation() {
               v5.h = 4;
               break;
             }
-            m5 = f6.value;
-            r5 = c6[m5];
-            if ("string" === typeof r5) return t4 = d6, w4 = m5, D4(v5, ld(a14, m5, b6[r5]), 14);
+            m6 = f6.value;
+            r5 = c6[m6];
+            if ("string" === typeof r5) return t4 = d6, w4 = m6, D4(v5, ld(a14, m6, b6[r5]), 14);
             p6 = b6[r5.stream];
             if ("detection_list" === r5.type) {
               if (p6) {
@@ -2143,7 +2143,7 @@ function requireSelfie_segmentation() {
                 }
                 B4 = u5;
               } else B4 = [];
-              d6[m5] = B4;
+              d6[m6] = B4;
               v5.h = 7;
               break;
             }
@@ -2153,7 +2153,7 @@ function requireSelfie_segmentation() {
                 for (J3 = 0; J3 < p6.size(); J3++) B4[J3] = p6.get(J3);
                 p6.delete();
               } else B4 = [];
-              d6[m5] = B4;
+              d6[m6] = B4;
               v5.h = 7;
               break;
             }
@@ -2162,23 +2162,23 @@ function requireSelfie_segmentation() {
               break;
             }
             if ("float_list" === r5.type) {
-              d6[m5] = p6;
+              d6[m6] = p6;
               v5.h = 7;
               break;
             }
             if ("proto" === r5.type) {
-              d6[m5] = p6;
+              d6[m6] = p6;
               v5.h = 7;
               break;
             }
             if ("texture" !== r5.type) throw Error("Unknown output config type: '" + r5.type + "'");
-            n4 = a14.v[m5];
-            n4 || (n4 = new Wc(a14.i, a14.K), a14.v[m5] = n4);
+            n4 = a14.v[m6];
+            n4 || (n4 = new Wc(a14.i, a14.K), a14.v[m6] = n4);
             return D4(v5, Xc(n4, p6, a14.M), 13);
           case 13:
-            q4 = v5.i, d6[m5] = q4;
+            q4 = v5.i, d6[m6] = q4;
           case 7:
-            r5.transform && d6[m5] && (d6[m5] = r5.transform(d6[m5]));
+            r5.transform && d6[m6] && (d6[m6] = r5.transform(d6[m6]));
             v5.h = 3;
             break;
           case 14:
@@ -2202,9 +2202,9 @@ function requireSelfie_segmentation() {
       for (var c6 = b6.name || "$", d6 = [].concat(ea(b6.wants)), e6 = new a14.i.StringList(), g5 = A4(b6.wants), f6 = g5.next(); !f6.done; f6 = g5.next()) e6.push_back(f6.value);
       g5 = a14.i.PacketListener.implement({ onResults: function(h5) {
         for (var k5 = {}, l5 = 0; l5 < b6.wants.length; ++l5) k5[d6[l5]] = h5.get(l5);
-        var m5 = a14.listeners[c6];
-        m5 && (a14.I = kd(a14, k5, b6.outs).then(function(r5) {
-          r5 = m5(r5);
+        var m6 = a14.listeners[c6];
+        m6 && (a14.I = kd(a14, k5, b6.outs).then(function(r5) {
+          r5 = m6(r5);
           for (var p6 = 0; p6 < b6.wants.length; ++p6) {
             var n4 = k5[d6[p6]];
             "object" === typeof n4 && n4.hasOwnProperty && n4.hasOwnProperty("delete") && n4.delete();
@@ -2328,6 +2328,78 @@ function compositeVirtualBackgroundFrame({
     ctx.restore();
   }
 }
+const activeLoops = /* @__PURE__ */ new WeakMap();
+const activeFrames = /* @__PURE__ */ new WeakMap();
+function startVirtualBackgroundFrameLoop({ owner, processFrame, shouldContinue, keepProcessingWhenHidden = true }) {
+  activeLoops.get(owner)?.();
+  let stopped = false;
+  let inFlight = false;
+  let animationFrameId = null;
+  let timeoutId = null;
+  const cancelScheduledFrame = () => {
+    if (animationFrameId !== null) cancelAnimationFrame(animationFrameId);
+    if (timeoutId !== null) clearTimeout(timeoutId);
+    animationFrameId = null;
+    timeoutId = null;
+  };
+  const stop = () => {
+    if (stopped) return;
+    stopped = true;
+    cancelScheduledFrame();
+    document.removeEventListener("visibilitychange", onVisibilityChange);
+    if (activeLoops.get(owner) === stop) activeLoops.delete(owner);
+  };
+  const schedule = () => {
+    if (stopped || inFlight) return;
+    if (!shouldContinue()) {
+      stop();
+      return;
+    }
+    if (document.hidden && keepProcessingWhenHidden) timeoutId = setTimeout(() => {
+      void runFrame();
+    }, 1e3);
+    else animationFrameId = requestAnimationFrame(() => {
+      void runFrame();
+    });
+  };
+  const runFrame = async () => {
+    animationFrameId = null;
+    timeoutId = null;
+    if (stopped || inFlight) return;
+    if (!shouldContinue()) {
+      stop();
+      return;
+    }
+    inFlight = true;
+    try {
+      const previousFrame = activeFrames.get(owner);
+      if (previousFrame) await previousFrame.catch(() => void 0);
+      if (stopped || !shouldContinue()) {
+        stop();
+        return;
+      }
+      const currentFrame = Promise.resolve(processFrame());
+      activeFrames.set(owner, currentFrame);
+      try {
+        await currentFrame;
+      } finally {
+        if (activeFrames.get(owner) === currentFrame) activeFrames.delete(owner);
+      }
+    } catch {
+    } finally {
+      inFlight = false;
+      schedule();
+    }
+  };
+  const onVisibilityChange = () => {
+    cancelScheduledFrame();
+    schedule();
+  };
+  activeLoops.set(owner, stop);
+  document.addEventListener("visibilitychange", onVisibilityChange);
+  void runFrame();
+  return stop;
+}
 const MEDIAPIPE_CDN = "https://cdn.jsdelivr.net/npm/@mediapipe/selfie_segmentation";
 let session = null;
 function loadImage(src) {
@@ -2346,7 +2418,8 @@ async function applyVirtualBackground({
   modelSelection = 1,
   publish = true,
   assetPath = MEDIAPIPE_CDN,
-  blurPixels = 0
+  blurPixels = 0,
+  keepProcessingWhenHidden = true
 }) {
   const live = getCurrentParams({ parameters });
   if (live.audioOnlyRoom) {
@@ -2410,26 +2483,27 @@ async function applyVirtualBackground({
       }
     });
     let stopped = false;
-    let frameHandle = 0;
-    const pump = async () => {
-      if (stopped) return;
-      try {
-        if (video.readyState >= 2) await segmentation.send({ image: video });
-      } catch {
-      }
-      frameHandle = window.requestAnimationFrame(() => {
-        void pump();
-      });
-    };
-    void pump();
-    const processed = canvas.captureStream(frameRate);
+    const stopFrameLoop = startVirtualBackgroundFrameLoop({
+      owner: segmentation,
+      keepProcessingWhenHidden,
+      shouldContinue: () => !stopped && processingTrack.readyState === "live",
+      processFrame: () => video.readyState >= 2 ? segmentation.send({ image: video }) : void 0
+    });
+    let processed;
+    try {
+      processed = canvas.captureStream(frameRate);
+    } catch (error) {
+      stopFrameLoop();
+      throw error;
+    }
     if (!processed?.getVideoTracks?.().length) {
+      stopFrameLoop();
       throw new Error("The processed background stream produced no video track.");
     }
     const stop = () => {
       if (stopped) return;
       stopped = true;
-      window.cancelAnimationFrame(frameHandle);
+      stopFrameLoop();
       try {
         segmentation.close();
       } catch {
@@ -2533,10 +2607,10 @@ export {
   banParticipant,
   b as breakoutRoomUpdated,
   b4 as buildAddVideosGridPlan,
-  d4 as buildMainHostCardPlan,
-  c4 as buildMainScreenState,
-  f4 as buildPrepopulateUserMediaPlan,
-  e4 as buildScreenShareHostCardPlan,
+  e4 as buildMainHostCardPlan,
+  d4 as buildMainScreenState,
+  g3 as buildPrepopulateUserMediaPlan,
+  f4 as buildScreenShareHostCardPlan,
   bulkUpdateParticipantPermissions,
   Z as calculateRowsAndColumns,
   e3 as captureCanvasStream,
@@ -2596,7 +2670,7 @@ export {
   y2 as fhdConsNeu,
   p3 as fhdConsPort,
   D2 as fhdFrameRate,
-  k3 as findOriginalProducerForSpeaker,
+  l3 as findOriginalProducerForSpeaker,
   aI as flipCamera,
   focusPanelists,
   formatNumber,
@@ -2607,7 +2681,7 @@ export {
   generateRandomRequestList,
   generateRandomWaitingRoomList,
   a42 as getActiveSpeaker,
-  j4 as getActiveTranslationConsumers,
+  k3 as getActiveTranslationConsumers,
   Z2 as getAudioGridComponents,
   getAvailableVoices,
   au as getBreakoutState,
@@ -2668,7 +2742,7 @@ export {
   C2 as hdFrameRate,
   h2 as hostRequestResponse,
   initialValuesState,
-  h3 as isConsumingTranslationForSpeaker,
+  j4 as isConsumingTranslationForSpeaker,
   isLanguageSupported,
   i3 as isSpeakerInMyBreakoutRoom,
   isSubtitleExpired,
@@ -2706,7 +2780,7 @@ export {
   meetingTimeRemaining,
   o3 as messageParticipants,
   v as mixStreams,
-  m4 as modifyCoHostSettings,
+  m5 as modifyCoHostSettings,
   e5 as modifyDisplaySettings,
   m as modifySettings,
   ad as muteEveryone,
@@ -2763,13 +2837,14 @@ export {
   B as reorderStreams,
   a$ as replaceProducerTrack,
   D as requestScreenShare,
-  a11 as resolveHostVideoStream,
-  r3 as resolveMainHostRenderMode,
+  c4 as resolveHostVideoStream,
+  a11 as resolveMainHostRenderMode,
+  r3 as resolveSidePanelForceFullDisplay,
   ag as respondToParticipantRequest,
   I2 as respondToRequests,
   P2 as respondToWaiting,
   af as respondToWaitingParticipant,
-  g3 as resumeOriginalProducer,
+  h3 as resumeOriginalProducer,
   E as resumePauseAudioStreams,
   F as resumePauseStreams,
   al as resumeRoomRecording,
@@ -2799,6 +2874,7 @@ export {
   startRecords,
   aj as startRoomRecording,
   I as startShareScreen,
+  startVirtualBackgroundFrameLoop,
   ao as startWhiteboard,
   aE as stopBreakoutRooms,
   s3 as stopConsumingTranslation,
@@ -2821,7 +2897,7 @@ export {
   R as switchUserVideoAlt,
   L2 as switchVideo,
   M2 as switchVideoAlt,
-  l3 as syncTranslationStateAfterBreakoutChange,
+  m4 as syncTranslationStateAfterBreakoutChange,
   t2 as timeLeftRecording,
   translationChannelsAvailable,
   translationConfigUpdated,

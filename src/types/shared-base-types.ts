@@ -240,6 +240,7 @@ export type SeedData = {
 };
 
 export interface MeetingRoomParams {
+  backendAudioDenoise?: { enabled: boolean; profile?: 'arnndn' }; // Optional; omitted uses the account preset.
   itemPageLimit: number;
   mediaType: 'audio' | 'video';
   addCoHost: boolean;
@@ -316,6 +317,7 @@ export type ScreenParamsType = {
 };
 
 export interface CreateRoomOptions {
+  backendAudioDenoise?: { enabled: boolean; profile?: 'arnndn' };
   action: 'create' | 'join';
   meetingID: string;
   duration: number;
@@ -339,6 +341,7 @@ export interface CreateRoomOptions {
 }
 
 export interface CreateMediaSFURoomOptions {
+  backendAudioDenoise?: { enabled: boolean; profile?: 'arnndn' };
   action: 'create';
   duration: number;
   capacity: number;
